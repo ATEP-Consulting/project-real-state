@@ -4,6 +4,10 @@ import { getFeaturedListings } from "@herrera/db";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Hero } from "@/components/home/Hero";
 import { FeaturedListings } from "@/components/home/FeaturedListings";
+import { MapPreview } from "@/components/home/MapPreview";
+import { ExploreAreas } from "@/components/home/ExploreAreas";
+import { CaptureInvite } from "@/components/home/CaptureInvite";
+import { Trust } from "@/components/home/Trust";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
 
 type HomeProps = { featured: ListingCardVM[] };
@@ -32,6 +36,10 @@ export default function Home({ featured }: HomeProps) {
       </Head>
       <Hero />
       <FeaturedListings listings={featured} />
+      <MapPreview />
+      <ExploreAreas />
+      <CaptureInvite />
+      <Trust />
     </SiteLayout>
   );
 }

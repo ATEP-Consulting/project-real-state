@@ -1,0 +1,51 @@
+.section {
+  padding-block: 72px;
+}
+.band {
+  background: var(--color-forest);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: clamp(32px, 6vw, 64px);
+  text-align: center;
+}
+.eyebrowLight {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-bronze-light);
+  margin: 0;
+}
+.title {
+  font-size: clamp(26px, 4vw, 40px);
+  line-height: 1.1;
+  color: #fff;
+  margin: 10px auto 0;
+  max-width: 680px;
+}
+.text {
+  margin: 18px auto 28px;
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.85);
+}
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* Ghost button sits on the dark band — override the default dark-ink ghost so it stays
+   readable. Doubled class bumps specificity above Button.module.css's .ghost (deterministic). */
+.ghostOnDark.ghostOnDark {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: transparent;
+  box-shadow: none;
+}
+.ghostOnDark.ghostOnDark:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
