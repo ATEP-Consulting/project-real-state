@@ -8,3 +8,6 @@ coverage
 
 # Prose/docs are formatted by hand (ADRs, CLAUDE.md, plans) — leave them alone.
 *.md
+
+# Generated Drizzle migrations + snapshots
+packages/*/drizzle
