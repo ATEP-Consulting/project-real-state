@@ -45,11 +45,13 @@ export const leads = pgTable(
 );
 
 export const leadInsertSchema = createInsertSchema(leads, {
-  email: z.string().email().optional(),
-  phone: z.string().min(7).optional(),
+  // nullable columns — accept null (explicit) or undefined (omitted)
+  email: z.string().email().nullish(),
+  phone: z.string().min(7).nullish(),
   answers: qualificationAnswersSchema.optional(),
   attribution: attributionSchema.optional(),
-  viewedListingIds: z.array(z.string().uuid()).optional(),
+  // listing references — slugs (the public /homes/[slug] id) or ids; generic string[] jsonb.
+  viewedListingIds: z.array(z.string()).optional(),
 }).refine((d) => Boolean(d.email) || Boolean(d.phone), {
   message: "A lead requires an email or phone (at least one).",
   path: ["email"],
