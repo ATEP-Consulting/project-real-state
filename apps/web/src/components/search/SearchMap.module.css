@@ -1,0 +1,7 @@
+.map {
+  position: absolute;
+  inset: 0;
+}
+.map :global(.maplibregl-ctrl-attrib) {
+  font-size: 10px;
+}
