@@ -12,6 +12,8 @@ export const serverEnvSchema = z.object({
   // F4 — admin auth (ADR-010).
   AUTH_SECRET: z.string().min(16),
   AUTH_URL: z.string().url().optional(),
+  ADMIN_EMAIL: z.string().email(),
+  ADMIN_PASSWORD_HASH: z.string().min(20),
   // D8 — notifications (ADR-009). Seam: optional until activated.
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),

@@ -5,6 +5,8 @@ const validServer = {
   NODE_ENV: "test",
   DATABASE_URL: "postgres://user:pass@localhost:5432/herrera",
   AUTH_SECRET: "a-very-long-test-secret-value",
+  ADMIN_EMAIL: "nilyan@example.com",
+  ADMIN_PASSWORD_HASH: "$2a$10$0123456789abcdefghijklmno",
 } as NodeJS.ProcessEnv;
 
 describe("parseServerEnv", () => {
@@ -22,6 +24,18 @@ describe("parseServerEnv", () => {
 
   it("throws when AUTH_SECRET is too short", () => {
     expect(() => parseServerEnv({ ...validServer, AUTH_SECRET: "short" })).toThrow(
+      EnvValidationError,
+    );
+  });
+
+  it("throws when ADMIN_EMAIL is missing", () => {
+    const rest = { ...validServer } as Record<string, unknown>;
+    delete rest.ADMIN_EMAIL;
+    expect(() => parseServerEnv(rest as NodeJS.ProcessEnv)).toThrow(EnvValidationError);
+  });
+
+  it("throws when ADMIN_EMAIL is not an email", () => {
+    expect(() => parseServerEnv({ ...validServer, ADMIN_EMAIL: "nope" })).toThrow(
       EnvValidationError,
     );
   });
