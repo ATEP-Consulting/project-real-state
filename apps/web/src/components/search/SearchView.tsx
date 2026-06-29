@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { SearchResults } from "./SearchResults";
@@ -37,9 +37,14 @@ export function SearchView({
   const [poly, setPoly] = useState<[number, number][] | null>(params.poly ?? null);
   const [mobileView, setMobileView] = useState<"list" | "map">("map");
   const paramsRef = useRef<SearchParams>(params);
+  // True once a navigation AWAY from /search begins. Map interactions (zoom/pan/draw)
+  // can leave a refetch in flight; without this guard that late router.replace({pathname:
+  // "/search"}) would yank the user back to /search after they clicked away.
+  const leavingRef = useRef(false);
 
   const fetchFor = useCallback(
     async (next: SearchParams) => {
+      if (leavingRef.current) return;
       paramsRef.current = next;
       const qs = serializeSearchQuery(next);
       void router.replace({ pathname: "/search", query: qs }, undefined, { shallow: true });
@@ -47,11 +52,12 @@ export function SearchView({
       try {
         const res = await fetch(`/api/search?${new URLSearchParams(qs).toString()}`);
         const data: SearchResult = await res.json();
+        if (leavingRef.current) return;
         setCards(data.cards);
         setPoints(data.points);
         setTotal(data.total);
       } finally {
-        setLoading(false);
+        if (!leavingRef.current) setLoading(false);
       }
     },
     [router],
@@ -68,6 +74,19 @@ export function SearchView({
       }, 400),
     [fetchFor],
   );
+
+  // Stop writing the URL once the user navigates off /search. A shallow replace stays on
+  // /search (url starts with "/search") and must NOT trip this; any other target = leaving.
+  useEffect(() => {
+    const onRouteChangeStart = (url: string) => {
+      if (!url.startsWith("/search")) leavingRef.current = true;
+    };
+    router.events.on("routeChangeStart", onRouteChangeStart);
+    return () => {
+      router.events.off("routeChangeStart", onRouteChangeStart);
+      onViewportChange.cancel();
+    };
+  }, [router, onViewportChange]);
 
   const onPolyChange = useCallback(
     (ring: [number, number][] | null) => {
