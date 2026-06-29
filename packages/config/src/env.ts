@@ -14,6 +14,9 @@ export const serverEnvSchema = z.object({
   AUTH_URL: z.string().url().optional(),
   ADMIN_EMAIL: z.string().email(),
   ADMIN_PASSWORD_HASH: z.string().min(20),
+  // F6 — preview access gate (ADR-003, format "user:pass") + NextAuth callback URL.
+  PREVIEW_BASIC_AUTH: z.string().optional(),
+  NEXTAUTH_URL: z.string().url().optional(),
   // D8 — notifications (ADR-009). Seam: optional until activated.
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),
