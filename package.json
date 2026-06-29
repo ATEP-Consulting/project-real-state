@@ -1,0 +1,12 @@
+{
+  "name": "herrera",
+  "private": true,
+  "description": "Real estate lead-gen platform for Nilyan Herrera (FL realtor). See CLAUDE.md.",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "_comment": "Scripts (dev, typecheck, lint, db:generate|migrate|studio, db:seed, sync:run, test) are wired in Phase 1 (task F1). See docs/adr/ADR-003 and BUILD_PLAYBOOK.md."
+  }
+}
