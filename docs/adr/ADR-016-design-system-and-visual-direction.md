@@ -13,14 +13,17 @@ runtime/build must not depend on the MCP.
 
 ## Decision
 
-- **Visual source of truth: `Prototipo.dc.html`**, pulled from the Claude Design MCP (server
-  `https://api.anthropic.com/v1/design/mcp`; auth via `/design-login`; the **DesignSync** tool /
-  `/design-sync` flow). Sibling files `Home/Resultados/Ficha.dc.html` are per-screen exports of the
-  same system.
+- **Visual source of truth: the committed offline export of `Prototipo.dc.html`** —
+  **`docs/reference/prototype/Nilyan-Herrera-Portal.offline.html`** plus rendered screenshots in
+  **`docs/reference/prototype/screens/*.png`** (full page + one per section). It originates from the
+  Claude Design MCP (server `https://api.anthropic.com/v1/design/mcp`; auth `/design-login`; the
+  **DesignSync** / `/design-sync` flow), but the build **depends on the committed export, not the
+  MCP**. The export is the authority for both **tokens** and **screen composition** — `docs/visual-direction.md`
+  transcribes both (tokens §1–§8, home compositions §9). Build against the export + the screenshots.
 - **Sync into a committed snapshot, build against it.** Tokens live in **`docs/visual-direction.md`**
-  (done in Phase 0) and, in Phase 1 (task **F3**), a **machine-readable tokens file the app
-  consumes** (CSS variables / theme). **No MCP dependency at runtime or build.** Re-sync + update
-  the snapshot in the same commit when the design changes.
+  and, since task **F3**, a **machine-readable tokens file the app consumes** (`tokens.css`).
+  **No MCP dependency at runtime or build.** When the design changes, re-sync via the MCP and refresh
+  **the committed export, its screenshots, and `docs/visual-direction.md`** in the same commit.
 - **The look** (see `docs/visual-direction.md`): Spectral (serif display) + Hanken Grotesk (sans
   UI); a warm palette of **cream paper `#F3EFE7`, forest `#15302C`, bronze accent `#A9794A`, sage,
   stone**; **green-tinted soft shadows**; crisp **2–3px** radii; uppercase tracked eyebrows vs

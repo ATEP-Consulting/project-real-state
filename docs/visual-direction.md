@@ -4,14 +4,17 @@
 > app builds against. The runtime/build must NOT depend on the Claude Design MCP — pull from
 > the MCP, sync here, build against this. See ADR-016.
 >
-> **Provenance:** synced from the Claude Design project *"Portal inmobiliario premium Florida"*
-> (`8ecde379-78f0-45f9-b563-f36a2b076a82`), file **`Prototipo.dc.html`** — the visual source of
-> truth. Sibling files `Home.dc.html`, `Resultados.dc.html`, `Ficha.dc.html` are per-screen
-> exports of the same system; `Prototipo.dc.html` contains all three screen states
-> (`isHome` / `isResultados` / `isFicha`) and is comprehensive. Re-sync via the `/design-sync`
-> flow (DesignSync MCP) when the design changes; update this file in the same commit.
+> **Provenance:** the Claude Design project *"Portal inmobiliario premium Florida"*
+> (`8ecde379-78f0-45f9-b563-f36a2b076a82`), file **`Prototipo.dc.html`**. The **committed offline
+> export** is the visual source of truth the app is built against:
+> **`docs/reference/prototype/Nilyan-Herrera-Portal.offline.html`** plus rendered screenshots in
+> **`docs/reference/prototype/screens/*.png`** (full page + one per section). The Claude Design MCP
+> is the upstream origin but is **not required** — build against the committed export. When the
+> design changes, re-sync via the `/design-sync` flow (DesignSync MCP) and refresh **both** the
+> committed export/screenshots and this file in the same commit. See §9 for the home screen
+> compositions transcribed from that export.
 >
-> _Last synced: 2026-06-29._
+> _Last synced: 2026-06-29 (offline export committed)._
 
 ---
 
@@ -256,3 +259,39 @@ canonical reference it must match.
 - Quality floor on every screen: responsive (mobile-first list/map toggle), visible keyboard
   focus, and `prefers-reduced-motion` honored.
 - If a screen drifts from this system or looks templated, fix it before moving on.
+
+---
+
+## 9. Screen compositions — Home (`Prototipo.dc.html`)
+
+Transcribed from the committed export + `docs/reference/prototype/screens/*.png`. The tokens above
+are correct; this section pins the **layout** so screens match the prototype, not a re-interpretation.
+The prototype renders in Spanish; v1 ships **English** copy (ADR-018) with the same structure.
+
+1. **Header** (`screens/home-full.png` top) — **solid forest bar**, white text, sticky (subtle
+   shadow once scrolled; not a transparent overlay). Left: **NH monogram** in a bronze-ringed circle +
+   `HERRERA` wordmark. Center: nav *Buy · Sell · Rent · Areas · About*. Right: **🇪🇸 ES · 🇺🇸 EN**
+   toggle, phone number, filled **bronze "Contact"** button. Mobile: hamburger → panel.
+2. **Hero** (`screens/section_a_hero_card.png`) — full-bleed photo + dark scrim; **centered** eyebrow
+   / large serif title (two lines) / lede; a **white search card** = intent **tabs** (Buy active =
+   forest pill) over a search row (search icon · input · `Type ▾` select · bronze **Search**);
+   below it a "or draw your area on the map →" link; a **SCROLL** cue with a gentle bob.
+3. **Featured** (`screens/section_b_featured.png`) — eyebrow + serif H2 + "View all" link; **4-up**
+   card grid. Card: image with **NEW** badge (top-left) + **heart** (top-right); body order
+   **price → meta (beds · baths · sqft) → title (address) → location (city + pin)**.
+4. **Map** (`screens/section_c_map.png`) — **dark forest band**; left eyebrow + serif white title +
+   3 bronze-bulleted points + bronze button; right a **map mockup card** (faux search + "Draw zone",
+   gridded map, price pins, dashed-circle zone, "N properties in your zone").
+5. **Areas** (`screens/section_d_areas.png`) — centered eyebrow + H2; **bento** grid: 1 large tile
+   (left, full height) + 4 small (2×2 right); each = image + bottom scrim + serif name + "N properties".
+6. **Capture** (`screens/section_e_capture.png`) — **two cards**: left light "Find your next home" →
+   Buy; right **dark forest** "What's your home worth?" with an address input + bronze valuation button.
+7. **Agent / Trust** (`screens/section_f_trust.png`) — left **portrait photo** with an overlaid forest
+   **stats badge** (e.g. 12 yrs · 240+ deals · $480M sold); right eyebrow + name + bio + license line +
+   **two testimonial cards with 5★** (bronze stars).
+8. **Contact** (`screens/section_g_contact.png`) — cream band; left eyebrow + serif title + body +
+   contact rows (phone / email / office) + agent mini-card; right white **form card** (intent tabs,
+   name, email + phone, area of interest, message, **consent checkbox**, bronze **Send message**).
+9. **Footer** (`screens/section_h_footer.png`) — forest; brand block (monogram + wordmark + tagline +
+   phone) + **3 columns** (Explore / Areas / Contact); bottom row: "© … FL License …" and
+   "Equal Housing Opportunity · Privacy · Terms" (+ a subtle "Sample data — demo" marker for the demo).

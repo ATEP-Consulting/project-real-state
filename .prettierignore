@@ -11,3 +11,6 @@ coverage
 
 # Generated Drizzle migrations + snapshots
 packages/*/drizzle
+
+# Committed design reference (verbatim Claude Design export + screenshots) — never reformat
+docs/reference
