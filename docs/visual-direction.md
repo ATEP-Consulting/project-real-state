@@ -268,10 +268,13 @@ Transcribed from the committed export + `docs/reference/prototype/screens/*.png`
 are correct; this section pins the **layout** so screens match the prototype, not a re-interpretation.
 The prototype renders in Spanish; v1 ships **English** copy (ADR-018) with the same structure.
 
-1. **Header** (`screens/home-full.png` top) — **solid forest bar**, white text, sticky (subtle
-   shadow once scrolled; not a transparent overlay). Left: **NH monogram** in a bronze-ringed circle +
-   `HERRERA` wordmark. Center: nav *Buy · Sell · Rent · Areas · About*. Right: **🇪🇸 ES · 🇺🇸 EN**
-   toggle, phone number, filled **bronze "Contact"** button. Mobile: hamburger → panel.
+1. **Header** — sticky. **Transparent over the hero at the very top** (white text/logo/nav directly on
+   the image, no background); on scroll it **fades smoothly to a solid white bar** with a soft shadow
+   and the text **flips white → forest `#15302C`** (per §6); scrolling back to the top removes the
+   white again. Non-hero pages (e.g. `/about`) render the solid white bar from the top. Left: **NH
+   monogram** in a bronze-ringed circle + `HERRERA` wordmark. Center: nav *Buy · Sell · Rent · Areas ·
+   About*. Right: **🇪🇸 ES · 🇺🇸 EN** toggle, phone number, filled **bronze "Contact"** button (bronze
+   in both states). Mobile: hamburger → panel (forces the solid bar while open).
 2. **Hero** (`screens/section_a_hero_card.png`) — full-bleed photo + dark scrim; **centered** eyebrow
    / large serif title (two lines) / lede; a **white search card** = intent **tabs** (Buy active =
    forest pill) over a search row (search icon · input · `Type ▾` select · bronze **Search**);

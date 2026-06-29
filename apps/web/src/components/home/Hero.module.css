@@ -6,6 +6,9 @@
   background-size: cover;
   background-position: center;
   color: #fff;
+  /* Sit under the transparent sticky header so the image runs to the very top. */
+  margin-top: calc(-1 * var(--header-h));
+  padding-top: var(--header-h);
 }
 
 .inner {

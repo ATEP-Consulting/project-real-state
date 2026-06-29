@@ -8,12 +8,15 @@ import styles from "./Header.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
 
-export function Header() {
+export function Header({ transparentOverHero = false }: { transparentOverHero?: boolean }) {
   const scrolled = useScrolled(8);
   const [open, setOpen] = useState(false);
+  // Transparent over the hero at the very top; fades to a solid white bar once scrolled
+  // (or when the mobile menu is open, so the panel stays legible).
+  const solid = !transparentOverHero || scrolled || open;
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+    <header className={`${styles.header} ${solid ? styles.solid : styles.overlay}`}>
       <Container>
         <div className={styles.bar}>
           <Link href="/" className={styles.brand} aria-label="Herrera — home">

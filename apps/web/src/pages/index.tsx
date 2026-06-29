@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 
 export default function Home({ featured }: HomeProps) {
   return (
-    <SiteLayout>
+    <SiteLayout transparentHeader>
       <Head>
         <title>Herrera — Find your place in Florida</title>
         <meta

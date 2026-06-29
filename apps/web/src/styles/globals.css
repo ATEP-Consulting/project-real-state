@@ -1,5 +1,10 @@
 @import "./tokens.css";
 
+:root {
+  /* Sticky header height — shared so the hero can sit under the transparent header. */
+  --header-h: 76px;
+}
+
 *,
 *::before,
 *::after {
