@@ -1,0 +1,89 @@
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+.search {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--color-ink-soft);
+  background: var(--color-sand-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+.draw {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-bronze);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.map {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  background-color: var(--color-sage);
+  background-image:
+    radial-gradient(circle at 28% 30%, rgba(255, 255, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 72% 68%, rgba(196, 207, 168, 0.55), transparent 50%),
+    linear-gradient(rgba(11, 24, 22, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 24, 22, 0.06) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    34px 34px,
+    34px 34px;
+}
+.zone {
+  position: absolute;
+  top: 22%;
+  left: 28%;
+  width: 46%;
+  height: 56%;
+  border: 2px dashed rgba(143, 98, 56, 0.8);
+  border-radius: 46% 54% 50% 50%;
+  background: rgba(169, 121, 74, 0.08);
+}
+.pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+.pinDark {
+  background: var(--color-forest);
+}
+.pinBronze {
+  background: var(--color-bronze);
+}
+.count {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 7px 11px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}

@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
+import { MapMockup } from "./MapMockup";
 import styles from "./MapPreview.module.css";
+
+const POINTS = [
+  "Draw, move and combine multiple zones",
+  "Prices and availability in real time",
+  "Save searches and get alerts",
+];
 
 export function MapPreview() {
   return (
@@ -12,26 +18,28 @@ export function MapPreview() {
         <Reveal>
           <div className={styles.grid}>
             <div className={styles.copy}>
-              <Eyebrow>Search the map</Eyebrow>
-              <h2 className={styles.title}>Explore listings on an interactive map</h2>
+              <p className={styles.eyebrow}>The map</p>
+              <h2 className={styles.title}>Search by drawing your zone</h2>
               <p className={styles.text}>
-                Pan and zoom to see what&apos;s available, draw your own search zone, and compare
-                neighborhoods side by side. The list and the map stay in sync.
+                Forget rigid filters. Trace the exact area you want to live in and see only
+                what&apos;s inside it, in real time.
               </p>
+              <ul className={styles.points}>
+                {POINTS.map((p) => (
+                  <li key={p} className={styles.point}>
+                    {p}
+                  </li>
+                ))}
+              </ul>
               <Link href="/search">
-                <Button variant="secondary" size="lg">
-                  Open map search
+                <Button variant="primary" size="lg">
+                  Explore the map
                 </Button>
               </Link>
             </div>
-            <Link href="/search" className={styles.preview} aria-label="Open map search">
-              <div className={styles.pin} style={{ top: "32%", left: "28%" }} />
-              <div className={styles.pin} style={{ top: "52%", left: "58%" }} />
-              <div className={styles.pin} style={{ top: "68%", left: "38%" }} />
-              <span className={styles.previewLabel}>
-                Interactive map · built in the search view
-              </span>
-            </Link>
+            <div className={styles.preview}>
+              <MapMockup />
+            </div>
           </div>
         </Reveal>
       </Container>
