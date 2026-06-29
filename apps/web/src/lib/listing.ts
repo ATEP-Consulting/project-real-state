@@ -16,6 +16,13 @@ export function formatPrice(n: number): string {
   return `$${n.toLocaleString("en-US")}`;
 }
 
+/** Compact price for map pins: 1_447_000 → "$1.4M", 890_000 → "$890K". */
+export function formatPriceShort(n: number): string {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`;
+  if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
+  return `$${n}`;
+}
+
 export function formatBedsLabel(beds: number | null): string | null {
   if (beds === null) return null;
   if (beds === 0) return "Studio";
