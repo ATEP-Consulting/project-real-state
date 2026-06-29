@@ -1,4 +1,9 @@
+import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
+
+// Load the repo-root env so migrate/studio get DATABASE_URL (cwd is packages/db under the filter).
+config({ path: "../../.env.local" });
+config({ path: "../../.env" });
 
 export default defineConfig({
   schema: "./src/schema/index.ts",

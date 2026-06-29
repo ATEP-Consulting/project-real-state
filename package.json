@@ -23,7 +23,9 @@
     "build": "pnpm --filter @herrera/web build",
     "db:generate": "pnpm --filter @herrera/db generate",
     "db:migrate": "pnpm --filter @herrera/db migrate",
-    "db:studio": "pnpm --filter @herrera/db studio"
+    "db:studio": "pnpm --filter @herrera/db studio",
+    "db:seed": "pnpm --filter @herrera/db seed",
+    "db:purge:mock": "pnpm --filter @herrera/db purge:mock"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
