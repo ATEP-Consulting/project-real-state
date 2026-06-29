@@ -2,16 +2,10 @@ import type { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
-export function SiteLayout({
-  children,
-  transparentHeader = false,
-}: {
-  children: ReactNode;
-  transparentHeader?: boolean;
-}) {
+export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <Header transparentOverHero={transparentHeader} />
+      <Header />
       <main>{children}</main>
       <Footer />
     </>

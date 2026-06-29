@@ -2,20 +2,25 @@ import Link from "next/link";
 import { useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { PRIMARY_NAV } from "@/lib/nav";
+import { REALTOR } from "@/data/realtor";
 import { useScrolled } from "./useScrolled";
 import styles from "./Header.module.css";
 
-export function Header({ transparentOverHero = false }: { transparentOverHero?: boolean }) {
-  const scrolled = useScrolled(24);
+const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
+
+export function Header() {
+  const scrolled = useScrolled(8);
   const [open, setOpen] = useState(false);
-  const solid = !transparentOverHero || scrolled;
 
   return (
-    <header className={`${styles.header} ${solid ? styles.solid : styles.overlay}`}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <Container>
         <div className={styles.bar}>
-          <Link href="/" className={styles.wordmark} aria-label="Herrera — home">
-            HERRERA
+          <Link href="/" className={styles.brand} aria-label="Herrera — home">
+            <span className={styles.monogram} aria-hidden="true">
+              {REALTOR.monogram}
+            </span>
+            <span className={styles.wordmark}>HERRERA</span>
           </Link>
 
           <nav className={styles.nav} aria-label="Primary">
@@ -28,11 +33,14 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
 
           <div className={styles.actions}>
             <span className={styles.lang} title="Español — coming in D13">
-              <span className={styles.langActive}>EN</span>
+              <span className={styles.langMuted}>🇪🇸 ES</span>
               <span className={styles.langSep}>·</span>
-              <span className={styles.langMuted}>ES</span>
+              <span className={styles.langOn}>🇺🇸 EN</span>
             </span>
-            <Link href="/contact" className={styles.cta}>
+            <a className={styles.phone} href={TEL}>
+              {REALTOR.phone}
+            </a>
+            <Link href="/contact" className={styles.contactBtn}>
               Contact
             </Link>
             <button
@@ -54,7 +62,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
 
       {open && (
         <nav id="mobile-nav" className={styles.mobileNav} aria-label="Primary">
-          {[...PRIMARY_NAV, { label: "Contact", href: "/contact" }].map((item) => (
+          {PRIMARY_NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -64,6 +72,12 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
               {item.label}
             </Link>
           ))}
+          <a className={styles.mobileLink} href={TEL} onClick={() => setOpen(false)}>
+            {REALTOR.phone}
+          </a>
+          <Link href="/contact" className={styles.mobileContact} onClick={() => setOpen(false)}>
+            Contact
+          </Link>
         </nav>
       )}
     </header>

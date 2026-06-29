@@ -2,53 +2,60 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  transition:
-    background-color var(--dur-base) var(--ease-standard),
-    box-shadow var(--dur-base) var(--ease-standard),
-    border-color var(--dur-base) var(--ease-standard),
-    color var(--dur-base) var(--ease-standard);
-}
-
-.overlay {
-  background: transparent;
+  background: var(--color-forest);
   color: #fff;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: box-shadow var(--dur-base) var(--ease-standard);
 }
-.solid {
-  background: var(--color-surface);
-  color: var(--color-forest);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+.scrolled {
+  box-shadow: 0 6px 20px rgba(11, 24, 22, 0.28);
 }
 
 .bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
-  height: 72px;
+  height: 76px;
 }
 
+.brand {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+}
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 12px;
+  border: 1px solid var(--color-bronze);
+  border-radius: 50%;
+  color: var(--color-bronze-light);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
 .wordmark {
   font-family: var(--font-serif), Georgia, serif;
   font-size: 22px;
   font-weight: 500;
   letter-spacing: 0.16em;
-  color: inherit;
 }
 
 .nav {
   display: flex;
   align-items: center;
   gap: 26px;
-  margin-left: auto;
+  margin-inline: auto;
 }
 .navLink {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: inherit;
-  opacity: 0.92;
+  opacity: 0.9;
   transition: opacity var(--dur-fast) var(--ease-standard);
 }
 .navLink:hover {
@@ -58,51 +65,51 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 }
 .lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
   cursor: default;
   color: inherit;
 }
-.langActive {
+.langOn {
   opacity: 1;
 }
-.langSep {
-  opacity: 0.5;
-  margin: 0 4px;
-}
 .langMuted {
-  opacity: 0.5;
+  opacity: 0.55;
 }
-
-.cta {
+.langSep {
+  opacity: 0.4;
+}
+.phone {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+}
+.phone:hover {
+  color: #fff;
+}
+.contactBtn {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  padding: 9px 18px;
-  border-radius: var(--radius-pill);
-  border: 1px solid currentColor;
-  color: inherit;
-  transition:
-    background-color var(--dur-base) var(--ease-standard),
-    color var(--dur-base) var(--ease-standard);
-}
-.solid .cta {
-  background: var(--color-bronze);
-  border-color: var(--color-bronze);
   color: #fff;
+  background: var(--color-bronze);
+  border-radius: var(--radius-pill);
+  padding: 9px 20px;
   box-shadow: var(--shadow-bronze);
+  white-space: nowrap;
+  transition: background-color var(--dur-base) var(--ease-standard);
 }
-.solid .cta:hover {
+.contactBtn:hover {
   background: var(--color-bronze-dark);
-  border-color: var(--color-bronze-dark);
-}
-.overlay .cta:hover {
-  background: rgba(255, 255, 255, 0.14);
 }
 
 .menuBtn {
@@ -112,7 +119,7 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid currentColor;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--radius-sm);
   color: inherit;
   cursor: pointer;
@@ -157,10 +164,11 @@
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .nav,
   .lang,
-  .cta {
+  .phone,
+  .contactBtn {
     display: none;
   }
   .menuBtn {
@@ -171,24 +179,36 @@
     flex-direction: column;
     gap: 2px;
     padding: 8px 0 16px;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-card);
+    background: var(--color-forest-900);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
   .mobileLink {
-    padding: 12px var(--gutter);
+    padding: 13px var(--gutter);
     font-family: var(--font-sans), system-ui, sans-serif;
     font-size: 16px;
     font-weight: 500;
-    color: var(--color-ink);
+    color: rgba(255, 255, 255, 0.9);
   }
   .mobileLink:hover {
-    background: var(--color-sand-100);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .mobileContact {
+    margin: 10px var(--gutter) 0;
+    text-align: center;
+    padding: 12px;
+    background: var(--color-bronze);
+    color: #fff;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
   }
 }
 
 @media (max-width: 768px) {
+  .mobileLink,
+  .mobileContact {
+    margin-inline: 20px;
+  }
   .mobileLink {
-    padding-inline: 20px;
+    padding-inline: 0;
   }
 }
