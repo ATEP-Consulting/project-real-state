@@ -4,6 +4,7 @@ import { Spectral, Hanken_Grotesk } from "next/font/google";
 import { DemoBanner } from "@/components/DemoBanner";
 import { PageTransition } from "@/components/motion/PageTransition";
 import "@/styles/globals.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 const serif = Spectral({
   subsets: ["latin"],
