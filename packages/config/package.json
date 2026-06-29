@@ -1,0 +1,17 @@
+{
+  "name": "@herrera/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./env": "./src/env.ts",
+    "./eslint": "./eslint/base.mjs",
+    "./prettier": "./prettier/base.mjs",
+    "./tsconfig/base.json": "./tsconfig.base.json",
+    "./tsconfig/nextjs.json": "./tsconfig.nextjs.json",
+    "./tsconfig/node.json": "./tsconfig.node.json"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  }
+}

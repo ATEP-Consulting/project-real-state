@@ -1,0 +1,10 @@
+node_modules
+pnpm-lock.yaml
+.next
+dist
+build
+coverage
+.vercel
+
+# Prose/docs are formatted by hand (ADRs, CLAUDE.md, plans) — leave them alone.
+*.md
