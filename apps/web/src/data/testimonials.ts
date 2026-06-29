@@ -1,23 +1,26 @@
-export type Testimonial = { quote: string; author: string; context: string };
+export type Testimonial = { quote: string; author: string; context: string; rating: number };
 
 /** Our own sample testimonials (Google reviews come later). Fair-Housing-clean: about service, not people. */
 export const TESTIMONIALS: readonly Testimonial[] = [
   {
     quote:
-      "Nilyan walked us through every cost — taxes, insurance, HOA — before we made an offer. No surprises at closing.",
-    author: "M. & J. Alvarez",
-    context: "Bought in Coral Gables",
+      "Sold our Coral Gables home in three weeks and above asking. Professional from start to finish.",
+    author: "Marta & Diego R.",
+    context: "Sold in Coral Gables",
+    rating: 5,
   },
   {
     quote:
-      "She priced our home right and it sold quickly. Communication was fast and honest the whole way through.",
+      "We moved from Spain and Nilyan made it easy — she found exactly the neighborhood we were looking for.",
+    author: "Familia Castaño",
+    context: "Relocated to Miami",
+    rating: 5,
+  },
+  {
+    quote:
+      "She walked us through every cost — taxes, insurance, HOA — before we made an offer. No surprises at closing.",
     author: "Priya N.",
-    context: "Sold in Orlando",
-  },
-  {
-    quote:
-      "As first-time renters we felt looked after. Nilyan found us the right place and explained the lease clearly.",
-    author: "Daniel R.",
-    context: "Rented in Tampa",
+    context: "Bought in Brickell",
+    rating: 5,
   },
 ];
