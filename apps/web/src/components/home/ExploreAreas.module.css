@@ -1,24 +1,36 @@
 .section {
-  padding-block: 72px;
+  padding-block: 80px;
+}
+.head {
+  text-align: center;
+  margin-bottom: 36px;
 }
 .title {
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(28px, 4vw, 44px);
   line-height: 1.06;
-  margin: 8px 0 32px;
+  margin: 8px 0 0;
 }
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  min-height: 560px;
 }
+.big {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
 .tile {
   position: relative;
   display: block;
-  aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
   color: #fff;
+  min-height: 260px;
 }
 .img {
   position: absolute;
@@ -34,7 +46,7 @@
 .scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(11, 24, 22, 0.72), rgba(11, 24, 22, 0) 55%);
+  background: linear-gradient(to top, rgba(11, 24, 22, 0.78), rgba(11, 24, 22, 0) 55%);
 }
 .tileBody {
   position: absolute;
@@ -48,23 +60,32 @@
   color: #fff;
   margin: 0;
 }
-.tileBlurb {
-  margin: 4px 0 0;
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.88);
+.big .tileName {
+  font-size: 30px;
+}
+.tileCount {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    min-height: 0;
+  }
+  .big {
+    grid-column: 1 / span 2;
+    grid-row: auto;
+    min-height: 320px;
   }
 }
 @media (max-width: 560px) {
   .grid {
     grid-template-columns: 1fr;
   }
-  .tile {
-    aspect-ratio: 16 / 10;
+  .big {
+    grid-column: 1;
   }
 }
