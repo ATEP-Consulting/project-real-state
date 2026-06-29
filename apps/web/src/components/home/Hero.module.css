@@ -1,134 +1,104 @@
 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   background-size: cover;
   background-position: center;
-  /* Pull up under the transparent sticky header. */
-  margin-top: -72px;
-  padding-top: 72px;
   color: #fff;
 }
 
 .inner {
-  max-width: 720px;
-  padding-block: 80px;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+  padding-block: 96px 120px;
 }
 .eyebrow {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
   margin: 0 0 18px;
 }
 .title {
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(40px, 7vw, 68px);
+  font-size: clamp(40px, 7vw, 72px);
   line-height: 1.04;
   font-weight: 400;
   color: #fff;
   margin: 0;
 }
 .lede {
-  margin: 18px 0 0;
+  margin: 18px auto 0;
   max-width: 540px;
   font-size: clamp(16px, 2.2vw, 19px);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.search {
-  margin-top: 28px;
-  max-width: 560px;
-}
-.searchLabel {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-.searchRow {
-  display: flex;
-  gap: 8px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: var(--radius-pill);
-  backdrop-filter: blur(8px);
-}
-.input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  background: transparent;
-  color: #fff;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 15px;
-  padding: 10px 16px;
-  outline: none;
-}
-.input::placeholder {
-  color: rgba(255, 255, 255, 0.75);
-}
-.searchBtn {
-  flex-shrink: 0;
+.drawLink {
+  display: inline-block;
+  margin-top: 18px;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.04em;
   color: #fff;
-  background: var(--color-bronze);
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 11px 24px;
-  cursor: pointer;
-  box-shadow: var(--shadow-bronze);
-  transition: background-color var(--dur-base) var(--ease-standard);
+  opacity: 0.9;
 }
-.searchBtn:hover {
-  background: var(--color-bronze-dark);
+.drawLink:hover {
+  opacity: 1;
 }
 
-.intents {
+.scrollCue {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 22px;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.75);
 }
-.intentsLabel {
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.8);
-}
-.intent {
+.scrollLabel {
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: #fff;
-  padding: 9px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-pill);
-  transition: background-color var(--dur-base) var(--ease-standard);
+  letter-spacing: 0.3em;
 }
-.intent:hover {
-  background: rgba(255, 255, 255, 0.16);
+.chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chevron {
+    animation: bob 1.8s ease-in-out infinite;
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: rotate(45deg) translate(0, 0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: rotate(45deg) translate(3px, 3px);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 88vh;
+    min-height: 86vh;
   }
-  .searchRow {
-    flex-direction: column;
-    border-radius: var(--radius-md);
-  }
-  .searchBtn {
-    border-radius: var(--radius-sm);
+  .inner {
+    padding-block: 72px 110px;
   }
 }
