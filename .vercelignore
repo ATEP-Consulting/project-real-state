@@ -1,0 +1,10 @@
+# Never upload local env files — Vercel injects env from the dashboard.
+.env
+.env.*
+**/.env
+**/.env.*
+# Build artifacts (Vercel rebuilds these).
+.next
+**/.next
+dist
+**/dist
