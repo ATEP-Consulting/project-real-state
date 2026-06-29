@@ -12,6 +12,9 @@
     "./tsconfig/node.json": "./tsconfig.node.json"
   },
   "dependencies": {
+    "@next/eslint-plugin-next": "^15.1.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "zod": "^3.24.0"
   }
 }
