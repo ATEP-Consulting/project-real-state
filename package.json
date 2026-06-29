@@ -8,7 +8,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "sharp"
     ]
   },
   "scripts": {
@@ -18,6 +19,8 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
+    "dev": "pnpm --filter @herrera/web dev",
+    "build": "pnpm --filter @herrera/web build",
     "db:generate": "pnpm --filter @herrera/db generate",
     "db:migrate": "pnpm --filter @herrera/db migrate",
     "db:studio": "pnpm --filter @herrera/db studio"
