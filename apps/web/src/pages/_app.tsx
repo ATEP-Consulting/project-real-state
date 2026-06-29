@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import { Spectral, Hanken_Grotesk } from "next/font/google";
+import { PageTransition } from "@/components/motion/PageTransition";
 import "@/styles/globals.css";
 
 const serif = Spectral({
@@ -20,7 +21,9 @@ const sans = Hanken_Grotesk({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={`${serif.variable} ${sans.variable}`}>
-      <Component {...pageProps} />
+      <PageTransition>
+        <Component {...pageProps} />
+      </PageTransition>
     </div>
   );
 }
