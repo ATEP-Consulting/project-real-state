@@ -21,7 +21,7 @@ The preview is intentionally **noindex + access-restricted + marked "sample data
 | `NEXT_PUBLIC_SITE_URL` | the deployment URL |
 | `NEXT_PUBLIC_DEMO_MODE` | `true` (preview) |
 | `PREVIEW_BASIC_AUTH` | `user:strong-password` (preview only — the access gate) |
-| `NEXT_PUBLIC_MAP_STYLE_URL` | _(optional)_ MapLibre style URL (D2). Default = the free Carto Positron style (`https://basemaps.cartocdn.com/gl/positron-gl-style/style.json`), **no token required**. |
+| `NEXT_PUBLIC_MAP_STYLE_URL` | _(optional)_ MapLibre style URL (D2). Default = the free Carto Voyager style (`https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json`), colored, **no token required**. |
 
 > `NEXT_PUBLIC_*` are read at **build time** — after changing them, redeploy.
 > `PREVIEW_BASIC_AUTH` and the rest are read at **runtime**.
