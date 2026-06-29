@@ -6,6 +6,14 @@ import styles from "./Hero.module.css";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=70";
 
 export function Hero() {
+  // Click the SCROLL cue to glide past the full-height hero to the content below.
+  function scrollDown() {
+    const header = document.querySelector("header");
+    const headerH = header instanceof HTMLElement ? header.offsetHeight : 76;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: window.innerHeight - headerH, behavior: reduce ? "auto" : "smooth" });
+  }
+
   return (
     <section
       className={styles.hero}
@@ -30,10 +38,15 @@ export function Hero() {
         </div>
       </Container>
 
-      <div className={styles.scrollCue} aria-hidden="true">
+      <button
+        type="button"
+        className={styles.scrollCue}
+        onClick={scrollDown}
+        aria-label="Scroll to listings"
+      >
         <span className={styles.scrollLabel}>SCROLL</span>
-        <span className={styles.chevron} />
-      </div>
+        <span className={styles.chevron} aria-hidden="true" />
+      </button>
     </section>
   );
 }
