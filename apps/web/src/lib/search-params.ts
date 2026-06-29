@@ -50,12 +50,8 @@ export function parseSearchParams(query: Query): SearchParams {
   if (bbox) {
     const n = floats(bbox);
     if (n.length === 4 && n.every(Number.isFinite)) {
-      out.bbox = [
-        Math.min(n[0], n[2]),
-        Math.min(n[1], n[3]),
-        Math.max(n[0], n[2]),
-        Math.max(n[1], n[3]),
-      ];
+      const [a, b, c, d] = n as Bbox;
+      out.bbox = [Math.min(a, c), Math.min(b, d), Math.max(a, c), Math.max(b, d)];
     }
   }
 
@@ -64,7 +60,7 @@ export function parseSearchParams(query: Query): SearchParams {
     const n = floats(poly);
     if (n.length >= 6 && n.length % 2 === 0 && n.every(Number.isFinite)) {
       const ring: Ring = [];
-      for (let k = 0; k < n.length; k += 2) ring.push([n[k], n[k + 1]]);
+      for (let k = 0; k + 1 < n.length; k += 2) ring.push([n[k]!, n[k + 1]!]);
       out.poly = ring;
     }
   }
