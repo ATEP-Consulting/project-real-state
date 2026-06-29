@@ -1,51 +1,110 @@
 .section {
-  padding-block: 72px;
+  padding-block: 24px 80px;
 }
-.band {
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.buy,
+.sell {
+  border-radius: var(--radius-md);
+  padding: clamp(28px, 4vw, 44px);
+}
+.buy {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+.sell {
   background: var(--color-forest);
   color: #fff;
-  border-radius: var(--radius-md);
-  padding: clamp(32px, 6vw, 64px);
-  text-align: center;
 }
+
+.eyebrow,
 .eyebrowLight {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  margin: 0 0 10px;
+}
+.eyebrow {
+  color: var(--color-bronze-dark);
+}
+.eyebrowLight {
   color: var(--color-bronze-light);
-  margin: 0;
-}
-.title {
-  font-size: clamp(26px, 4vw, 40px);
-  line-height: 1.1;
-  color: #fff;
-  margin: 10px auto 0;
-  max-width: 680px;
-}
-.text {
-  margin: 18px auto 28px;
-  max-width: 560px;
-  font-size: 16px;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.85);
-}
-.actions {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
 }
 
-/* Ghost button sits on the dark band — override the default dark-ink ghost so it stays
-   readable. Doubled class bumps specificity above Button.module.css's .ghost (deterministic). */
-.ghostOnDark.ghostOnDark {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
-  background: transparent;
-  box-shadow: none;
+.title,
+.titleLight {
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.1;
+  margin: 0 0 12px;
 }
-.ghostOnDark.ghostOnDark:hover {
-  background: rgba(255, 255, 255, 0.14);
+.titleLight {
+  color: #fff;
+}
+.text,
+.textLight {
+  font-size: 15.5px;
+  line-height: 1.6;
+  margin: 0 0 22px;
+  max-width: 420px;
+}
+.text {
+  color: var(--color-stone);
+}
+.textLight {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.valForm {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm);
+}
+.valInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #fff;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14.5px;
+  padding: 9px 12px;
+}
+.valInput::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+.valBtn {
+  flex-shrink: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-bronze);
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color var(--dur-base) var(--ease-standard);
+}
+.valBtn:hover {
+  background: var(--color-bronze-dark);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .valForm {
+    flex-direction: column;
+  }
 }

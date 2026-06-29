@@ -1,33 +1,60 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import styles from "./CaptureInvite.module.css";
 
 export function CaptureInvite() {
+  const router = useRouter();
+  const [address, setAddress] = useState("");
+
+  // Presentational — the real "what's my home worth?" magnet (capture + consent) is D7.
+  function onValuation(e: FormEvent) {
+    e.preventDefault();
+    const qs = address.trim() ? `?address=${encodeURIComponent(address.trim())}` : "";
+    void router.push(`/home-value${qs}`);
+  }
+
   return (
     <section className={styles.section}>
       <Container>
         <Reveal>
-          <div className={styles.band}>
-            <p className={styles.eyebrowLight}>What will it really cost?</p>
-            <h2 className={styles.title}>Know the true monthly cost before you fall in love.</h2>
-            <p className={styles.text}>
-              Florida ownership is more than a list price — insurance, flood exposure, taxes, HOA
-              and CDD fees all add up. Tell us what you&apos;re looking for and Nilyan will send a
-              clear, honest breakdown. All figures are estimates.
-            </p>
-            <div className={styles.actions}>
+          <div className={styles.grid}>
+            <div className={styles.buy}>
+              <p className={styles.eyebrow}>Buy</p>
+              <h2 className={styles.title}>Find your next home</h2>
+              <p className={styles.text}>
+                Tell us what you&apos;re looking for and we&apos;ll send a curated selection before
+                it hits the market.
+              </p>
               <Link href="/buy">
-                <Button variant="primary" size="lg">
-                  Start with what you want
+                <Button variant="secondary" size="lg">
+                  Start my search
                 </Button>
               </Link>
-              <Link href="/home-value">
-                <Button variant="ghost" size="lg" className={styles.ghostOnDark}>
-                  What&apos;s my home worth?
-                </Button>
-              </Link>
+            </div>
+
+            <div className={styles.sell}>
+              <p className={styles.eyebrowLight}>Sell</p>
+              <h2 className={styles.titleLight}>What&apos;s your home worth?</h2>
+              <p className={styles.textLight}>
+                Get a free, no-obligation valuation based on real sales in your neighborhood.
+              </p>
+              <form className={styles.valForm} onSubmit={onValuation}>
+                <input
+                  className={styles.valInput}
+                  type="text"
+                  aria-label="Your property address"
+                  placeholder="Your property address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+                <button type="submit" className={styles.valBtn}>
+                  Get a free valuation
+                </button>
+              </form>
             </div>
           </div>
         </Reveal>
