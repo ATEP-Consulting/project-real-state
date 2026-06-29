@@ -1,5 +1,3 @@
-import type { Listing } from "@herrera/db";
-
 const PROPERTY_TYPE_LABELS: Record<string, string> = {
   single_family: "Single-family home",
   condo: "Condo",
@@ -65,7 +63,26 @@ export type ListingCardVM = {
 
 const NEW_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
-export function toListingCardVM(l: Listing): ListingCardVM {
+/**
+ * Structural input for the card mapper — satisfied by both a full `Listing`
+ * (home strip) and a `SearchListing` (search results), so both reuse this VM.
+ */
+export type ListingCardSource = {
+  slug: string;
+  price: number;
+  bedrooms: number | null;
+  bathrooms: string | null;
+  sqft: number | null;
+  propertyType: string;
+  addressLine1: string;
+  city: string;
+  state: string;
+  zip: string;
+  photos: { url: string }[];
+  createdAt: Date | string;
+};
+
+export function toListingCardVM(l: ListingCardSource): ListingCardVM {
   const propertyTypeLabel = formatPropertyType(l.propertyType);
   const createdAt = l.createdAt instanceof Date ? l.createdAt : new Date(l.createdAt);
   return {
