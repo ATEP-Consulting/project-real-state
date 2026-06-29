@@ -5,19 +5,24 @@ import { REALTOR } from "@/data/realtor";
 import { EqualHousingLogo } from "./EqualHousingLogo";
 import styles from "./Footer.module.css";
 
+const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
+
 export function Footer() {
   return (
     <footer className={styles.footer}>
       <Container>
         <div className={styles.top}>
           <div className={styles.brand}>
-            <span className={styles.wordmark}>HERRERA</span>
+            <span className={styles.brandRow}>
+              <span className={styles.monogram} aria-hidden="true">
+                {REALTOR.monogram}
+              </span>
+              <span className={styles.wordmark}>HERRERA</span>
+            </span>
             <p className={styles.tagline}>{REALTOR.bioShort}</p>
-            <p className={styles.contact}>
-              <a href={`mailto:${REALTOR.email}`}>{REALTOR.email}</a>
-              <span aria-hidden="true"> · </span>
-              <a href={`tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`}>{REALTOR.phone}</a>
-            </p>
+            <a className={styles.phone} href={TEL}>
+              {REALTOR.phone}
+            </a>
           </div>
 
           <nav className={styles.cols} aria-label="Footer">
@@ -26,10 +31,16 @@ export function Footer() {
                 <h2 className={styles.colHeading}>{col.heading}</h2>
                 <ul className={styles.colList}>
                   {col.items.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href} className={styles.colLink}>
-                        {item.label}
-                      </Link>
+                    <li key={`${col.heading}-${item.label}`}>
+                      {item.href.startsWith("mailto:") ? (
+                        <a href={item.href} className={styles.colLink}>
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link href={item.href} className={styles.colLink}>
+                          {item.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -38,20 +49,24 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className={styles.legal}>
-          <div className={styles.eho}>
-            <EqualHousingLogo />
-            <span>Equal Housing Opportunity</span>
-          </div>
-          <div className={styles.legalText}>
-            <p>
-              {REALTOR.name}, {REALTOR.title} · {REALTOR.license}
-            </p>
-            <p className={styles.sample}>
-              Sample data — demonstration site. Listings, figures, and reviews shown are
-              illustrative.
-            </p>
-            <p>© {REALTOR.copyrightYear} Herrera. All rights reserved.</p>
+        <div className={styles.bottom}>
+          <p className={styles.copy}>
+            © {REALTOR.copyrightYear} Nilyan Herrera Real Estate · {REALTOR.license}
+            <span className={styles.sample}> · Sample data — demo</span>
+          </p>
+          <div className={styles.legal}>
+            <span className={styles.eho}>
+              <EqualHousingLogo size={20} />
+              Equal Housing Opportunity
+            </span>
+            <span aria-hidden="true">·</span>
+            <Link href="/privacy" className={styles.legalLink}>
+              Privacy
+            </Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/terms" className={styles.legalLink}>
+              Terms
+            </Link>
           </div>
         </div>
       </Container>
