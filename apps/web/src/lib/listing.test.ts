@@ -22,6 +22,7 @@ function makeListing(over: Partial<Listing> = {}): Listing {
     state: "FL",
     zip: "33129",
     photos: [{ url: "https://images.unsplash.com/photo-1.jpg", caption: "Front" }],
+    createdAt: new Date(),
     ...over,
   } as unknown as Listing;
 }
@@ -82,7 +83,13 @@ describe("toListingCardVM", () => {
       propertyTypeLabel: "Condo",
       photo: "https://images.unsplash.com/photo-1.jpg",
       photoAlt: "Condo at 1842 Brickell Ave, Miami, FL",
+      isNew: true,
     });
+  });
+
+  it("flags recent listings as new and old ones as not", () => {
+    expect(toListingCardVM(makeListing({ createdAt: new Date() })).isNew).toBe(true);
+    expect(toListingCardVM(makeListing({ createdAt: new Date("2000-01-01") })).isNew).toBe(false);
   });
 
   it("handles missing beds/baths/sqft/photos gracefully", () => {

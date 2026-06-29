@@ -15,7 +15,7 @@ type HomeProps = { featured: ListingCardVM[] };
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   let featured: ListingCardVM[] = [];
   try {
-    const rows = await getFeaturedListings(6);
+    const rows = await getFeaturedListings(8);
     featured = rows.map(toListingCardVM);
   } catch (err) {
     // Resilient: keep the build green without DATABASE_URL; ISR refills after deploy.

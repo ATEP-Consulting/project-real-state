@@ -53,10 +53,14 @@ export type ListingCardVM = {
   propertyTypeLabel: string;
   photo: string | null;
   photoAlt: string;
+  isNew: boolean;
 };
+
+const NEW_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
 export function toListingCardVM(l: Listing): ListingCardVM {
   const propertyTypeLabel = formatPropertyType(l.propertyType);
+  const createdAt = l.createdAt instanceof Date ? l.createdAt : new Date(l.createdAt);
   return {
     slug: l.slug,
     href: `/homes/${l.slug}`,
@@ -70,5 +74,6 @@ export function toListingCardVM(l: Listing): ListingCardVM {
     propertyTypeLabel,
     photo: l.photos[0]?.url ?? null,
     photoAlt: `${propertyTypeLabel} at ${l.addressLine1}, ${l.city}, ${l.state}`,
+    isNew: Date.now() - createdAt.getTime() < NEW_WINDOW_MS,
   };
 }
