@@ -1,7 +1,8 @@
 import { neon } from "@neondatabase/serverless";
-import { sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema/index";
+import type { Listing } from "./schema/listings";
 
 function createDb(url: string) {
   return drizzle(neon(url), { schema });
@@ -28,4 +29,18 @@ export async function countListings(): Promise<number> {
   )) as unknown as { rows: { n: number }[] } | { n: number }[];
   const rows = Array.isArray(result) ? result : result.rows;
   return rows[0]?.n ?? 0;
+}
+
+/**
+ * Featured listings for the public home strip (ADR-005/006).
+ * Public + active only; NOT filtered by `source`, so MLS rows later appear identically.
+ * Highest-priced first for a curated, premium-feeling strip.
+ */
+export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
+  return getDb()
+    .select()
+    .from(schema.listings)
+    .where(and(eq(schema.listings.status, "active"), eq(schema.listings.visibility, "public")))
+    .orderBy(desc(schema.listings.price))
+    .limit(limit);
 }
