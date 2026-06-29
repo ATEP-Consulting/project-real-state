@@ -8,6 +8,7 @@ import { MapPreview } from "@/components/home/MapPreview";
 import { ExploreAreas } from "@/components/home/ExploreAreas";
 import { CaptureInvite } from "@/components/home/CaptureInvite";
 import { Trust } from "@/components/home/Trust";
+import { ContactSection } from "@/components/home/ContactSection";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
 
 type HomeProps = { featured: ListingCardVM[] };
@@ -40,6 +41,7 @@ export default function Home({ featured }: HomeProps) {
       <ExploreAreas />
       <CaptureInvite />
       <Trust />
+      <ContactSection />
     </SiteLayout>
   );
 }

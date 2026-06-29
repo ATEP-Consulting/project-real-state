@@ -1,0 +1,223 @@
+.section {
+  padding-block: 80px;
+  background: var(--color-sand-100);
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.08;
+  margin: 8px 0 0;
+}
+.text {
+  margin: 16px 0 28px;
+  max-width: 400px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-stone);
+}
+
+.details {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-bronze);
+  font-size: 16px;
+}
+.dLabel {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-stone-soft);
+}
+.dValue {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.agentCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: var(--color-bronze-light);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 15px;
+}
+.agentName {
+  display: block;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--color-ink);
+}
+.agentMeta {
+  display: block;
+  font-size: 12.5px;
+  color: var(--color-stone);
+}
+
+.form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: clamp(24px, 3vw, 36px);
+}
+.formTitle {
+  font-size: 24px;
+  margin: 0;
+}
+.formHelp {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  color: var(--color-stone);
+}
+.fieldLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-stone);
+  margin: 14px 0 7px;
+}
+.optional {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: var(--color-stone-soft);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+.tab {
+  flex: 1;
+  padding: 10px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+.tabActive {
+  background: var(--color-forest);
+  border-color: var(--color-forest);
+  color: #fff;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14.5px;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+.input:focus,
+.textarea:focus {
+  border-color: var(--color-bronze);
+}
+.textarea {
+  resize: vertical;
+}
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-stone);
+}
+.consent input {
+  margin-top: 2px;
+  accent-color: var(--color-bronze);
+}
+
+.submit {
+  width: 100%;
+  margin-top: 18px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--color-bronze);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-bronze);
+  transition: background-color var(--dur-base) var(--ease-standard);
+}
+.submit:hover {
+  background: var(--color-bronze-dark);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+@media (max-width: 480px) {
+  .two {
+    grid-template-columns: 1fr;
+  }
+}
