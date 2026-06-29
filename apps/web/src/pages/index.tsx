@@ -1,71 +1,37 @@
-import Link from "next/link";
 import Head from "next/head";
-import { Layout } from "@/components/Layout";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
+import type { GetStaticProps } from "next";
+import { getFeaturedListings } from "@herrera/db";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { Hero } from "@/components/home/Hero";
+import { FeaturedListings } from "@/components/home/FeaturedListings";
+import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
 
-const SWATCHES = [
-  "--color-paper",
-  "--color-forest",
-  "--color-bronze",
-  "--color-sage",
-  "--color-stone",
-  "--color-ink",
-];
+type HomeProps = { featured: ListingCardVM[] };
 
-export default function Home() {
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  let featured: ListingCardVM[] = [];
+  try {
+    const rows = await getFeaturedListings(6);
+    featured = rows.map(toListingCardVM);
+  } catch (err) {
+    // Resilient: keep the build green without DATABASE_URL; ISR refills after deploy.
+    console.warn("[home] featured listings unavailable:", (err as Error).message);
+  }
+  return { props: { featured }, revalidate: 300 };
+};
+
+export default function Home({ featured }: HomeProps) {
   return (
-    <Layout>
+    <SiteLayout transparentHeader>
       <Head>
-        <title>Herrera — design system preview</title>
+        <title>Herrera — Find your place in Florida</title>
+        <meta
+          name="description"
+          content="Premium real estate guidance in Florida. Browse listings and buy, sell or rent with confidence."
+        />
       </Head>
-      <Container>
-        <Section reveal={false}>
-          <Eyebrow>Florida · Licensed Realtor®</Eyebrow>
-          <h1 style={{ fontSize: 68, lineHeight: 1.04, margin: "12px 0 0" }}>Find your place</h1>
-          <p style={{ color: "var(--color-stone)", maxWidth: 520 }}>
-            F3 preview — design tokens, base theme, and motion. The real home is built in D1.
-          </p>
-          <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-            <Button variant="primary" size="lg">
-              Primary
-            </Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Ghost</Button>
-          </div>
-        </Section>
-
-        <Section>
-          <Eyebrow>Palette</Eyebrow>
-          <div style={{ display: "flex", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
-            {SWATCHES.map((v) => (
-              <div key={v} style={{ textAlign: "center", fontSize: 12 }}>
-                <div
-                  style={{
-                    width: 88,
-                    height: 64,
-                    borderRadius: "var(--radius-md)",
-                    background: `var(${v})`,
-                    border: "1px solid var(--color-border)",
-                    boxShadow: "var(--shadow-card)",
-                  }}
-                />
-                <code>{v.replace("--color-", "")}</code>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section>
-          <Eyebrow>Motion</Eyebrow>
-          <p style={{ color: "var(--color-stone)" }}>
-            This section faded up on scroll (disabled under reduced-motion).{" "}
-            <Link href="/styleguide">View route transition →</Link>
-          </p>
-        </Section>
-      </Container>
-    </Layout>
+      <Hero />
+      <FeaturedListings listings={featured} />
+    </SiteLayout>
   );
 }

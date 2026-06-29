@@ -1,0 +1,134 @@
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  /* Pull up under the transparent sticky header. */
+  margin-top: -72px;
+  padding-top: 72px;
+  color: #fff;
+}
+
+.inner {
+  max-width: 720px;
+  padding-block: 80px;
+}
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 18px;
+}
+.title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(40px, 7vw, 68px);
+  line-height: 1.04;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+}
+.lede {
+  margin: 18px 0 0;
+  max-width: 540px;
+  font-size: clamp(16px, 2.2vw, 19px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.search {
+  margin-top: 28px;
+  max-width: 560px;
+}
+.searchLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.searchRow {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(8px);
+}
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15px;
+  padding: 10px 16px;
+  outline: none;
+}
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+.searchBtn {
+  flex-shrink: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--color-bronze);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 11px 24px;
+  cursor: pointer;
+  box-shadow: var(--shadow-bronze);
+  transition: background-color var(--dur-base) var(--ease-standard);
+}
+.searchBtn:hover {
+  background: var(--color-bronze-dark);
+}
+
+.intents {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.intentsLabel {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.8);
+}
+.intent {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  padding: 9px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--dur-base) var(--ease-standard);
+}
+.intent:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 88vh;
+  }
+  .searchRow {
+    flex-direction: column;
+    border-radius: var(--radius-md);
+  }
+  .searchBtn {
+    border-radius: var(--radius-sm);
+  }
+}
