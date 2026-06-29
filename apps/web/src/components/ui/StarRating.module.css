@@ -1,0 +1,12 @@
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1;
+}
+.on {
+  color: var(--color-bronze);
+}
+.off {
+  color: var(--color-border-strong);
+}
