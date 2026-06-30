@@ -11,13 +11,13 @@
 
 | Route | Page | Rendering | Builds in |
 |---|---|---|---|
-| `/` | **Home** — hero with location search + Buy/Sell/Rent CTAs, featured listings, map-search preview, explore-by-area, capture invitation, trust (Nilyan bio + testimonials) | ISR | D1 |
+| `/` | **Home** — hero **led by prominent Buy/Sell/Rent lead-capture CTAs** (clients' #1 priority; "I want to Buy/Sell/Rent" → branched capture overlay), with **map search as the secondary "explore yourself" path**; featured listings, map-search preview, explore-by-area, capture invitation, trust (Nilyan bio + testimonials) | ISR | D1, D7 |
 | `/search` | **Search + map** — the signature: synced results list ↔ interactive map, draw-a-zone, filters, clustering, viewport reload. Filters live in the query string | SSR + CSR | D2, D3, D6 |
 | `/homes/[slug]` | **Listing detail** — gallery/video/virtual tour, key facts, map, mortgage calc, Florida cost-of-ownership panel, similar listings, persistent contact module, schema.org | ISR | D4, D5 |
 | `/buy` | **Buy** landing → launches the Buy capture flow | ISR shell | D7 |
 | `/sell` | **Sell** landing → launches the Sell capture flow | ISR shell | D7 |
 | `/rent` | **Rent** landing → launches the Rent capture flow | ISR shell | D7 |
-| `/home-value` | **"What's my home worth?"** — the seller magnet (capture flow) | ISR shell | D7 |
+| `/home-value` | **"What's my home worth?"** — the seller magnet. **D7 ships this as a thin Sell-branch variant** (the home valuation CTA opens the Sell capture flow with the address pre-filled); a dedicated `/home-value` landing page is a **follow-up** | ISR shell | D7 (follow-up) |
 | `/areas` | **Explore by area** — index of cities/neighborhoods | ISR | D12 |
 | `/areas/[city]` | **City landing** — local market data, schools, listings (SEO) | ISR | D12 |
 | `/areas/[city]/[neighborhood]` | **Neighborhood landing** — hyper-local SEO page | ISR | D12 |

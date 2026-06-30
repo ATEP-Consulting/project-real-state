@@ -45,3 +45,21 @@ full table is maintained in **`docs/pages.md`** (the route spec).
 - **Dedicated capture pages per intent only** — usable (and available as `/start/[intent]`), but
   the overlay is the primary pattern so any CTA can capture in context.
 - **Client-rendering SEO pages** — rejected (ADR-001/015).
+
+## Addendum (2026-06-30, D7) — the home hero leads with lead capture
+
+- **The home (`/`) hero's primary call-to-action is lead capture**, per the client's explicit
+  request (lead generation is the #1 priority — see CLAUDE.md). The hero **leads with three
+  prominent "I want to Buy / Sell / Rent" buttons** that open the branched capture overlay
+  (`openCapture(intent)`); the **map-search card remains in the hero but is secondary** — framed as
+  an "Or explore listings yourself" path into `/search`. Search is unchanged functionally (it is
+  still the signature screen); it is simply no longer the hero's visual lead.
+- This **refines, and does not contradict, the decision above** that lead capture is a shared
+  multi-step overlay launched from CTAs — the hero buttons are exactly such CTAs. `/buy` `/sell`
+  `/rent` remain real ISR landing routes that host the same flow (overlay + real routes).
+- The **`/home-value` seller magnet ships in D7 as a thin Sell-branch variant** (the home valuation
+  CTA opens the Sell flow with the address pre-filled); a dedicated `/home-value` landing page is a
+  follow-up. See `docs/pages.md`.
+- Layout details recorded in `docs/visual-direction.md` (§hero); the committed
+  `screens/section_a_hero_card.png` shows the prior search-led arrangement and is intentionally
+  superseded for the CTA order. Related: ADR-007 (lead capture).

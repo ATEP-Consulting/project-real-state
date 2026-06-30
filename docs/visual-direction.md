@@ -275,10 +275,18 @@ The prototype renders in Spanish; v1 ships **English** copy (ADR-018) with the s
    monogram** in a bronze-ringed circle + `HERRERA` wordmark. Center: nav *Buy · Sell · Rent · Areas ·
    About*. Right: **🇪🇸 ES · 🇺🇸 EN** toggle, phone number, filled **bronze "Contact"** button (bronze
    in both states). Mobile: hamburger → panel (forces the solid bar while open).
-2. **Hero** (`screens/section_a_hero_card.png`) — full-bleed photo + dark scrim; **centered** eyebrow
-   / large serif title (two lines) / lede; a **white search card** = intent **tabs** (Buy active =
-   forest pill) over a search row (search icon · input · `Type ▾` select · bronze **Search**);
-   below it a "or draw your area on the map →" link; a **SCROLL** cue with a gentle bob.
+2. **Hero** (`screens/section_a_hero_card.png`, **superseded for the CTA order — see below**) —
+   full-bleed photo + dark scrim; **centered** eyebrow / large serif title (two lines) / lede.
+   **The hero LEADS with lead capture** (clients' explicit #1-priority request, D7): three
+   **prominent primary buttons** — **"I want to Buy / Sell / Rent"** (a small bronze "I want to"
+   label over a large **serif** verb, on solid **cream** cards with a soft shadow) — each opening the
+   branched capture overlay. **Below**, framed as the secondary *"explore yourself"* path, an **"Or
+   explore listings yourself"** hairline divider leads to the **white search card** = intent **tabs**
+   (Buy active = forest pill) over a search row (search icon · input · `Type ▾` select · bronze
+   **Search**) and the "or draw your area on the map →" link; a **SCROLL** cue with a gentle bob.
+   *(2026-06-30, D7: capture promoted above search; this intentionally diverges from the search-led
+   arrangement in `section_a_hero_card.png`. Search still works exactly as before — it is just no
+   longer the visual lead. See ADR-019 addendum + ADR-007.)*
 3. **Featured** (`screens/section_b_featured.png`) — eyebrow + serif H2 + "View all" link; **4-up**
    card grid. Card: image with **NEW** badge (top-left) + **heart** (top-right); body order
    **price → meta (beds · baths · sqft) → title (address) → location (city + pin)**.
