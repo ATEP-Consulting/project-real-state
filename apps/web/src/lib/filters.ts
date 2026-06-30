@@ -17,6 +17,7 @@ export type FilterConfig = {
 
 export type FilterBinding = {
   control: FilterControl;
+  paramKeys: (keyof SearchParams)[]; // the SearchParams field(s) this filter owns
   isSet: (p: SearchParams) => boolean;
   clear: (p: SearchParams) => SearchParams;
 };
@@ -27,39 +28,27 @@ const omit = (p: SearchParams, ...keys: (keyof SearchParams)[]): SearchParams =>
   return next;
 };
 
-const boolBinding = (key: keyof SearchParams): FilterBinding => ({
-  control: "boolean",
-  isSet: (p) => p[key] === true,
-  clear: (p) => omit(p, key),
-});
+const makeBinding = (
+  control: FilterControl,
+  paramKeys: (keyof SearchParams)[],
+  isSet: (p: SearchParams) => boolean,
+): FilterBinding => ({ control, paramKeys, isSet, clear: (p) => omit(p, ...paramKeys) });
 
 // key → typed-param binding. Only keys present here are rendered by the UI — an unknown `key` in the
 // DB config is silently ignored (the param/SQL mapping stays in code = injection-safe seam).
 export const FILTER_BINDINGS: Record<string, FilterBinding> = {
-  price: {
-    control: "range",
-    isSet: (p) => p.minPrice != null || p.maxPrice != null,
-    clear: (p) => omit(p, "minPrice", "maxPrice"),
-  },
-  beds: {
-    control: "min_select",
-    isSet: (p) => p.minBeds != null,
-    clear: (p) => omit(p, "minBeds"),
-  },
-  baths: {
-    control: "min_select",
-    isSet: (p) => p.minBaths != null,
-    clear: (p) => omit(p, "minBaths"),
-  },
-  propertyType: {
-    control: "enum_select",
-    isSet: (p) => (p.types?.length ?? 0) > 0,
-    clear: (p) => omit(p, "types"),
-  },
-  waterfront: boolBinding("waterfront"),
-  pool: boolBinding("pool"),
-  age55: boolBinding("age55"),
-  noHoa: boolBinding("noHoa"),
+  price: makeBinding(
+    "range",
+    ["minPrice", "maxPrice"],
+    (p) => p.minPrice != null || p.maxPrice != null,
+  ),
+  beds: makeBinding("min_select", ["minBeds"], (p) => p.minBeds != null),
+  baths: makeBinding("min_select", ["minBaths"], (p) => p.minBaths != null),
+  propertyType: makeBinding("enum_select", ["types"], (p) => (p.types?.length ?? 0) > 0),
+  waterfront: makeBinding("boolean", ["waterfront"], (p) => p.waterfront === true),
+  pool: makeBinding("boolean", ["pool"], (p) => p.pool === true),
+  age55: makeBinding("boolean", ["age55"], (p) => p.age55 === true),
+  noHoa: makeBinding("boolean", ["noHoa"], (p) => p.noHoa === true),
 };
 
 export function activeFilterKeys(p: SearchParams, configs: FilterConfig[]): string[] {
@@ -78,3 +67,25 @@ export function minKeyFor(key: string): "minBeds" | "minBaths" | null {
 }
 
 export const readTypes = (p: SearchParams): PropertyType[] => p.types ?? [];
+
+/** Copy just the param keys owned by `configs` out of `p` (e.g. seed a panel draft). */
+export function pickKeys(p: SearchParams, configs: FilterConfig[]): SearchParams {
+  const out: SearchParams = {};
+  for (const c of configs) {
+    const b = FILTER_BINDINGS[c.key];
+    if (!b) continue;
+    for (const k of b.paramKeys) if (p[k] !== undefined) Object.assign(out, { [k]: p[k] });
+  }
+  return out;
+}
+
+/** A patch that clears every param key owned by `configs` (sets them undefined so a merge removes them). */
+export function clearKeysPatch(configs: FilterConfig[]): SearchParams {
+  const patch: SearchParams = {};
+  for (const c of configs) {
+    const b = FILTER_BINDINGS[c.key];
+    if (!b) continue;
+    for (const k of b.paramKeys) Object.assign(patch, { [k]: undefined });
+  }
+  return patch;
+}

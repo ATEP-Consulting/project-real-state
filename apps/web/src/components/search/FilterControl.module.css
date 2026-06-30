@@ -1,0 +1,80 @@
+.range {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--color-stone);
+}
+.fieldLabel {
+  font-weight: 600;
+}
+.field input {
+  width: 96px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+}
+.field input:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 1px;
+}
+.dash {
+  padding-bottom: 9px;
+  color: var(--color-stone);
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.segBtn {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: var(--color-surface);
+  border: 0;
+  border-right: 1px solid var(--color-border);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.segBtn:last-child {
+  border-right: 0;
+}
+.segOn {
+  background: var(--color-forest);
+  color: #fff;
+}
+
+.checks {
+  display: grid;
+  gap: 8px;
+}
+.check,
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.check input,
+.toggle input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--color-bronze);
+}

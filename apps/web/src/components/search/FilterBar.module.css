@@ -1,0 +1,100 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.more,
+.clear {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.more {
+  color: var(--color-forest);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  padding: 8px 13px;
+}
+.more:hover {
+  border-color: var(--color-forest);
+}
+.clear {
+  color: var(--color-bronze-dark);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  padding: 8px 4px;
+}
+.more:focus-visible,
+.clear:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 2px;
+}
+
+.layout {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.layout button {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: var(--color-surface);
+  border: 0;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.layout button + button {
+  border-left: 1px solid var(--color-border);
+}
+.layoutOn {
+  background: var(--color-forest) !important;
+  color: #fff !important;
+}
+
+.rangeWrap {
+  display: grid;
+  gap: 12px;
+}
+.rangeActions {
+  display: flex;
+  justify-content: flex-end;
+}
+.applyBtn {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-bronze);
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 9px 18px;
+  cursor: pointer;
+}
+.applyBtn:hover {
+  background: var(--color-bronze-dark);
+}
+
+/* On mobile the bar is replaced by a single Filters button (SearchView) + the bottom List/Map toggle. */
+@media (max-width: 900px) {
+  .bar {
+    display: none;
+  }
+}
