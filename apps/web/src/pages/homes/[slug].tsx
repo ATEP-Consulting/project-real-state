@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { KeyFacts } from "@/components/listing/KeyFacts";
 import { PhotoGallery } from "@/components/listing/PhotoGallery";
 import { MortgageCalculator } from "@/components/listing/MortgageCalculator";
+import { InquiryForm } from "@/components/listing/InquiryForm";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
@@ -139,7 +140,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
           </div>
 
           <aside className={styles.aside}>
-            {/* D4-TASK9 SEAM: <InquiryForm /> mounts here (persistent contact module) */}
+            <InquiryForm slug={vm.slug} title={vm.title} />
           </aside>
         </div>
 

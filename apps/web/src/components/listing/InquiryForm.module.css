@@ -1,0 +1,102 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 22px 20px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+.h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 21px;
+  color: var(--color-forest);
+}
+.sub {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-stone);
+}
+
+.tabs {
+  display: inline-flex;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.tab,
+.tabOn {
+  flex: 1;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: var(--color-surface);
+  border: 0;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+.tab + .tab,
+.tab + .tabOn,
+.tabOn + .tab {
+  border-left: 1px solid var(--color-border);
+}
+.tabOn {
+  background: var(--color-forest);
+  color: #fff;
+}
+
+.input,
+.textarea {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14.5px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 11px 12px;
+  width: 100%;
+}
+.textarea {
+  resize: vertical;
+}
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 1px;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-stone);
+}
+.consent input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-bronze);
+  flex-shrink: 0;
+}
+.err {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: #9a3324;
+}
+.fine {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--color-stone);
+  text-align: center;
+}
