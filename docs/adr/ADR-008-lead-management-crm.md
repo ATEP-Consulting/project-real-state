@@ -44,3 +44,20 @@ lead) — see ADR-005/007/011.
 
 - **Third-party CRM (HubSpot/Follow Up Boss) from day one** — rejected for v1: cost, lock-in, and
   it splits the data model; the webhook seam keeps the door open.
+
+## Addendum (2026-06-30, D10) — the pipeline ships as two views
+
+- The lead pipeline is presented as **two views over the same data and the same backend** (`listLeads`,
+  the shared filters, and `updateLeadStatus`), toggled on `/admin/leads` (`?view=board`):
+  - **List view** (table) — **mobile-friendly**; where Nilyan works a lead on her phone (open it, add a
+    note, update the stage quickly).
+  - **Board view** (Kanban — one column per stage) — **desktop-first**; to see the whole pipeline at a
+    glance.
+- Moving a lead's stage from either view (the list's per-lead **stepper** or a **board card's** stage
+  control) calls the same `updateLeadStatus`, which logs a `status_change` activity. The board is not a
+  separate engine — just a second visualization.
+- Per-card move uses a stage select (no drag-drop dependency); drag-drop is an optional later
+  enhancement (must stay reduced-motion-aware and not bloat the build).
+- D10 scope is **lead inbox + detail + pipeline (both views) + activities**. Analytics, off-market CRUD,
+  content editing, the configurable-questions editor, and the outbound webhook remain **D11** (the
+  webhook is a one-line seam comment in the D10 mutation helpers).
