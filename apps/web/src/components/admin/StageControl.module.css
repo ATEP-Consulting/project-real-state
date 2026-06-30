@@ -1,0 +1,45 @@
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.step {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-soft);
+  cursor: pointer;
+}
+.step:hover {
+  border-color: var(--color-bronze);
+}
+.done {
+  border-color: var(--color-forest);
+  color: var(--color-forest);
+}
+.current {
+  background: var(--color-forest);
+  border-color: var(--color-forest);
+  color: #fff;
+}
+.lost,
+.reopen {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.lost {
+  color: #8a5a4f;
+}
+.reopen {
+  color: var(--color-stone);
+}

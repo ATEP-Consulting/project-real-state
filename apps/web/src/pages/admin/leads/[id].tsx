@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   getLeadDetail,
   getQualificationQuestions,
@@ -8,8 +9,10 @@ import {
 } from "@herrera/db";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatusBadge, STATUS_LABEL } from "@/components/admin/StatusBadge";
+import { StageControl } from "@/components/admin/StageControl";
+import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { requireAdmin } from "@/server/auth/guards";
-import { formatAnswers, formatDate } from "@/lib/admin-leads";
+import { formatAnswers, formatDate, isOverdue } from "@/lib/admin-leads";
 import styles from "./LeadDetail.module.css";
 
 type Props = { lead: LeadDetail; questions: QualificationQuestionConfig[] };
@@ -35,7 +38,13 @@ function ts(iso: string): string {
 }
 
 export default function LeadDetailPage({ lead, questions }: Props) {
+  const router = useRouter();
   const answers = formatAnswers(lead.answers, questions);
+  const now = new Date();
+  async function complete(activityId: string) {
+    const res = await fetch(`/api/admin/activities/${activityId}/complete`, { method: "POST" });
+    if (res.ok) await router.replace(router.asPath, undefined, { scroll: false });
+  }
   return (
     <AdminLayout title={lead.name ?? "Lead"}>
       <Link href="/admin/leads" className={styles.back}>
@@ -114,7 +123,13 @@ export default function LeadDetailPage({ lead, questions }: Props) {
 
         <div className={styles.col}>
           <section className={styles.card}>
+            <h2 className={styles.h2}>Pipeline</h2>
+            <StageControl leadId={lead.id} status={lead.status} />
+          </section>
+
+          <section className={styles.card}>
             <h2 className={styles.h2}>Activity</h2>
+            <ActivityComposer leadId={lead.id} />
             <ul className={styles.timeline}>
               {lead.activities.map((a) => (
                 <li key={a.id} className={styles.event}>
@@ -124,10 +139,25 @@ export default function LeadDetailPage({ lead, questions }: Props) {
                       : a.type}
                   </span>
                   {a.body && <span className={styles.evBody}>{a.body}</span>}
-                  {a.dueAt && (
-                    <span className={styles.evDue}>
+                  {a.type === "reminder" && a.dueAt && (
+                    <span
+                      className={`${styles.evDue} ${isOverdue(a.dueAt, a.completedAt, now) ? styles.overdue : ""}`}
+                    >
                       Due {ts(a.dueAt)}
-                      {a.completedAt ? " · done" : ""}
+                      {a.completedAt
+                        ? " · done"
+                        : isOverdue(a.dueAt, a.completedAt, now)
+                          ? " · overdue"
+                          : ""}
+                      {!a.completedAt && (
+                        <button
+                          type="button"
+                          className={styles.doneBtn}
+                          onClick={() => void complete(a.id)}
+                        >
+                          Mark done
+                        </button>
+                      )}
                     </span>
                   )}
                   <span className={styles.evWhen}>{ts(a.createdAt)}</span>
