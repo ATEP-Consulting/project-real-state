@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { QualificationQuestionConfig } from "@herrera/db";
 import { Button } from "@/components/ui/Button";
@@ -126,6 +126,11 @@ export function LeadCaptureFlow({
   onClose?: () => void;
 }) {
   const reduce = useReducedMotion();
+  // Animate only after mount: SSR + first client render stay static so the first question is
+  // visible (no opacity:0) and the markup matches on both sides (reduced motion is read on the
+  // client only, so gating here avoids a hydration mismatch). See ADR-016 / motion notes.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const steps = useMemo<Step[]>(() => buildSteps(questions), [questions]);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
@@ -137,13 +142,19 @@ export function LeadCaptureFlow({
   const isLast = step.kind === "contact";
   const setAnswer = (key: string, v: unknown) => setAnswers((a) => ({ ...a, [key]: v }));
 
-  function next() {
+  // Move forward unconditionally — used by auto-advancing controls (a value was just chosen),
+  // which avoids re-reading the just-set `answers` before React has committed it.
+  function advance() {
     setErr(null);
+    setI((n) => Math.min(n + 1, steps.length - 1));
+  }
+  // The explicit Next button: gate required questions before advancing.
+  function next() {
     if (!canAdvance(step, answers)) {
       setErr("Please answer to continue.");
       return;
     }
-    setI((n) => Math.min(n + 1, steps.length - 1));
+    advance();
   }
   function back() {
     setErr(null);
@@ -193,14 +204,15 @@ export function LeadCaptureFlow({
     );
   }
 
-  const anim = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, x: 24 },
-        animate: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: -24 },
-        transition: { duration: DURATION.base, ease: EASE },
-      };
+  const anim =
+    mounted && !reduce
+      ? {
+          initial: { opacity: 0, x: 24 },
+          animate: { opacity: 1, x: 0 },
+          exit: { opacity: 0, x: -24 },
+          transition: { duration: DURATION.base, ease: EASE },
+        }
+      : {};
 
   return (
     <div className={styles.panel}>
@@ -228,7 +240,7 @@ export function LeadCaptureFlow({
                 q={step.question}
                 value={answers[step.question.key]}
                 onChange={(v) => setAnswer(step.question.key, v)}
-                onCommit={next}
+                onCommit={advance}
               />
             </>
           ) : (
