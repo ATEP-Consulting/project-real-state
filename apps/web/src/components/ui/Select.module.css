@@ -1,60 +1,58 @@
-.wrap {
-  position: relative;
+/* ---- Trigger (the closed box) ---- */
+.trigger {
   display: inline-flex;
   align-items: center;
-}
-
-.select {
-  appearance: none;
-  -webkit-appearance: none;
+  justify-content: space-between;
+  gap: 8px;
   width: 100%;
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--color-ink);
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
+  text-align: left;
   cursor: pointer;
   transition:
     border-color var(--dur-base) var(--ease-standard),
     background-color var(--dur-base) var(--ease-standard);
 }
-/* Hide the legacy IE/Edge arrow so only our chevron shows. */
-.select::-ms-expand {
-  display: none;
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
 .chevron {
-  position: absolute;
-  right: 10px;
   display: flex;
+  flex-shrink: 0;
   color: var(--color-stone);
-  pointer-events: none;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.open .chevron {
+  transform: rotate(180deg);
 }
 
-/* Sizes — right padding reserves room for the chevron. */
-.md .select {
+/* Sizes */
+.md {
   font-size: 14px;
-  padding: 9px 32px 9px 12px;
+  padding: 9px 12px;
 }
-.sm .select {
+.sm {
   font-size: 12px;
-  padding: 5px 26px 5px 9px;
-}
-.sm .chevron {
-  right: 8px;
+  padding: 5px 9px;
 }
 
 /* Variants */
-.default .select {
+.default {
   background: var(--color-surface);
   border-color: var(--color-border-strong);
 }
-.default .select:hover:not(:disabled) {
+.default:hover:not(:disabled) {
   border-color: var(--color-bronze-light);
 }
 
-.bare .select {
+.bare {
   padding-left: 4px;
+  padding-right: 4px;
   font-weight: 500;
   color: var(--color-ink-soft);
 }
@@ -62,10 +60,63 @@
   color: var(--color-ink-soft);
 }
 
-.select:disabled {
+.trigger:disabled {
   cursor: default;
   opacity: 0.55;
 }
-.select:disabled ~ .chevron {
-  opacity: 0.55;
+
+/* ---- Menu (the portaled dropdown panel) ---- */
+.menu {
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  max-height: 288px;
+  overflow-y: auto;
+  z-index: 1000;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--color-ink);
+  outline: none;
+  animation: selectIn var(--dur-fast) var(--ease-standard);
+}
+@keyframes selectIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.option.active {
+  background: var(--color-sand-100);
+}
+.option.selected {
+  color: var(--color-bronze-dark);
+  font-weight: 600;
+}
+.option[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+.check {
+  display: flex;
+  flex-shrink: 0;
+  width: 14px;
+  color: var(--color-bronze);
 }
