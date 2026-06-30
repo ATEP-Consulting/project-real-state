@@ -8,7 +8,5 @@ export const SOURCE_LABEL: Record<string, string> = {
 /** Friendly label for a stored source key; prettifies unknown keys, dash for none. */
 export function formatSource(source: string | null): string {
   if (!source) return "—";
-  return (
-    SOURCE_LABEL[source] ?? source.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-  );
+  return SOURCE_LABEL[source] ?? source.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
