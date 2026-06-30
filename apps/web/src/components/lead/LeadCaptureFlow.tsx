@@ -8,6 +8,7 @@ import {
   buildLeadPayload,
   buildSteps,
   canAdvance,
+  isAnswered,
   progressPct,
   validateContact,
   type Answers,
@@ -132,7 +133,17 @@ export function LeadCaptureFlow({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const steps = useMemo<Step[]>(() => buildSteps(questions), [questions]);
-  const [i, setI] = useState(0);
+  // Start at the first question not already answered by `initialAnswers` — so the
+  // "what's my home worth?" entry (sell flow with the address pre-filled) skips the
+  // address screen instead of re-asking it. Computed once on mount.
+  const [i, setI] = useState(() => {
+    for (let k = 0; k < steps.length; k++) {
+      const st = steps[k]!;
+      if (st.kind === "question" && isAnswered(st.question, initialAnswers)) continue;
+      return k;
+    }
+    return 0;
+  });
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
   const [contact, setContact] = useState<ContactInput>({ consent: false });
   const [status, setStatus] = useState<Status>("idle");

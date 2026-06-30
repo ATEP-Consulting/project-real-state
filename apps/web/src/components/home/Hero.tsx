@@ -1,11 +1,20 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { useLeadCapture } from "@/components/lead/LeadCaptureProvider";
 import { HeroSearch } from "./HeroSearch";
 import styles from "./Hero.module.css";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=70";
 
+const CAPTURE: { intent: "buy" | "sell" | "rent"; verb: string }[] = [
+  { intent: "buy", verb: "Buy" },
+  { intent: "sell", verb: "Sell" },
+  { intent: "rent", verb: "Rent" },
+];
+
 export function Hero() {
+  const { openCapture } = useLeadCapture();
+
   // Click the SCROLL cue to glide past the full-height hero to the content below.
   function scrollDown() {
     const header = document.querySelector("header");
@@ -30,8 +39,26 @@ export function Hero() {
             rent with close, expert guidance.
           </p>
 
-          <HeroSearch />
+          {/* PRIMARY — lead capture (the hero's #1 action) */}
+          <div className={styles.capture}>
+            {CAPTURE.map((c) => (
+              <button
+                key={c.intent}
+                type="button"
+                className={styles.captureBtn}
+                onClick={() => openCapture(c.intent)}
+              >
+                <span className={styles.captureSmall}>I want to</span>
+                <span className={styles.captureVerb}>{c.verb}</span>
+              </button>
+            ))}
+          </div>
 
+          {/* SECONDARY — explore listings yourself (the signature /search) */}
+          <div className={styles.exploreDivider}>
+            <span>Or explore listings yourself</span>
+          </div>
+          <HeroSearch />
           <Link href="/search" className={styles.drawLink}>
             or draw your area on the map →
           </Link>

@@ -1,20 +1,20 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
+import { useLeadCapture } from "@/components/lead/LeadCaptureProvider";
 import styles from "./CaptureInvite.module.css";
 
 export function CaptureInvite() {
-  const router = useRouter();
+  const { openCapture } = useLeadCapture();
   const [address, setAddress] = useState("");
 
-  // Presentational — the real "what's my home worth?" magnet (capture + consent) is D7.
+  // "What's my home worth?" = a thin Sell-branch variant: open the sell flow with the
+  // typed address pre-filled as the first answer (the seeded sell branch leads with `address`).
   function onValuation(e: FormEvent) {
     e.preventDefault();
-    const qs = address.trim() ? `?address=${encodeURIComponent(address.trim())}` : "";
-    void router.push(`/home-value${qs}`);
+    const a = address.trim();
+    openCapture("sell", a ? { initialAnswers: { address: a } } : undefined);
   }
 
   return (
@@ -29,11 +29,9 @@ export function CaptureInvite() {
                 Tell us what you&apos;re looking for and we&apos;ll send a curated selection before
                 it hits the market.
               </p>
-              <Link href="/buy">
-                <Button variant="secondary" size="lg">
-                  Start my search
-                </Button>
-              </Link>
+              <Button variant="secondary" size="lg" onClick={() => openCapture("buy")}>
+                Start my search
+              </Button>
             </div>
 
             <div className={styles.sell}>
