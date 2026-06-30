@@ -1,4 +1,4 @@
-import Head from "next/head";
+import { Seo } from "@/components/seo/Seo";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
@@ -9,13 +9,11 @@ import { TESTIMONIALS } from "@/data/testimonials";
 export default function About() {
   return (
     <SiteLayout>
-      <Head>
-        <title>About Nilyan Herrera — Licensed Florida Realtor®</title>
-        <meta
-          name="description"
-          content="Meet Nilyan Herrera, a licensed Florida Realtor® helping buyers, sellers, and renters across the state."
-        />
-      </Head>
+      <Seo
+        title="About Nilyan Herrera — Licensed Florida Realtor®"
+        description="Meet Nilyan Herrera, a licensed Florida Realtor® helping buyers, sellers, and renters across the state."
+        path="/about"
+      />
       <Container>
         <div style={{ maxWidth: 760, paddingBlock: "96px 48px" }}>
           <Reveal>

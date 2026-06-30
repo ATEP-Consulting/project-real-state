@@ -209,6 +209,23 @@
 .submit:hover {
   background: var(--color-bronze-dark);
 }
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.formStatus {
+  margin: 18px 0 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-forest);
+}
+.formError {
+  margin: 14px 0 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: #9a3324;
+}
 
 @media (max-width: 900px) {
   .grid {

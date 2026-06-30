@@ -10,4 +10,8 @@ describe("robotsBody", () => {
     expect(robotsBody(false)).toContain("Allow: /");
     expect(robotsBody(false)).not.toContain("Disallow: /");
   });
+  it("includes a Sitemap line when a URL is given", () => {
+    expect(robotsBody(false, "https://x/sitemap.xml")).toContain("Sitemap: https://x/sitemap.xml");
+    expect(robotsBody(true, "https://x/sitemap.xml")).toContain("Sitemap: https://x/sitemap.xml");
+  });
 });

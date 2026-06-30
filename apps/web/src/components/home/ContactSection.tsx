@@ -16,10 +16,40 @@ const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
 
 export function ContactSection() {
   const [intent, setIntent] = useState<Intent>("buy");
+  const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
 
-  // Presentational only — submission, per-channel consent storage, and notifications are wired in D7.
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") ?? "").trim();
+    const phone = String(fd.get("phone") ?? "").trim();
+    const consent = fd.get("consent") === "on";
+    if ((!email && !phone) || !consent) {
+      setStatus("error");
+      return;
+    }
+    const zone = String(fd.get("zone") ?? "").trim();
+    const note = String(fd.get("message") ?? "").trim();
+    const message = [zone && `Area of interest: ${zone}.`, note].filter(Boolean).join(" ");
+    setStatus("submitting");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          intent,
+          name: String(fd.get("name") ?? "").trim() || undefined,
+          email: email || undefined,
+          phone: phone || undefined,
+          message: message || undefined,
+          consentEmail: consent && Boolean(email),
+          consentPhone: consent && Boolean(phone),
+        }),
+      });
+      setStatus(res.ok ? "done" : "error");
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -104,7 +134,14 @@ export function ContactSection() {
               <label className={styles.fieldLabel} htmlFor="c-name">
                 Full name
               </label>
-              <input id="c-name" className={styles.input} type="text" placeholder="Your name" />
+              <input
+                id="c-name"
+                name="name"
+                className={styles.input}
+                type="text"
+                autoComplete="name"
+                placeholder="Your name"
+              />
 
               <div className={styles.two}>
                 <div>
@@ -113,8 +150,10 @@ export function ContactSection() {
                   </label>
                   <input
                     id="c-email"
+                    name="email"
                     className={styles.input}
                     type="email"
+                    autoComplete="email"
                     placeholder="you@email.com"
                   />
                 </div>
@@ -124,8 +163,10 @@ export function ContactSection() {
                   </label>
                   <input
                     id="c-phone"
+                    name="phone"
                     className={styles.input}
                     type="tel"
+                    autoComplete="tel"
                     placeholder="+1 (305) …"
                   />
                 </div>
@@ -136,6 +177,7 @@ export function ContactSection() {
               </label>
               <input
                 id="c-zone"
+                name="zone"
                 className={styles.input}
                 type="text"
                 placeholder="Coral Gables, Miami Beach, Brickell…"
@@ -146,19 +188,37 @@ export function ContactSection() {
               </label>
               <textarea
                 id="c-msg"
+                name="message"
                 className={styles.textarea}
                 rows={3}
                 placeholder="Tell me what you're looking for…"
               />
 
               <label className={styles.consent}>
-                <input type="checkbox" />
+                <input type="checkbox" name="consent" />
                 <span>I agree to the privacy policy and to be contacted about my enquiry.</span>
               </label>
 
-              <button type="submit" className={styles.submit}>
-                Send message
-              </button>
+              {status === "done" ? (
+                <p className={styles.formStatus} role="status">
+                  Thank you — your message is on its way. I&apos;ll reply within 24 hours.
+                </p>
+              ) : (
+                <>
+                  {status === "error" && (
+                    <p className={styles.formError} role="alert">
+                      Please add an email or phone and accept the consent, then try again.
+                    </p>
+                  )}
+                  <button
+                    type="submit"
+                    className={styles.submit}
+                    disabled={status === "submitting"}
+                  >
+                    {status === "submitting" ? "Sending…" : "Send message"}
+                  </button>
+                </>
+              )}
             </form>
           </div>
         </Reveal>

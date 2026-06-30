@@ -1,5 +1,7 @@
-export function robotsBody(isDemo: boolean): string {
-  if (isDemo) return "User-agent: *\nDisallow: /\n";
-  // Production: allow crawling. (A real sitemap is added with the SEO pages in D12.)
-  return "User-agent: *\nAllow: /\n";
+export function robotsBody(isDemo: boolean, sitemapUrl?: string): string {
+  const sitemap = sitemapUrl ? `Sitemap: ${sitemapUrl}\n` : "";
+  // Demo: block all crawling (the preview is gated + noindex anyway).
+  if (isDemo) return `User-agent: *\nDisallow: /\n${sitemap}`;
+  // Production: allow crawling, point at the sitemap.
+  return `User-agent: *\nAllow: /\n${sitemap}`;
 }
