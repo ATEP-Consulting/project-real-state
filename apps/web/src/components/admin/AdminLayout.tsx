@@ -18,35 +18,37 @@ export function AdminLayout({ title, children }: { title: string; children: Reac
         <title>{`${title} · Herrera admin`}</title>
       </Head>
       <header className={styles.header}>
-        <div className={styles.brand}>
-          <span className={styles.monogram}>NH</span>
-          <span className={styles.word}>HERRERA</span>
-          <span className={styles.tag}>admin</span>
+        <div className={styles.headerInner}>
+          <div className={styles.brand}>
+            <span className={styles.monogram}>NH</span>
+            <span className={styles.word}>HERRERA</span>
+            <span className={styles.tag}>admin</span>
+          </div>
+          <nav className={styles.nav}>
+            {NAV.map((n) => {
+              const active =
+                n.href === "/admin"
+                  ? router.pathname === "/admin"
+                  : router.pathname.startsWith(n.href);
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`${styles.navLink} ${active ? styles.navActive : ""}`}
+                >
+                  {n.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <button
+            type="button"
+            className={styles.signout}
+            onClick={() => void signOut({ callbackUrl: "/admin/login" })}
+          >
+            Sign out
+          </button>
         </div>
-        <nav className={styles.nav}>
-          {NAV.map((n) => {
-            const active =
-              n.href === "/admin"
-                ? router.pathname === "/admin"
-                : router.pathname.startsWith(n.href);
-            return (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={`${styles.navLink} ${active ? styles.navActive : ""}`}
-              >
-                {n.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <button
-          type="button"
-          className={styles.signout}
-          onClick={() => void signOut({ callbackUrl: "/admin/login" })}
-        >
-          Sign out
-        </button>
       </header>
       <main className={styles.main}>{children}</main>
     </div>

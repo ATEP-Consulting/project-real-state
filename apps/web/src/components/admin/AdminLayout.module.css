@@ -3,16 +3,22 @@
   background: var(--color-paper);
 }
 .header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 0 clamp(16px, 4vw, 32px);
-  height: 60px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 10;
+}
+/* Bar spans full width; its content is constrained + centered to match .main,
+   so brand/nav/sign-out stay aligned with the page content on wide monitors. */
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 60px;
+  padding: 0 clamp(16px, 4vw, 32px);
+  max-width: 1680px;
+  margin: 0 auto;
 }
 .brand {
   display: flex;
@@ -85,13 +91,13 @@
 }
 .main {
   padding: clamp(16px, 4vw, 32px);
-  max-width: 1100px;
+  max-width: 1680px;
   margin: 0 auto;
 }
 
 /* Header reflow — drop the least-important bits before anything overflows/wraps. */
 @media (max-width: 600px) {
-  .header {
+  .headerInner {
     gap: 12px;
     padding: 0 12px;
   }

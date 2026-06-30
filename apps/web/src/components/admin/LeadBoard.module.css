@@ -6,7 +6,11 @@
   align-items: flex-start;
 }
 .column {
-  flex: 0 0 220px;
+  /* Grow to share the (now much wider) board so all 7 stages fit on a normal
+     laptop without horizontal scroll; min-width keeps cards legible and lets the
+     board fall back to overflow-x scrolling on small screens. */
+  flex: 1 1 160px;
+  min-width: 160px;
   background: var(--color-sand-100);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
