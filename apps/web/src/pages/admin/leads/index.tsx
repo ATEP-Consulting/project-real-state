@@ -12,6 +12,7 @@ import {
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { LeadBoard } from "@/components/admin/LeadBoard";
 import { StatusBadge, STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
+import { Select } from "@/components/ui/Select";
 import { requireAdmin } from "@/server/auth/guards";
 import { formatDate, parseLeadFilters, RANGE_OPTIONS } from "@/lib/admin-leads";
 import { formatSource } from "@/lib/source-label";
@@ -118,7 +119,7 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
           apply({ q: search.trim() });
         }}
       >
-        <select
+        <Select
           aria-label="Filter by intent"
           value={q.intent}
           onChange={(e) => apply({ intent: e.target.value })}
@@ -127,8 +128,8 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
           <option value="buy">Buy</option>
           <option value="sell">Sell</option>
           <option value="rent">Rent</option>
-        </select>
-        <select
+        </Select>
+        <Select
           aria-label="Filter by source"
           value={q.source}
           onChange={(e) => apply({ source: e.target.value })}
@@ -139,8 +140,8 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
               {formatSource(s)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           aria-label="Filter by date range"
           value={q.range}
           onChange={(e) => apply({ range: e.target.value })}
@@ -150,7 +151,7 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
               {r.label}
             </option>
           ))}
-        </select>
+        </Select>
         <input
           type="search"
           placeholder="Search name / email / phone"

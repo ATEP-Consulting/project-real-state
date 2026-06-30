@@ -98,16 +98,6 @@
   font-size: 11px;
   color: var(--color-stone);
 }
-.move {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 12px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--color-paper);
-  color: var(--color-ink);
-  padding: 3px 4px;
-  cursor: pointer;
-}
 .colEmpty {
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--color-stone-soft);

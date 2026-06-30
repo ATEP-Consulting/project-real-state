@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import type { LeadListItem } from "@herrera/db";
 import { StatusBadge, STATUS_LABEL, STATUS_ORDER } from "./StatusBadge";
+import { Select } from "@/components/ui/Select";
 import { formatDate } from "@/lib/admin-leads";
 import styles from "./LeadBoard.module.css";
 
@@ -93,8 +94,8 @@ export function LeadBoard({ leads }: { leads: LeadListItem[] }) {
                   </div>
                   <div className={styles.cardFoot}>
                     <span className={styles.cardDate}>{formatDate(l.createdAt)}</span>
-                    <select
-                      className={styles.move}
+                    <Select
+                      size="sm"
                       aria-label={`Move ${l.name ?? "lead"} to another stage`}
                       value={l.status}
                       disabled={busyId === l.id}
@@ -105,7 +106,7 @@ export function LeadBoard({ leads }: { leads: LeadListItem[] }) {
                           {STATUS_LABEL[s]}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   </div>
                 </article>
               ))}

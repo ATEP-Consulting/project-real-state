@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Select } from "@/components/ui/Select";
 import { monthlyMortgage } from "@/lib/listing-detail";
 import { formatPrice } from "@/lib/listing";
 import styles from "./MortgageCalculator.module.css";
@@ -27,11 +28,11 @@ export function MortgageCalculator({ price }: { price: number }) {
         </label>
         <label className={styles.field}>
           <span className={styles.lab}>Term</span>
-          <select value={term} onChange={(e) => setTerm(Number(e.target.value))}>
+          <Select value={term} onChange={(e) => setTerm(Number(e.target.value))}>
             <option value={30}>30 years</option>
             <option value={20}>20 years</option>
             <option value={15}>15 years</option>
-          </select>
+          </Select>
         </label>
         <label className={styles.field}>
           <span className={styles.lab}>Rate (%)</span>

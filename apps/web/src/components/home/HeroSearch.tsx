@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/router";
+import { Select } from "@/components/ui/Select";
 import styles from "./HeroSearch.module.css";
 
 const TYPES = [
@@ -53,8 +54,8 @@ export function HeroSearch() {
           onChange={(e) => setQ(e.target.value)}
         />
         <span className={styles.divider} aria-hidden="true" />
-        <select
-          className={styles.type}
+        <Select
+          variant="bare"
           aria-label="Property type"
           value={type}
           onChange={(e) => setType(e.target.value)}
@@ -64,7 +65,7 @@ export function HeroSearch() {
               {t.label}
             </option>
           ))}
-        </select>
+        </Select>
         <button type="submit" className={styles.submit}>
           Search
         </button>

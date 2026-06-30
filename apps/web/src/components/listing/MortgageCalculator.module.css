@@ -35,7 +35,6 @@
   accent-color: var(--color-bronze);
   width: 100%;
 }
-.field select,
 .field input[type="number"] {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 14px;

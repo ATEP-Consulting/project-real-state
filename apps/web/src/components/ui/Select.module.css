@@ -1,0 +1,71 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--color-ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-base) var(--ease-standard),
+    background-color var(--dur-base) var(--ease-standard);
+}
+/* Hide the legacy IE/Edge arrow so only our chevron shows. */
+.select::-ms-expand {
+  display: none;
+}
+
+.chevron {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  color: var(--color-stone);
+  pointer-events: none;
+}
+
+/* Sizes — right padding reserves room for the chevron. */
+.md .select {
+  font-size: 14px;
+  padding: 9px 32px 9px 12px;
+}
+.sm .select {
+  font-size: 12px;
+  padding: 5px 26px 5px 9px;
+}
+.sm .chevron {
+  right: 8px;
+}
+
+/* Variants */
+.default .select {
+  background: var(--color-surface);
+  border-color: var(--color-border-strong);
+}
+.default .select:hover:not(:disabled) {
+  border-color: var(--color-bronze-light);
+}
+
+.bare .select {
+  padding-left: 4px;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+}
+.bare .chevron {
+  color: var(--color-ink-soft);
+}
+
+.select:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.select:disabled ~ .chevron {
+  opacity: 0.55;
+}

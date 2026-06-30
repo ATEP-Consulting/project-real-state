@@ -40,17 +40,6 @@
   background: var(--color-border);
   margin: 4px 0;
 }
-.type {
-  border: none;
-  background: transparent;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-ink-soft);
-  cursor: pointer;
-  outline: none;
-  padding: 6px 4px;
-}
 .submit {
   flex-shrink: 0;
   font-family: var(--font-sans), system-ui, sans-serif;
