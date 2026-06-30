@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   geometry,
   index,
   integer,
@@ -37,6 +38,12 @@ export const listings = pgTable(
     lotSizeSqft: integer("lot_size_sqft"),
     yearBuilt: integer("year_built"),
     description: text("description"),
+
+    // searchable features (ADR-012 D3 filters). NOTE: booleans modeled on our mock data; the real
+    // MLS feed may name these differently — reconcile field names when the MLS schema is known.
+    waterfront: boolean("waterfront").notNull().default(false),
+    pool: boolean("pool").notNull().default(false),
+    ageRestricted: boolean("age_restricted").notNull().default(false), // 55+ community
 
     // address + geo (ADR-012)
     addressLine1: text("address_line1").notNull(),

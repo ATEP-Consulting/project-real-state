@@ -55,6 +55,14 @@ export const questionType = pgEnum("question_type", [
   "range",
 ]);
 
+// ADR-007/012 (D3) — control type for an admin-configurable search filter
+export const searchFilterControl = pgEnum("search_filter_control", [
+  "range", // numeric min/max (price)
+  "min_select", // "Any / 1+ / 2+ …" (beds, baths)
+  "enum_select", // pick from options, multi (property type)
+  "boolean", // toggle (waterfront, pool, 55+, no-HOA)
+]);
+
 // ADR-008/015 — editable content
 export const contentType = pgEnum("content_type", ["area", "neighborhood", "guide", "page"]);
 export const contentStatus = pgEnum("content_status", ["draft", "published"]);

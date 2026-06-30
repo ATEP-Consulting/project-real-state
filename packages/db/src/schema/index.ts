@@ -7,4 +7,5 @@ export * from "./suppressions";
 export * from "./saved-searches";
 export * from "./activities";
 export * from "./qualification-questions";
+export * from "./search-filters";
 export * from "./content";
