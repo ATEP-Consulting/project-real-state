@@ -13,6 +13,7 @@ import { StageControl } from "@/components/admin/StageControl";
 import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { requireAdmin } from "@/server/auth/guards";
 import { formatAnswers, formatDate, isOverdue } from "@/lib/admin-leads";
+import { formatSource } from "@/lib/source-label";
 import styles from "./LeadDetail.module.css";
 
 type Props = { lead: LeadDetail; questions: QualificationQuestionConfig[] };
@@ -57,7 +58,7 @@ export default function LeadDetailPage({ lead, questions }: Props) {
           <StatusBadge kind="status" value={lead.status} />
         </div>
         <p className={styles.meta}>
-          Captured {formatDate(lead.createdAt)} · source {lead.source ?? "—"}
+          Captured {formatDate(lead.createdAt)} · source {formatSource(lead.source)}
         </p>
       </header>
 

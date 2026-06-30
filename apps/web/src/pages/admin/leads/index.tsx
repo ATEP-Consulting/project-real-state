@@ -14,6 +14,7 @@ import { LeadBoard } from "@/components/admin/LeadBoard";
 import { StatusBadge, STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
 import { requireAdmin } from "@/server/auth/guards";
 import { formatDate, parseLeadFilters, RANGE_OPTIONS } from "@/lib/admin-leads";
+import { formatSource } from "@/lib/source-label";
 import styles from "./LeadInbox.module.css";
 
 type Props = {
@@ -135,7 +136,7 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
           <option value="">All sources</option>
           {sources.map((s) => (
             <option key={s} value={s}>
-              {s}
+              {formatSource(s)}
             </option>
           ))}
         </select>
@@ -208,7 +209,7 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
                       <td>
                         <StatusBadge kind="status" value={l.status} />
                       </td>
-                      <td className={styles.src}>{l.source ?? "—"}</td>
+                      <td className={styles.src}>{formatSource(l.source)}</td>
                       <td>{l.viewedCount}</td>
                       <td className={styles.date}>{formatDate(l.createdAt)}</td>
                     </tr>
