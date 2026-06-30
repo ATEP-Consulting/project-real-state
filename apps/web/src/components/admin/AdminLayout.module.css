@@ -68,6 +68,8 @@
 }
 .signout {
   margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -85,4 +87,29 @@
   padding: clamp(16px, 4vw, 32px);
   max-width: 1100px;
   margin: 0 auto;
+}
+
+/* Header reflow — drop the least-important bits before anything overflows/wraps. */
+@media (max-width: 600px) {
+  .header {
+    gap: 12px;
+    padding: 0 12px;
+  }
+  .tag {
+    display: none;
+  }
+  .nav {
+    margin-left: 0;
+  }
+  .navLink {
+    padding: 8px 10px;
+  }
+  .signout {
+    padding: 7px 12px;
+  }
+}
+@media (max-width: 460px) {
+  .word {
+    display: none;
+  }
 }

@@ -51,6 +51,19 @@
   flex-direction: column;
   gap: 6px;
   box-shadow: var(--shadow-sm);
+  cursor: grab;
+}
+.card:active {
+  cursor: grabbing;
+}
+.dragging {
+  opacity: 0.4;
+}
+/* drop-target highlight — instant (no transition) so it's reduced-motion-safe */
+.colTarget {
+  outline: 2px dashed var(--color-bronze);
+  outline-offset: -3px;
+  background: var(--color-paper);
 }
 .cardName {
   font-family: var(--font-sans), system-ui, sans-serif;
