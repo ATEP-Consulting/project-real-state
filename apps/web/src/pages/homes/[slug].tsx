@@ -1,4 +1,5 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { getListingBySlug, getPublishedListingSlugs, getSimilarListings } from "@herrera/db";
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -8,7 +9,14 @@ import { PhotoGallery } from "@/components/listing/PhotoGallery";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
+import { MAP_STYLE_URL } from "@/lib/map-style";
 import styles from "@/components/listing/ListingDetail.module.css";
+
+// Client-only (touches `window`) — never server-rendered, like D2's search map.
+const LocationMap = dynamic(
+  () => import("@/components/listing/LocationMap").then((m) => m.LocationMap),
+  { ssr: false },
+);
 
 type DetailProps = {
   vm: ListingDetailVM;
@@ -114,7 +122,13 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
             {/* D5 SEAM: Florida cost-of-ownership panel (FEMA flood / insurance / HOA / CDD →
                 monthly cost) mounts here — built in D5 on real MLS numbers. Not in D4. */}
 
-            {/* D4-TASK6 SEAM: <LocationMap /> mounts here */}
+            {vm.location && (
+              <section className={styles.section}>
+                <h2 className={styles.h2}>Location</h2>
+                <LocationMap lng={vm.location.lng} lat={vm.location.lat} styleUrl={MAP_STYLE_URL} />
+              </section>
+            )}
+
             {/* D4-TASK7 SEAM: <MortgageCalculator /> mounts here */}
 
             <ListingCompliance

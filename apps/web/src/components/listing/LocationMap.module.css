@@ -1,0 +1,28 @@
+.map {
+  position: relative;
+  height: 320px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+/* Brand teardrop pin: forest body, bronze ring, white dot. */
+.pin {
+  width: 22px;
+  height: 22px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--color-forest);
+  border: 2px solid var(--color-bronze);
+  box-shadow: 0 2px 6px rgba(11, 24, 22, 0.34);
+}
+.pin::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
