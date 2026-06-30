@@ -55,6 +55,12 @@ describe("toListingDetailVM", () => {
   it("marks non-MLS rows so the MLS disclaimer is suppressed", () => {
     expect(vm.compliance.isMls).toBe(false);
   });
+  it("exposes status, price-per-sqft, year, and lot for the header/cards", () => {
+    expect(vm.statusLabel).toBe("For sale");
+    expect(vm.pricePerSqftLabel).toBe("$313/ft²"); // 750000 / 2400
+    expect(vm.yearBuilt).toBe(2018);
+    expect(vm.lotSizeSqft).toBe(8000);
+  });
 });
 
 describe("monthlyMortgage", () => {

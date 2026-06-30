@@ -14,6 +14,10 @@ export type ListingDetailVM = {
   beds: number | null;
   baths: number | null;
   sqft: number | null;
+  yearBuilt: number | null;
+  lotSizeSqft: number | null;
+  statusLabel: string;
+  pricePerSqftLabel: string | null;
   description: string | null;
   gallery: GalleryImage[];
   video: string | null;
@@ -51,6 +55,13 @@ export type ListingDetailSource = Omit<ListingCardSource, "photos"> & {
   listingBrokerageName: string | null;
   listingAgentName: string | null;
   originatingMls: string | null;
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  active: "For sale",
+  pending: "Sale pending",
+  sold: "Sold",
+  off_market: "Off market",
 };
 
 const PT_TO_SCHEMA: Record<string, string> = {
@@ -108,6 +119,10 @@ export function toListingDetailVM(l: ListingDetailSource): ListingDetailVM {
     beds: l.bedrooms,
     baths: bathsNum,
     sqft: l.sqft,
+    yearBuilt: l.yearBuilt,
+    lotSizeSqft: l.lotSizeSqft,
+    statusLabel: STATUS_LABELS[l.status] ?? "For sale",
+    pricePerSqftLabel: l.sqft && l.sqft > 0 ? `$${Math.round(l.price / l.sqft)}/ft²` : null,
     description: l.description,
     gallery,
     video: l.videoUrl,

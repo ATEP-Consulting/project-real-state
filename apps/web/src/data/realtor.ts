@@ -9,6 +9,8 @@ export const REALTOR = {
   hours: "Mon–Sat 9–19h",
   license: "FL License #SL3492210",
   memberOf: "Member of Miami REALTORS®",
+  reviews: 98,
+  rating: 5,
   copyrightYear: 2026,
   // Sample portrait (free-license). Replace with Nilyan's real photo before launch.
   photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&q=70",

@@ -5,7 +5,7 @@ import { getListingBySlug, getPublishedListingSlugs, getSimilarListings } from "
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { KeyFacts } from "@/components/listing/KeyFacts";
-import { PhotoGallery } from "@/components/listing/PhotoGallery";
+import { Gallery } from "@/components/listing/Gallery";
 import { MortgageCalculator } from "@/components/listing/MortgageCalculator";
 import { InquiryForm } from "@/components/listing/InquiryForm";
 import { SimilarListings } from "@/components/listing/SimilarListings";
@@ -91,11 +91,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
       <Container>
         <div className={styles.layout}>
           <div className={styles.main}>
-            <PhotoGallery
-              gallery={vm.gallery}
-              video={vm.video}
-              virtualTourUrl={vm.virtualTourUrl}
-            />
+            <Gallery gallery={vm.gallery} video={vm.video} virtualTourUrl={vm.virtualTourUrl} />
             <header className={styles.head}>
               <p className={styles.price}>{vm.priceLabel}</p>
               <h1 className={styles.title}>{vm.title}</h1>

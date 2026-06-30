@@ -1,0 +1,232 @@
+.mosaic {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  height: 460px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.hero {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+.hero,
+.tile {
+  position: relative;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--color-sand-200);
+}
+.hero img,
+.tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 240ms ease;
+}
+.hero:hover img,
+.tile:hover img {
+  transform: scale(1.03);
+}
+.more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(11, 24, 22, 0.46);
+}
+.empty {
+  height: 460px;
+  border-radius: var(--radius-md);
+  background: var(--color-sand-200);
+}
+/* "N photos" pill on the hero — only shown on mobile (desktop uses the last-tile overlay). */
+.heroCount {
+  display: none;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(11, 24, 22, 0.6);
+  border-radius: var(--radius-pill);
+  padding: 7px 12px;
+}
+
+.chips {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  gap: 8px;
+}
+.chip {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: color-mix(in srgb, var(--color-forest) 82%, transparent);
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 8px 13px;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+.chip:hover {
+  background: var(--color-bronze);
+}
+
+/* ── Lightbox ─────────────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 72px 1fr 72px;
+  align-items: center;
+  background: rgba(8, 16, 14, 0.94);
+}
+.stage {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px 0;
+  cursor: zoom-out;
+}
+.stageInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: min(1200px, 92vw);
+  max-height: 88vh;
+  cursor: default;
+}
+.lbImg {
+  max-width: 100%;
+  max-height: 84vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.lbFrame {
+  width: min(1100px, 90vw);
+  height: min(660px, 80vh);
+  border: 0;
+  border-radius: 6px;
+  background: #000;
+}
+.caption {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.nav {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--color-forest);
+  background: rgba(255, 255, 255, 0.92);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.nav:hover {
+  background: #fff;
+}
+.prev {
+  grid-column: 1;
+}
+.next {
+  grid-column: 3;
+}
+.close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.close:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+.counter {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+@media (max-width: 760px) {
+  .mosaic {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    height: 300px;
+  }
+  /* On mobile show only the hero; the rest open in the lightbox via "View N photos". */
+  .tile {
+    display: none;
+  }
+  .hero {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .hero .more {
+    display: none;
+  }
+  .heroCount {
+    display: inline-flex;
+  }
+  .lightbox {
+    grid-template-columns: 48px 1fr 48px;
+  }
+  .nav {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero img,
+  .tile img {
+    transition: none;
+  }
+  .hero:hover img,
+  .tile:hover img {
+    transform: none;
+  }
+}
