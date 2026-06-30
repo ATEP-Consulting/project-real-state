@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Spectral, Hanken_Grotesk } from "next/font/google";
 import { DemoBanner } from "@/components/DemoBanner";
+import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
 import { PageTransition } from "@/components/motion/PageTransition";
 import "@/styles/globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -32,9 +33,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <meta name="robots" content="noindex,nofollow" />
         </Head>
       )}
-      <PageTransition>
-        <Component {...pageProps} />
-      </PageTransition>
+      <LeadCaptureProvider>
+        <PageTransition>
+          <Component {...pageProps} />
+        </PageTransition>
+      </LeadCaptureProvider>
       {isDemo && <DemoBanner />}
     </div>
   );
