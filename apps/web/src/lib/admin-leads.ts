@@ -1,4 +1,4 @@
-import type { LeadFilters, LeadIntent, LeadStatus } from "@herrera/db";
+import type { LeadFilters, LeadIntent, LeadStatus, QualificationQuestionConfig } from "@herrera/db";
 
 const INTENTS = ["buy", "sell", "rent"];
 const STATUSES = ["new", "contacted", "qualified", "appointment", "offer", "closed", "lost"];
@@ -37,4 +37,32 @@ export function formatDate(iso: string): string {
     month: "short",
     year: "numeric",
   });
+}
+
+export type FormattedAnswer = { key: string; label: string; value: string };
+
+function optionLabel(q: QualificationQuestionConfig | undefined, value: string): string {
+  return q?.options.find((o) => o.value === value)?.label ?? value;
+}
+
+/** Render stored jsonb answers as label/value pairs using the question definitions (ADR-007). */
+export function formatAnswers(
+  answers: Record<string, unknown>,
+  questions: QualificationQuestionConfig[],
+): FormattedAnswer[] {
+  const byKey = new Map(questions.map((q) => [q.key, q]));
+  return Object.entries(answers).map(([key, raw]) => {
+    const q = byKey.get(key);
+    let value: string;
+    if (typeof raw === "boolean") value = raw ? "Yes" : "No";
+    else if (Array.isArray(raw)) value = raw.map((v) => optionLabel(q, String(v))).join(", ");
+    else value = optionLabel(q, String(raw ?? ""));
+    return { key, label: q?.label ?? key, value };
+  });
+}
+
+/** A reminder is overdue when it has a past due date and isn't completed. */
+export function isOverdue(dueAt: string | null, completedAt: string | null, now: Date): boolean {
+  if (!dueAt || completedAt) return false;
+  return new Date(dueAt).getTime() < now.getTime();
 }

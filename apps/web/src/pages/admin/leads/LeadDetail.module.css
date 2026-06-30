@@ -1,0 +1,140 @@
+.back {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--color-stone);
+}
+.head {
+  margin: 8px 0 20px;
+}
+.h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: 32px;
+  color: var(--color-forest);
+  margin: 6px 0 8px;
+}
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.meta {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--color-stone);
+  margin: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 880px) {
+  .grid {
+    grid-template-columns: 1.1fr 1fr;
+  }
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+.h2 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-stone);
+  margin: 0 0 12px;
+}
+.dl {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px 12px;
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+}
+.dl dt {
+  color: var(--color-stone);
+}
+.dl dd {
+  margin: 0;
+  color: var(--color-ink);
+}
+.dl a {
+  color: var(--color-bronze-dark);
+  font-weight: 600;
+}
+.muted {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--color-stone);
+  font-size: 14px;
+  margin: 0;
+}
+.viewed,
+.consents {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+}
+.viewed a {
+  color: var(--color-forest);
+  font-weight: 600;
+}
+.consents li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-ink-soft);
+}
+.wording {
+  font-size: 12px;
+  color: var(--color-stone);
+}
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.event {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 14px;
+  border-left: 2px solid var(--color-border-strong);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+.evType {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-bronze-dark);
+}
+.evBody {
+  font-size: 14px;
+  color: var(--color-ink);
+}
+.evDue {
+  font-size: 12px;
+  color: var(--color-stone);
+}
+.evWhen {
+  font-size: 11px;
+  color: var(--color-stone-soft);
+}
