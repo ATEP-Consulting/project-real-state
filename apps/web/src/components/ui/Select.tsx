@@ -252,7 +252,12 @@ export function Select({
             aria-label={ariaLabel}
             aria-activedescendant={activeIndex >= 0 ? optionId(activeIndex) : undefined}
             className={styles.menu}
-            style={{ position: "fixed", top: coords.top, left: coords.left, minWidth: coords.width }}
+            style={{
+              position: "fixed",
+              top: coords.top,
+              left: coords.left,
+              minWidth: coords.width,
+            }}
             onKeyDown={onListKeyDown}
           >
             {options.map((o, i) => {
