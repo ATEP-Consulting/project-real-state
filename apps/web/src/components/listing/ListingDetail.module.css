@@ -1,0 +1,94 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
+  padding: 28px 0 56px;
+  align-items: start;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+.aside {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.price {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 32px;
+  line-height: 1.05;
+  color: var(--color-forest);
+}
+.title {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--color-ink);
+}
+.cityLine {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--color-stone);
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.feature {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-bronze-dark);
+  background: color-mix(in srgb, var(--color-bronze) 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-bronze) 26%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--color-forest);
+}
+.body {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--color-ink-soft);
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .aside {
+    position: static;
+    order: -1; /* keep the inquiry CTA prominent right under the gallery/header on mobile */
+  }
+}

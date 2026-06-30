@@ -1,0 +1,25 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-sand-100);
+  border: 1px solid var(--color-border);
+}
+.eh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+}
+.disclaimer {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-stone);
+}
