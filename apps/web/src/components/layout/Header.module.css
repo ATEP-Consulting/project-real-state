@@ -40,9 +40,9 @@
   width: 36px;
   height: 36px;
   margin-right: 12px;
-  border: 1px solid var(--color-bronze);
+  border: 1px solid currentColor;
   border-radius: 50%;
-  color: var(--color-bronze);
+  color: inherit;
   font-family: var(--font-serif), Georgia, serif;
   font-size: 14px;
   letter-spacing: 0.04em;
@@ -51,7 +51,7 @@
   font-family: var(--font-serif), Georgia, serif;
   font-size: 22px;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.04em;
 }
 
 .nav {
@@ -80,20 +80,31 @@
 .lang {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.06em;
   cursor: default;
   color: inherit;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--dur-base) var(--ease-standard);
+}
+.globe {
+  opacity: 0.72;
 }
 .langOn {
   opacity: 1;
 }
 .langMuted {
-  opacity: 0.55;
+  opacity: 0.5;
 }
-.langSep {
-  opacity: 0.4;
+.langDivider {
+  width: 1px;
+  height: 11px;
+  background: currentColor;
+  opacity: 0.22;
 }
 .phone {
   font-family: var(--font-sans), system-ui, sans-serif;
