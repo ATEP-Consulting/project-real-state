@@ -259,3 +259,72 @@ export async function completeReminder(activityId: string): Promise<void> {
     .set({ completedAt: new Date() })
     .where(and(eq(activities.id, activityId), eq(activities.type, "reminder")));
 }
+
+// ─── Dashboard analytics (ADR-008) — all derived from the same lead/listing data ───
+
+export type LeadSourceCount = { source: string; count: number };
+export type MostViewedListing = { slug: string; title: string; count: number };
+export type DashboardData = {
+  counts: Record<LeadStatus, number>;
+  total: number;
+  newThisWeek: number;
+  bySource: LeadSourceCount[];
+  mostViewed: MostViewedListing[];
+};
+
+/** Lead counts grouped by capture source (e.g. qualification_flow vs listing_inquiry). */
+export async function getLeadsBySource(): Promise<LeadSourceCount[]> {
+  const db = getDb();
+  const rows = await db
+    .select({ source: leads.source, n: sql<number>`count(*)::int` })
+    .from(leads)
+    .groupBy(leads.source)
+    .orderBy(desc(sql`count(*)`));
+  return rows
+    .filter((r) => r.source)
+    .map((r) => ({ source: r.source as string, count: Number(r.n) }));
+}
+
+/** How many leads were created on/after `since`. */
+export async function getNewLeadsSince(since: Date): Promise<number> {
+  const db = getDb();
+  const rows = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(leads)
+    .where(gte(leads.createdAt, since));
+  return Number(rows[0]?.n ?? 0);
+}
+
+/** Top listings by how often they appear in leads' viewed-listing history, with titles. */
+export async function getMostViewedListings(limit: number): Promise<MostViewedListing[]> {
+  const db = getDb();
+  const res = await db.execute(sql`
+    SELECT s.slug AS slug, count(*)::int AS n,
+           l.address_line1 AS addr, l.city AS city
+    FROM ${leads}
+    CROSS JOIN LATERAL jsonb_array_elements_text(${leads.viewedListingIds}) AS s(slug)
+    LEFT JOIN ${listings} l ON l.slug = s.slug
+    GROUP BY s.slug, l.address_line1, l.city
+    ORDER BY n DESC
+    LIMIT ${limit}
+  `);
+  const rows = res.rows as { slug: string; n: number; addr: string | null; city: string | null }[];
+  return rows.map((r) => ({
+    slug: r.slug,
+    title: r.addr ? `${r.addr}, ${r.city}` : r.slug,
+    count: Number(r.n),
+  }));
+}
+
+/** Everything the admin dashboard needs, in parallel. */
+export async function getDashboardData(): Promise<DashboardData> {
+  const since = new Date(Date.now() - 7 * 86400000);
+  const [counts, bySource, newThisWeek, mostViewed] = await Promise.all([
+    getPipelineCounts(),
+    getLeadsBySource(),
+    getNewLeadsSince(since),
+    getMostViewedListings(5),
+  ]);
+  const total = (Object.values(counts) as number[]).reduce((a, b) => a + b, 0);
+  return { counts, total, newThisWeek, bySource, mostViewed };
+}

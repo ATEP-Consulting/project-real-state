@@ -30,6 +30,13 @@ export {
   leadStatusUpdateSchema,
   activityCreateSchema,
   type ActivityCreate,
+  getLeadsBySource,
+  getNewLeadsSince,
+  getMostViewedListings,
+  getDashboardData,
+  type LeadSourceCount,
+  type MostViewedListing,
+  type DashboardData,
 } from "./admin-leads";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";
