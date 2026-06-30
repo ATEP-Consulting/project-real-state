@@ -1,4 +1,18 @@
-import { and, desc, eq, gte, ilike, inArray, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  isNotNull,
+  isNull,
+  lt,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "./client";
 import { activities } from "./schema/activities";
@@ -260,38 +274,116 @@ export async function completeReminder(activityId: string): Promise<void> {
     .where(and(eq(activities.id, activityId), eq(activities.type, "reminder")));
 }
 
-// ─── Dashboard analytics (ADR-008) — all derived from the same lead/listing data ───
+// ─── Dashboard analytics (ADR-008) — all derived from the same lead/activity data ───
 
-export type LeadSourceCount = { source: string; count: number };
 export type MostViewedListing = { slug: string; title: string; count: number };
+export type ReminderItem = {
+  activityId: string;
+  leadId: string;
+  leadName: string | null;
+  body: string | null;
+  dueAt: string;
+};
 export type DashboardData = {
   counts: Record<LeadStatus, number>;
   total: number;
   newThisWeek: number;
-  bySource: LeadSourceCount[];
+  newPrevWeek: number;
+  uncontacted: LeadListItem[];
+  reminders: ReminderItem[];
+  speedHours: number[];
   mostViewed: MostViewedListing[];
 };
 
-/** Lead counts grouped by capture source (e.g. qualification_flow vs listing_inquiry). */
-export async function getLeadsBySource(): Promise<LeadSourceCount[]> {
+/** Oldest-first uncontacted (status='new') leads — the "call these now" queue. */
+export async function getUncontactedLeads(limit: number): Promise<LeadListItem[]> {
   const db = getDb();
   const rows = await db
-    .select({ source: leads.source, n: sql<number>`count(*)::int` })
+    .select({
+      id: leads.id,
+      intent: leads.intent,
+      status: leads.status,
+      name: leads.name,
+      email: leads.email,
+      phone: leads.phone,
+      source: leads.source,
+      createdAt: leads.createdAt,
+      viewed: leads.viewedListingIds,
+    })
     .from(leads)
-    .groupBy(leads.source)
-    .orderBy(desc(sql`count(*)`));
-  return rows
-    .filter((r) => r.source)
-    .map((r) => ({ source: r.source as string, count: Number(r.n) }));
+    .where(eq(leads.status, "new"))
+    .orderBy(asc(leads.createdAt))
+    .limit(limit);
+  return rows.map((r) => ({
+    id: r.id,
+    intent: r.intent as LeadIntent,
+    status: r.status as LeadStatus,
+    name: r.name,
+    email: r.email,
+    phone: r.phone,
+    source: r.source,
+    createdAt: r.createdAt.toISOString(),
+    viewedCount: Array.isArray(r.viewed) ? r.viewed.length : 0,
+  }));
 }
 
-/** How many leads were created on/after `since`. */
-export async function getNewLeadsSince(since: Date): Promise<number> {
+/** Open reminders (uncompleted, with a due date) due on or before `before`, soonest first. */
+export async function getDueReminders(before: Date): Promise<ReminderItem[]> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      activityId: activities.id,
+      leadId: activities.leadId,
+      leadName: leads.name,
+      body: activities.body,
+      dueAt: activities.dueAt,
+    })
+    .from(activities)
+    .innerJoin(leads, eq(activities.leadId, leads.id))
+    .where(
+      and(
+        eq(activities.type, "reminder"),
+        isNull(activities.completedAt),
+        isNotNull(activities.dueAt),
+        lte(activities.dueAt, before),
+      ),
+    )
+    .orderBy(asc(activities.dueAt))
+    .limit(20);
+  return rows.map((r) => ({
+    activityId: r.activityId,
+    leadId: r.leadId,
+    leadName: r.leadName,
+    body: r.body,
+    dueAt: r.dueAt!.toISOString(),
+  }));
+}
+
+/** Hours from each contacted lead's creation to its first logged call (speed-to-lead sample). */
+export async function getSpeedToFirstContactHours(): Promise<number[]> {
+  const db = getDb();
+  const res = await db.execute(sql`
+    SELECT EXTRACT(EPOCH FROM (fc.first_call - l.created_at)) / 3600.0 AS hours
+    FROM ${leads} l
+    JOIN (
+      SELECT lead_id, min(created_at) AS first_call
+      FROM ${activities}
+      WHERE type = 'call'
+      GROUP BY lead_id
+    ) fc ON fc.lead_id = l.id
+    WHERE fc.first_call >= l.created_at
+  `);
+  const rows = res.rows as { hours: number | string }[];
+  return rows.map((r) => Number(r.hours));
+}
+
+/** How many leads were created in the half-open window [start, end). */
+export async function getNewLeadsBetween(start: Date, end: Date): Promise<number> {
   const db = getDb();
   const rows = await db
     .select({ n: sql<number>`count(*)::int` })
     .from(leads)
-    .where(gte(leads.createdAt, since));
+    .where(and(gte(leads.createdAt, start), lt(leads.createdAt, end)));
   return Number(rows[0]?.n ?? 0);
 }
 
@@ -316,15 +408,32 @@ export async function getMostViewedListings(limit: number): Promise<MostViewedLi
   }));
 }
 
-/** Everything the admin dashboard needs, in parallel. */
+/** Everything the action-first admin dashboard needs, in parallel. */
 export async function getDashboardData(): Promise<DashboardData> {
-  const since = new Date(Date.now() - 7 * 86400000);
-  const [counts, bySource, newThisWeek, mostViewed] = await Promise.all([
-    getPipelineCounts(),
-    getLeadsBySource(),
-    getNewLeadsSince(since),
-    getMostViewedListings(5),
-  ]);
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 86400000);
+  const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000);
+  const endOfToday = new Date(now);
+  endOfToday.setHours(23, 59, 59, 999);
+  const [counts, uncontacted, reminders, speedHours, mostViewed, newThisWeek, newPrevWeek] =
+    await Promise.all([
+      getPipelineCounts(),
+      getUncontactedLeads(6),
+      getDueReminders(endOfToday),
+      getSpeedToFirstContactHours(),
+      getMostViewedListings(5),
+      getNewLeadsBetween(weekAgo, now),
+      getNewLeadsBetween(twoWeeksAgo, weekAgo),
+    ]);
   const total = (Object.values(counts) as number[]).reduce((a, b) => a + b, 0);
-  return { counts, total, newThisWeek, bySource, mostViewed };
+  return {
+    counts,
+    total,
+    newThisWeek,
+    newPrevWeek,
+    uncontacted,
+    reminders,
+    speedHours,
+    mostViewed,
+  };
 }
