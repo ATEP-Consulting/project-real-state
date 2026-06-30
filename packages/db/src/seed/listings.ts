@@ -68,6 +68,10 @@ function buildOne(place: Place, index: number, rng: Rng, source: "mock" | "manua
   const cddFeeAnnual =
     place.community === "planned_cdd" && rng.chance(0.8) ? rng.int(900, 2400) : 0;
 
+  // searchable features (D3 filters). `waterfront` is already drawn above.
+  const pool = rng.chance(propertyType === "condo" ? 0.15 : 0.45);
+  const ageRestricted = rng.chance(0.1); // a few 55+ communities
+
   const [lng, lat] = jitterCoord(place, rng);
 
   return {
@@ -100,6 +104,9 @@ function buildOne(place: Place, index: number, rng: Rng, source: "mock" | "manua
     floodZone,
     hoaFeeMonthly: hoaFeeMonthly || null,
     cddFeeAnnual: cddFeeAnnual || null,
+    waterfront,
+    pool,
+    ageRestricted,
     ...estimates,
     photos: photoUrls(slug, rng.int(4, 7)),
     videoUrl: null,

@@ -8,11 +8,13 @@ import {
   leads,
   listings,
   qualificationQuestions,
+  searchFilters,
 } from "../schema/index";
 import { generateLeads } from "./leads";
 import { generateListings, generateOffMarket, type SeedListing } from "./listings";
 import { makeRng } from "./prng";
 import { QUESTIONS } from "./questions";
+import { SEARCH_FILTERS } from "./search-filters";
 
 type DB = ReturnType<typeof drizzle>;
 
@@ -30,6 +32,7 @@ export async function clearSeed(db: DB) {
   await db.delete(consentRecords);
   await db.delete(leads);
   await db.delete(qualificationQuestions);
+  await db.delete(searchFilters);
   await db.delete(content);
   await db.delete(listings).where(sql`${listings.source} in ('mock','manual')`);
 }
@@ -46,6 +49,7 @@ export async function runSeed(databaseUrl: string) {
 
   await db.insert(listings).values(insertValues([...market, ...offMarket]));
   await db.insert(qualificationQuestions).values(QUESTIONS);
+  await db.insert(searchFilters).values(SEARCH_FILTERS);
 
   const inserted = await db.insert(leads).values(leadRows).returning({ id: leads.id });
   const leadId = (i: number) => inserted[i]!.id;
@@ -75,7 +79,8 @@ async function verify(db: DB) {
       (SELECT count(*)::int FROM leads) AS leads,
       (SELECT count(*)::int FROM activities) AS activities,
       (SELECT count(*)::int FROM consent_records) AS consents,
-      (SELECT count(*)::int FROM qualification_questions) AS questions
+      (SELECT count(*)::int FROM qualification_questions) AS questions,
+      (SELECT count(*)::int FROM search_filters) AS filters
   `);
   // PostGIS end-to-end: count listings whose point falls inside a central-FL bbox.
   const geo = await db.execute(sql`

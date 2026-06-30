@@ -1,0 +1,93 @@
+import type { NewSearchFilter } from "../schema/search-filters";
+
+// Seeded default filter SET (ADR-007/012). Nilyan edits these in /admin in D11. Intentionally
+// limited (lead-gen). `key` binds to apps/web FILTER_BINDINGS; options are pure presentation.
+export const SEARCH_FILTERS: NewSearchFilter[] = [
+  {
+    key: "price",
+    control: "range",
+    sortOrder: 1,
+    advanced: false,
+    label: "Price",
+    labelEs: "Precio",
+    options: [],
+  },
+  {
+    key: "beds",
+    control: "min_select",
+    sortOrder: 2,
+    advanced: false,
+    label: "Beds",
+    labelEs: "Habitaciones",
+    options: [
+      { value: "1", label: "1+", labelEs: "1+" },
+      { value: "2", label: "2+", labelEs: "2+" },
+      { value: "3", label: "3+", labelEs: "3+" },
+      { value: "4", label: "4+", labelEs: "4+" },
+      { value: "5", label: "5+", labelEs: "5+" },
+    ],
+  },
+  {
+    key: "baths",
+    control: "min_select",
+    sortOrder: 3,
+    advanced: false,
+    label: "Baths",
+    labelEs: "Baños",
+    options: [
+      { value: "1", label: "1+", labelEs: "1+" },
+      { value: "2", label: "2+", labelEs: "2+" },
+      { value: "3", label: "3+", labelEs: "3+" },
+    ],
+  },
+  {
+    key: "propertyType",
+    control: "enum_select",
+    sortOrder: 4,
+    advanced: false,
+    label: "Property type",
+    labelEs: "Tipo de propiedad",
+    options: [
+      { value: "single_family", label: "House", labelEs: "Casa" },
+      { value: "condo", label: "Condo", labelEs: "Condominio" },
+      { value: "townhouse", label: "Townhouse", labelEs: "Adosado" },
+      { value: "villa", label: "Villa", labelEs: "Villa" },
+    ],
+  },
+  {
+    key: "waterfront",
+    control: "boolean",
+    sortOrder: 5,
+    advanced: true,
+    label: "Waterfront",
+    labelEs: "Frente al agua",
+    options: [],
+  },
+  {
+    key: "pool",
+    control: "boolean",
+    sortOrder: 6,
+    advanced: true,
+    label: "Pool",
+    labelEs: "Piscina",
+    options: [],
+  },
+  {
+    key: "age55",
+    control: "boolean",
+    sortOrder: 7,
+    advanced: true,
+    label: "55+ community",
+    labelEs: "Comunidad 55+",
+    options: [],
+  },
+  {
+    key: "noHoa",
+    control: "boolean",
+    sortOrder: 8,
+    advanced: true,
+    label: "No HOA fees",
+    labelEs: "Sin cuota HOA",
+    options: [],
+  },
+];
