@@ -1,34 +1,44 @@
 import type { GetServerSideProps } from "next";
-import Head from "next/head";
-import { signOut } from "next-auth/react";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import { getPipelineCounts, type LeadStatus } from "@herrera/db";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
 import { requireAdmin } from "@/server/auth/guards";
+import styles from "@/components/admin/AdminLayout.module.css";
 
-export default function AdminHome() {
-  return (
-    <Container>
-      <Head>
-        <title>Herrera — admin</title>
-      </Head>
-      <Section reveal={false}>
-        <Eyebrow>Admin · protected</Eyebrow>
-        <h1 style={{ fontSize: 42, margin: "12px 0 8px" }}>Welcome, Nilyan</h1>
-        <p style={{ color: "var(--color-stone)", marginBottom: 20 }}>
-          The CRM (leads, pipeline, analytics) is built in D10/D11. This page is gated.
-        </p>
-        <Button variant="ghost" onClick={() => void signOut({ callbackUrl: "/admin/login" })}>
-          Sign out
-        </Button>
-      </Section>
-    </Container>
-  );
-}
+type Props = { counts: Record<LeadStatus, number> | null };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const guard = await requireAdmin(ctx);
   if (guard) return guard;
-  return { props: {} };
+  let counts: Props["counts"] = null;
+  try {
+    counts = await getPipelineCounts();
+  } catch (e) {
+    console.warn("[admin] counts unavailable:", (e as Error).message);
+  }
+  return { props: { counts } };
 };
+
+export default function AdminHome({ counts }: Props) {
+  const total = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : 0;
+  return (
+    <AdminLayout title="Dashboard">
+      <h1 className={styles.h1}>Welcome, Nilyan</h1>
+      <p className={styles.sub}>
+        {total} {total === 1 ? "lead" : "leads"} in your pipeline.{" "}
+        <Link href="/admin/leads">Open the lead inbox →</Link>
+      </p>
+      {counts && (
+        <div className={styles.counts}>
+          {[...STATUS_ORDER, "lost"].map((s) => (
+            <div key={s} className={styles.countCard}>
+              <span className={styles.countN}>{counts[s as LeadStatus]}</span>
+              <span className={styles.countL}>{STATUS_LABEL[s]}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </AdminLayout>
+  );
+}

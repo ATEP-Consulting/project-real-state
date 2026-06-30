@@ -1,0 +1,132 @@
+.shell {
+  min-height: 100dvh;
+  background: var(--color-paper);
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 clamp(16px, 4vw, 32px);
+  height: 60px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-bronze);
+  color: var(--color-bronze);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 13px;
+}
+.word {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  color: var(--color-forest);
+}
+.tag {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-stone);
+}
+.nav {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+.navLink {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.navLink:hover {
+  background: var(--color-sand-100);
+}
+.navActive,
+.navActive:hover {
+  background: var(--color-forest);
+  color: #fff;
+}
+.signout {
+  margin-left: auto;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  padding: 7px 16px;
+  cursor: pointer;
+}
+.signout:hover {
+  border-color: var(--color-forest);
+}
+.main {
+  padding: clamp(16px, 4vw, 32px);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* dashboard */
+.h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(28px, 5vw, 40px);
+  color: var(--color-forest);
+  margin: 8px 0 6px;
+}
+.sub {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--color-stone);
+  margin: 0 0 24px;
+}
+.sub a {
+  color: var(--color-bronze-dark);
+  font-weight: 600;
+}
+.counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+}
+.countCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.countN {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 30px;
+  color: var(--color-forest);
+}
+.countL {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-stone);
+}
