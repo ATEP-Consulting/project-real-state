@@ -1,13 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { LeadStatus } from "@herrera/db";
-import {
-  activeCount,
-  barPct,
-  biggestDropoff,
-  donutSegments,
-  median,
-  winRate,
-} from "./admin-dashboard";
+import { activeCount, barPct, biggestDropoff, median, winRate } from "./admin-dashboard";
 
 // Mirrors StatusBadge.STATUS_ORDER without importing the component (CSS) into a logic test.
 const STATUS_ORDER = [
@@ -93,20 +86,5 @@ describe("biggestDropoff", () => {
       ),
     ).toBeNull();
     expect(biggestDropoff(counts({}), STATUS_ORDER)).toBeNull();
-  });
-});
-
-describe("donutSegments", () => {
-  it("splits the circumference by share, offset cumulatively", () => {
-    expect(donutSegments([3, 1], 100)).toEqual([
-      { len: 75, offset: 0, pct: 75 },
-      { len: 25, offset: -75, pct: 25 },
-    ]);
-  });
-  it("is all-zero for an empty total", () => {
-    expect(donutSegments([0, 0], 100)).toEqual([
-      { len: 0, offset: 0, pct: 0 },
-      { len: 0, offset: 0, pct: 0 },
-    ]);
   });
 });

@@ -1,10 +1,12 @@
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
-import { getDashboardData, type DashboardData } from "@herrera/db";
+import { useRouter } from "next/router";
+import { getDashboardData, type DashboardData, type ReminderItem } from "@herrera/db";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
+import { StatusBadge, STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
 import { requireAdmin } from "@/server/auth/guards";
-import { activeCount, barPct, donutSegments, winRate } from "@/lib/admin-dashboard";
+import { barPct, biggestDropoff, median, winRate } from "@/lib/admin-dashboard";
+import { isOverdue, relativeAge } from "@/lib/admin-leads";
 import styles from "./Dashboard.module.css";
 
 type Props = { data: DashboardData | null };
@@ -21,71 +23,26 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   return { props: { data } };
 };
 
-const SOURCE_COLORS = [
-  "var(--color-forest)",
-  "var(--color-bronze)",
-  "var(--color-sage-alt)",
-  "var(--color-olive)",
-  "var(--color-stone)",
-];
-const DONUT_C = 264; // ≈ 2πr for r=42
+const HOT_VIEWS = 3;
 
-function SourceDonut({ data }: { data: DashboardData }) {
-  const segs = donutSegments(
-    data.bySource.map((s) => s.count),
-    DONUT_C,
-  );
-  return (
-    <div className={styles.donutWrap}>
-      <svg viewBox="0 0 100 100" className={styles.donut} role="img" aria-label="Leads por fuente">
-        <circle
-          cx="50"
-          cy="50"
-          r="42"
-          fill="none"
-          stroke="var(--color-sand-200)"
-          strokeWidth="14"
-        />
-        {data.bySource.map((s, i) => (
-          <circle
-            key={s.source}
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            stroke={SOURCE_COLORS[i % SOURCE_COLORS.length]}
-            strokeWidth="14"
-            strokeDasharray={`${segs[i]!.len} ${DONUT_C - segs[i]!.len}`}
-            strokeDashoffset={segs[i]!.offset}
-            transform="rotate(-90 50 50)"
-          />
-        ))}
-        <text x="50" y="47" textAnchor="middle" className={styles.donutNum}>
-          {data.total}
-        </text>
-        <text x="50" y="60" textAnchor="middle" className={styles.donutSub}>
-          leads
-        </text>
-      </svg>
-      <ul className={styles.legend}>
-        {data.bySource.map((s, i) => (
-          <li key={s.source}>
-            <span
-              className={styles.swatch}
-              style={{ background: SOURCE_COLORS[i % SOURCE_COLORS.length] }}
-            />
-            <span className={styles.legendLabel}>{s.source}</span>
-            <span className={styles.legendVal}>
-              {s.count} · {segs[i]!.pct}%
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+function formatSpeed(hours: number | null): string {
+  if (hours === null) return "—";
+  if (hours < 1) return `${Math.round(hours * 60)}m`;
+  return `${hours.toFixed(1)}h`;
+}
+
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
 export default function AdminHome({ data }: Props) {
+  const router = useRouter();
+
+  async function markDone(activityId: string) {
+    const res = await fetch(`/api/admin/activities/${activityId}/complete`, { method: "POST" });
+    if (res.ok) await router.replace(router.asPath, undefined, { scroll: false });
+  }
+
   if (!data) {
     return (
       <AdminLayout title="Dashboard">
@@ -95,13 +52,40 @@ export default function AdminHome({ data }: Props) {
     );
   }
 
-  const kpis = [
-    { n: data.total, label: "Total leads" },
-    { n: data.newThisWeek, label: "New this week" },
-    { n: `${Math.round(winRate(data.counts) * 100)}%`, label: "Win rate" },
-    { n: activeCount(data.counts), label: "Active" },
-  ];
+  const now = new Date();
+  const speed = median(data.speedHours);
+  const trend = data.newThisWeek - data.newPrevWeek;
+  const overdue = data.reminders.filter((r) => isOverdue(r.dueAt, null, now));
+  const today = data.reminders.filter((r) => !isOverdue(r.dueAt, null, now));
   const maxStage = Math.max(1, ...STATUS_ORDER.map((s) => data.counts[s]));
+  const gap = biggestDropoff(data.counts, STATUS_ORDER);
+
+  const kpis = [
+    {
+      n: data.newThisWeek,
+      label: "New this week",
+      trend: trend === 0 ? "= same as last week" : trend > 0 ? `▲ +${trend}` : `▼ ${trend}`,
+      tone: trend > 0 ? styles.kpiGood : trend < 0 ? styles.kpiWarn : undefined,
+    },
+    {
+      n: data.counts.new,
+      label: "Uncontacted",
+      tone: data.counts.new > 0 ? styles.kpiDanger : styles.kpiGood,
+    },
+    {
+      n: formatSpeed(speed),
+      label: "Speed to first contact",
+      tone:
+        speed === null
+          ? undefined
+          : speed < 1
+            ? styles.kpiGood
+            : speed > 24
+              ? styles.kpiWarn
+              : undefined,
+    },
+    { n: `${Math.round(winRate(data.counts) * 100)}%`, label: "Win rate" },
+  ];
 
   return (
     <AdminLayout title="Dashboard">
@@ -115,15 +99,102 @@ export default function AdminHome({ data }: Props) {
       <div className={styles.kpis}>
         {kpis.map((k) => (
           <div key={k.label} className={styles.kpi}>
-            <span className={styles.kpiN}>{k.n}</span>
+            <span className={`${styles.kpiN} ${k.tone ?? ""}`}>{k.n}</span>
             <span className={styles.kpiL}>{k.label}</span>
+            {k.trend && <span className={styles.kpiTrend}>{k.trend}</span>}
           </div>
         ))}
       </div>
 
+      <section className={`${styles.card} ${styles.today}`}>
+        <h2 className={styles.h2}>Needs your attention</h2>
+        <div className={styles.todayGrid}>
+          {/* Uncontacted — call these first */}
+          <div className={styles.todayCol}>
+            <p className={styles.todayHead}>
+              <span className={`${styles.dot} ${styles.dotRed}`} aria-hidden="true" />
+              Uncontacted
+              <span className={styles.todayCount}>{data.counts.new}</span>
+            </p>
+            {data.uncontacted.length === 0 ? (
+              <p className={styles.emptyMini}>All caught up 🎉</p>
+            ) : (
+              <ul className={styles.actionList}>
+                {data.uncontacted.map((l) => (
+                  <li key={l.id} className={styles.actionRow}>
+                    <div className={styles.actionTop}>
+                      <Link href={`/admin/leads/${l.id}`} className={styles.actionName}>
+                        {l.name ?? "Unnamed lead"}
+                      </Link>
+                      {l.viewedCount >= HOT_VIEWS && (
+                        <span className={styles.hot} title={`Viewed ${l.viewedCount} homes`}>
+                          🔥 {l.viewedCount}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.actionMeta}>
+                      <StatusBadge kind="intent" value={l.intent} />
+                      <span className={styles.actionAge}>{relativeAge(l.createdAt, now)}</span>
+                    </div>
+                    <div className={styles.quickRow}>
+                      {l.phone && (
+                        <a href={`tel:${l.phone}`} className={styles.quick}>
+                          Call
+                        </a>
+                      )}
+                      {l.email && (
+                        <a href={`mailto:${l.email}`} className={styles.quick}>
+                          Email
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Overdue follow-ups */}
+          <div className={styles.todayCol}>
+            <p className={styles.todayHead}>
+              <span className={`${styles.dot} ${styles.dotAmber}`} aria-hidden="true" />
+              Overdue
+              <span className={styles.todayCount}>{overdue.length}</span>
+            </p>
+            {overdue.length === 0 ? (
+              <p className={styles.emptyMini}>Nothing overdue</p>
+            ) : (
+              <ul className={styles.actionList}>
+                {overdue.map((r) => (
+                  <ReminderRow key={r.activityId} r={r} now={now} overdue onDone={markDone} />
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Due today */}
+          <div className={styles.todayCol}>
+            <p className={styles.todayHead}>
+              <span className={`${styles.dot} ${styles.dotGold}`} aria-hidden="true" />
+              Due today
+              <span className={styles.todayCount}>{today.length}</span>
+            </p>
+            {today.length === 0 ? (
+              <p className={styles.emptyMini}>Nothing due today</p>
+            ) : (
+              <ul className={styles.actionList}>
+                {today.map((r) => (
+                  <ReminderRow key={r.activityId} r={r} now={now} onDone={markDone} />
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </section>
+
       <div className={styles.grid}>
         <section className={styles.card}>
-          <h2 className={styles.h2}>Pipeline conversion</h2>
+          <h2 className={styles.h2}>Pipeline</h2>
           <div className={styles.funnel}>
             {STATUS_ORDER.map((s) => (
               <div key={s} className={styles.fRow}>
@@ -140,44 +211,67 @@ export default function AdminHome({ data }: Props) {
             <p className={styles.lostNote}>
               Lost: <strong>{data.counts.lost}</strong>
             </p>
+            {gap && (
+              <p className={styles.gapNote}>
+                Biggest gap: {STATUS_LABEL[gap.from]} → {STATUS_LABEL[gap.to]}
+              </p>
+            )}
           </div>
         </section>
 
-        <div className={styles.side}>
-          <section className={styles.card}>
-            <h2 className={styles.h2}>Leads by source</h2>
-            {data.bySource.length === 0 ? (
-              <p className={styles.muted}>No leads yet.</p>
-            ) : (
-              <SourceDonut data={data} />
-            )}
-          </section>
-
-          <section className={styles.card}>
-            <h2 className={styles.h2}>Most-viewed listings</h2>
-            {data.mostViewed.length === 0 ? (
-              <p className={styles.muted}>No viewing history yet.</p>
-            ) : (
-              <ol className={styles.viewed}>
-                {data.mostViewed.map((m) => (
-                  <li key={m.slug}>
-                    <Link href={`/homes/${m.slug}`} className={styles.viewedName}>
-                      {m.title}
-                    </Link>
-                    <span className={styles.viewedTrack} aria-hidden="true">
-                      <span
-                        className={styles.viewedBar}
-                        style={{ width: `${barPct(m.count, data.mostViewed[0]!.count)}%` }}
-                      />
-                    </span>
-                    <span className={styles.viewedVal}>{m.count}</span>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </section>
-        </div>
+        <section className={styles.card}>
+          <h2 className={styles.h2}>Most-viewed listings</h2>
+          {data.mostViewed.length === 0 ? (
+            <p className={styles.muted}>No viewing history yet.</p>
+          ) : (
+            <ol className={styles.viewed}>
+              {data.mostViewed.map((m) => (
+                <li key={m.slug}>
+                  <Link href={`/homes/${m.slug}`} className={styles.viewedName}>
+                    {m.title}
+                  </Link>
+                  <span className={styles.viewedTrack} aria-hidden="true">
+                    <span
+                      className={styles.viewedBar}
+                      style={{ width: `${barPct(m.count, data.mostViewed[0]!.count)}%` }}
+                    />
+                  </span>
+                  <span className={styles.viewedVal}>{m.count}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
       </div>
     </AdminLayout>
+  );
+}
+
+function ReminderRow({
+  r,
+  now,
+  overdue,
+  onDone,
+}: {
+  r: ReminderItem;
+  now: Date;
+  overdue?: boolean;
+  onDone: (id: string) => void;
+}) {
+  return (
+    <li className={styles.actionRow}>
+      <Link href={`/admin/leads/${r.leadId}`} className={styles.actionName}>
+        {r.leadName ?? "Unnamed lead"}
+      </Link>
+      <p className={styles.reminderBody}>{r.body ?? "Follow up"}</p>
+      <div className={styles.actionMeta}>
+        <span className={overdue ? styles.overdue : styles.actionAge}>
+          {overdue ? relativeAge(r.dueAt, now) : formatTime(r.dueAt)}
+        </span>
+        <button type="button" className={styles.markDone} onClick={() => onDone(r.activityId)}>
+          Mark done
+        </button>
+      </div>
+    </li>
   );
 }
