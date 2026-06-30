@@ -1,4 +1,5 @@
 import { and, desc, eq, gte, ilike, inArray, or, sql } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "./client";
 import { activities } from "./schema/activities";
 import { consentRecords } from "./schema/consent";
@@ -193,4 +194,65 @@ export async function getLeadDetail(id: string): Promise<LeadDetail | null> {
       createdAt: a.createdAt.toISOString(),
     })),
   };
+}
+
+export const leadStatusUpdateSchema = z.object({
+  status: z.enum(["new", "contacted", "qualified", "appointment", "offer", "closed", "lost"]),
+});
+
+export const activityCreateSchema = z
+  .object({
+    type: z.enum(["call", "note", "reminder"]),
+    body: z.string().trim().max(2000).optional(),
+    dueAt: z.string().datetime().optional(),
+  })
+  .refine((d) => d.type !== "reminder" || Boolean(d.dueAt), {
+    message: "A reminder needs a due date.",
+    path: ["dueAt"],
+  })
+  .refine((d) => d.type === "reminder" || Boolean(d.body), {
+    message: "Add a note.",
+    path: ["body"],
+  });
+
+export type ActivityCreate = z.infer<typeof activityCreateSchema>;
+
+/** Move a lead to a new pipeline stage and log a status_change activity (no-op if unchanged). */
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<void> {
+  const db = getDb();
+  const cur = await db
+    .select({ status: leads.status })
+    .from(leads)
+    .where(eq(leads.id, id))
+    .limit(1);
+  const current = cur[0];
+  if (!current) throw new Error("Lead not found");
+  if (current.status === status) return;
+  await db.update(leads).set({ status, updatedAt: new Date() }).where(eq(leads.id, id));
+  await db.insert(activities).values({
+    leadId: id,
+    type: "status_change",
+    body: null,
+    meta: { from: current.status, to: status },
+  });
+  // ADR-008 webhook seam: emit an outbound lead-updated webhook here for a future external CRM. Not in v1.
+}
+
+/** Add a call / note / reminder to a lead's timeline. */
+export async function addActivity(leadId: string, input: ActivityCreate): Promise<void> {
+  const db = getDb();
+  await db.insert(activities).values({
+    leadId,
+    type: input.type,
+    body: input.body ?? null,
+    dueAt: input.dueAt ? new Date(input.dueAt) : null,
+    meta: {},
+  });
+  // ADR-008 webhook seam (lead-updated). Not in v1.
+}
+
+/** Mark a reminder activity as done. */
+export async function completeReminder(activityId: string): Promise<void> {
+  const db = getDb();
+  await db.update(activities).set({ completedAt: new Date() }).where(eq(activities.id, activityId));
 }

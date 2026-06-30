@@ -24,6 +24,12 @@ export {
   type LeadConsent,
   type ViewedListing,
   type LeadDetail,
+  updateLeadStatus,
+  addActivity,
+  completeReminder,
+  leadStatusUpdateSchema,
+  activityCreateSchema,
+  type ActivityCreate,
 } from "./admin-leads";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";
