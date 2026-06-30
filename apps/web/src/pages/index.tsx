@@ -1,5 +1,5 @@
-import Head from "next/head";
 import type { GetStaticProps } from "next";
+import { Seo } from "@/components/seo/Seo";
 import { getFeaturedListings } from "@herrera/db";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Hero } from "@/components/home/Hero";
@@ -28,13 +28,11 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 export default function Home({ featured }: HomeProps) {
   return (
     <SiteLayout transparentHeader>
-      <Head>
-        <title>Herrera — Find your place in Florida</title>
-        <meta
-          name="description"
-          content="Premium real estate guidance in Florida. Browse listings and buy, sell or rent with confidence."
-        />
-      </Head>
+      <Seo
+        title="Herrera — Find your place in Florida"
+        description="Premium real estate guidance in Florida. Browse listings and buy, sell or rent with confidence."
+        path="/"
+      />
       <Hero />
       <FeaturedListings listings={featured} />
       <MapPreview />

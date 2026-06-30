@@ -1,4 +1,3 @@
-import Head from "next/head";
 import dynamic from "next/dynamic";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { getListingBySlug, getPublishedListingSlugs, getSimilarListings } from "@herrera/db";
@@ -13,6 +12,8 @@ import { SellCta } from "@/components/listing/SellCta";
 import { SimilarListings } from "@/components/listing/SimilarListings";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
+import { Seo } from "@/components/seo/Seo";
+import { absoluteUrl } from "@/lib/seo";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
 import { MAP_STYLE_URL } from "@/lib/map-style";
 import styles from "@/components/listing/ListingDetail.module.css";
@@ -62,7 +63,7 @@ export const getStaticProps: GetStaticProps<DetailProps> = async (ctx) => {
       props: {
         vm,
         similar: similarRows.map(toListingCardVM),
-        jsonLd: toListingJsonLd(vm, `https://herrera.example${canonicalPath}`),
+        jsonLd: toListingJsonLd(vm, absoluteUrl(canonicalPath)),
         canonicalPath,
       },
       revalidate: 300,
@@ -77,18 +78,12 @@ export const getStaticProps: GetStaticProps<DetailProps> = async (ctx) => {
 export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }: DetailProps) {
   return (
     <SiteLayout>
-      <Head>
-        <title>{`${vm.title}, ${vm.cityLine} — Herrera`}</title>
-        <meta
-          name="description"
-          content={`${vm.priceLabel} · ${vm.propertyTypeLabel} at ${vm.title}, ${vm.cityLine}.`}
-        />
-        <link rel="canonical" href={`https://herrera.example${canonicalPath}`} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </Head>
+      <Seo
+        title={`${vm.title}, ${vm.cityLine} — Herrera`}
+        description={`${vm.priceLabel} · ${vm.propertyTypeLabel} at ${vm.title}, ${vm.cityLine}.`}
+        path={canonicalPath}
+        jsonLd={jsonLd}
+      />
 
       <Container>
         <ListingTopBar title={vm.title} />

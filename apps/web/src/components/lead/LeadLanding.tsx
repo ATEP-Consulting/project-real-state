@@ -1,4 +1,4 @@
-import Head from "next/head";
+import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { LeadCaptureFlow } from "./LeadCaptureFlow";
@@ -34,10 +34,7 @@ export function LeadLanding({
   const c = COPY[intent];
   return (
     <SiteLayout>
-      <Head>
-        <title>{`${c.title} · Herrera`}</title>
-        <meta name="description" content={c.lede} />
-      </Head>
+      <Seo title={`${c.title} · Herrera`} description={c.lede} path={`/${intent}`} />
       <section className={styles.section}>
         <Container>
           <div className={styles.grid}>

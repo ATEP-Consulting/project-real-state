@@ -1,5 +1,5 @@
-import Head from "next/head";
 import type { GetServerSideProps } from "next";
+import { Seo } from "@/components/seo/Seo";
 import { getSearchFilters, type SearchFilterConfig } from "@herrera/db";
 import { Header } from "@/components/layout/Header";
 import { SearchView } from "@/components/search/SearchView";
@@ -53,10 +53,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 export default function SearchPage(props: Props) {
   return (
     <>
-      <Head>
-        <title>Search Florida homes — Herrera</title>
-        <meta name="description" content="Search homes across Florida on an interactive map." />
-      </Head>
+      <Seo
+        title="Search Florida homes — Herrera"
+        description="Search homes across Florida on an interactive map."
+        path="/search"
+      />
       <Header />
       <SearchView {...props} />
     </>
