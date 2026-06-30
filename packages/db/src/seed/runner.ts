@@ -43,7 +43,11 @@ export async function runSeed(databaseUrl: string) {
 
   const market = generateListings(rng);
   const offMarket = generateOffMarket(rng);
-  const { leads: leadRows, activities: acts, consents } = generateLeads(makeRng(42), market);
+  const {
+    leads: leadRows,
+    activities: acts,
+    consents,
+  } = generateLeads(makeRng(42), market, new Date());
 
   await clearSeed(db);
 

@@ -24,24 +24,40 @@ const FIRST = [
   "Michael",
 ];
 const LAST = ["Garcia", "Smith", "Rodriguez", "Johnson", "Martinez", "Brown", "Lopez", "Davis"];
-const STATUSES = [
+const SOURCES = ["qualification_flow", "listing_inquiry"] as const;
+const INTENTS = ["buy", "sell", "rent"] as const;
+
+// Curated so the demo dashboard is meaningful: 3 uncontacted (incl. one "hot"),
+// a full pipeline, and both closed + lost so the win rate isn't 0/0.
+const STATUS_PLAN = [
+  "new",
+  "new",
   "new",
   "contacted",
+  "contacted",
+  "contacted",
+  "qualified",
   "qualified",
   "appointment",
   "offer",
   "closed",
   "lost",
 ] as const;
-const SOURCES = ["qualification_flow", "listing_inquiry"] as const;
-const INTENTS = ["buy", "sell", "rent"] as const;
+// Hours-ago for each lead's createdAt (the 3 "new" ones are recent so they read as fresh).
+const HOURS_AGO = [2, 7, 26, 50, 74, 120, 170, 240, 360, 170, 300, 420];
+// Hours from creation to the first logged call (only used for contacted+; mixes fast/slow
+// so the median speed-to-contact is realistic). Indices 0–2 (new) are unused.
+const DELAY_H = [0, 0, 0, 0.5, 1, 3, 2, 30, 1.5, 18, 4, 48];
 
-export function generateLeads(rng: Rng, listings: SeedListing[]): SeedLeadBundle {
+export function generateLeads(rng: Rng, listings: SeedListing[], now: Date): SeedLeadBundle {
   const leads: NewLead[] = [];
   const activities: SeedLeadBundle["activities"] = [];
   const consents: SeedLeadBundle["consents"] = [];
 
-  const count = 12;
+  const ago = (hours: number) => new Date(now.getTime() - hours * 3_600_000);
+  const ahead = (hours: number) => new Date(now.getTime() + hours * 3_600_000);
+
+  const count = STATUS_PLAN.length;
   for (let i = 0; i < count; i++) {
     const name = `${rng.pick(FIRST)} ${rng.pick(LAST)}`;
     const handle = name.toLowerCase().replace(/[^a-z]+/g, ".");
@@ -50,9 +66,12 @@ export function generateLeads(rng: Rng, listings: SeedListing[]): SeedLeadBundle
     const email = mode !== "phone" ? `${handle}@example.com` : null;
     const phone = mode !== "email" ? `+1407${rng.int(2000000, 9999999)}` : null;
     const intent = rng.pick(INTENTS);
-    const status = rng.pick(STATUSES);
+    const status = STATUS_PLAN[i]!;
+    const createdAt = ago(HOURS_AGO[i]!);
 
-    const viewed = Array.from({ length: rng.int(0, 3) }, () => rng.pick(listings).slug);
+    // Lead 0 is the "hot" uncontacted lead — viewed several homes; the rest view 0–3.
+    const viewedN = i === 0 ? 4 : rng.int(0, 3);
+    const viewed = Array.from({ length: viewedN }, () => rng.pick(listings).slug);
     const answers =
       intent === "buy"
         ? {
@@ -75,6 +94,7 @@ export function generateLeads(rng: Rng, listings: SeedListing[]): SeedLeadBundle
       attribution: { utmSource: rng.pick(["google", "facebook", "direct"]), landingPath: "/" },
       // viewedListingIds stores slugs here as a stand-in; D-tasks may switch to ids. Schema is string[].
       viewedListingIds: viewed,
+      createdAt,
     });
 
     // consent: a record for each channel the lead provided
@@ -102,19 +122,36 @@ export function generateLeads(rng: Rng, listings: SeedListing[]): SeedLeadBundle
     // activities so the timeline looks alive
     activities.push({
       leadIndex: i,
-      row: { type: "note", body: "Lead captured from the website.", meta: {} },
+      row: { type: "note", body: "Lead captured from the website.", meta: {}, createdAt },
     });
     if (status !== "new")
       activities.push({
         leadIndex: i,
-        row: { type: "call", body: "Left a voicemail; will follow up.", meta: {} },
-      });
-    if (status === "appointment" || status === "offer")
-      activities.push({
-        leadIndex: i,
-        row: { type: "reminder", body: "Confirm showing time.", meta: {}, dueAt: null },
+        row: {
+          type: "call",
+          body: "Left a voicemail; will follow up.",
+          meta: {},
+          createdAt: new Date(createdAt.getTime() + DELAY_H[i]! * 3_600_000),
+        },
       });
   }
+
+  // Follow-up reminders with real due dates so the dashboard's "overdue / today" lists
+  // have data. Indices map to STATUS_PLAN: 8=appointment, 9=offer, 3/4=contacted, 6=qualified.
+  const reminder = (
+    leadIndex: number,
+    body: string,
+    dueAt: Date,
+    completedAt: Date | null = null,
+  ) =>
+    activities.push({ leadIndex, row: { type: "reminder", body, meta: {}, dueAt, completedAt } });
+
+  reminder(8, "Confirm the showing time", ahead(3)); // due today
+  reminder(6, "Send a shortlist of listings", ahead(1)); // due today
+  reminder(9, "Follow up on the offer", ago(24)); // overdue ~1d
+  reminder(3, "Call back about financing", ago(48)); // overdue ~2d
+  reminder(4, "Sent docs — confirmed", ago(48), ago(24)); // completed (history)
+  reminder(7, "Quarterly check-in", ahead(72)); // upcoming (lives on the lead, off-dashboard)
 
   return { leads, activities, consents };
 }
