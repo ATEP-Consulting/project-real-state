@@ -10,6 +10,7 @@ import {
   type LeadStatus,
 } from "@herrera/db";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { LeadBoard } from "@/components/admin/LeadBoard";
 import { StatusBadge, STATUS_LABEL, STATUS_ORDER } from "@/components/admin/StatusBadge";
 import { requireAdmin } from "@/server/auth/guards";
 import { formatDate, parseLeadFilters, RANGE_OPTIONS } from "@/lib/admin-leads";
@@ -19,6 +20,7 @@ type Props = {
   leads: LeadListItem[];
   counts: Record<LeadStatus, number>;
   sources: string[];
+  view: "list" | "board";
   q: { intent: string; status: string; source: string; range: string; q: string };
 };
 
@@ -26,8 +28,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const guard = await requireAdmin(ctx);
   if (guard) return guard;
   const filters = parseLeadFilters(ctx.query, new Date());
+  const view: Props["view"] = ctx.query.view === "board" ? "board" : "list";
+  // The board shows every stage as a column, so it ignores the status filter.
+  const listFilters = view === "board" ? { ...filters, status: undefined } : filters;
   const [leads, counts, sources] = await Promise.all([
-    listLeads(filters),
+    listLeads(listFilters),
     getPipelineCounts(),
     getLeadSources(),
   ]);
@@ -37,6 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
       leads,
       counts,
       sources,
+      view,
       q: {
         intent: s("intent"),
         status: s("status"),
@@ -48,13 +54,20 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   };
 };
 
-export default function LeadInbox({ leads, counts, sources, q }: Props) {
+function stripView(q: Props["q"]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(q)) if (v) out[k] = v;
+  return out;
+}
+
+export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState(q.q);
 
   function apply(patch: Record<string, string>) {
     const next = { ...q, ...patch };
     const query: Record<string, string> = {};
+    if (view === "board") query.view = "board";
     for (const [k, v] of Object.entries(next)) if (v) query[k] = v;
     void router.push({ pathname: "/admin/leads", query });
   }
@@ -63,19 +76,36 @@ export default function LeadInbox({ leads, counts, sources, q }: Props) {
     <AdminLayout title="Leads">
       <h1 className={styles.h1}>Leads</h1>
 
-      <div className={styles.pipeline}>
-        {[...STATUS_ORDER, "lost"].map((st) => (
-          <button
-            key={st}
-            type="button"
-            className={`${styles.stage} ${q.status === st ? styles.stageOn : ""}`}
-            onClick={() => apply({ status: q.status === st ? "" : st })}
-          >
-            <span className={styles.stageN}>{counts[st as LeadStatus]}</span>
-            <span className={styles.stageL}>{STATUS_LABEL[st]}</span>
-          </button>
-        ))}
+      <div className={styles.viewToggle}>
+        <Link
+          href={{ pathname: "/admin/leads", query: stripView(q) }}
+          className={`${styles.viewTab} ${view === "list" ? styles.viewOn : ""}`}
+        >
+          List
+        </Link>
+        <Link
+          href={{ pathname: "/admin/leads", query: { ...stripView(q), view: "board" } }}
+          className={`${styles.viewTab} ${view === "board" ? styles.viewOn : ""}`}
+        >
+          Board
+        </Link>
       </div>
+
+      {view === "list" && (
+        <div className={styles.pipeline}>
+          {[...STATUS_ORDER, "lost"].map((st) => (
+            <button
+              key={st}
+              type="button"
+              className={`${styles.stage} ${q.status === st ? styles.stageOn : ""}`}
+              onClick={() => apply({ status: q.status === st ? "" : st })}
+            >
+              <span className={styles.stageN}>{counts[st as LeadStatus]}</span>
+              <span className={styles.stageL}>{STATUS_LABEL[st]}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <form
         className={styles.filters}
@@ -114,55 +144,63 @@ export default function LeadInbox({ leads, counts, sources, q }: Props) {
         />
         <button type="submit">Search</button>
         {(q.intent || q.status || q.source || q.range || q.q) && (
-          <Link href="/admin/leads" className={styles.clear}>
+          <Link
+            href={view === "board" ? "/admin/leads?view=board" : "/admin/leads"}
+            className={styles.clear}
+          >
             Clear
           </Link>
         )}
       </form>
 
-      <p className={styles.count}>
-        {leads.length} {leads.length === 1 ? "lead" : "leads"}
-      </p>
-
-      {leads.length === 0 ? (
-        <p className={styles.empty}>No leads match these filters.</p>
+      {view === "board" ? (
+        <LeadBoard leads={leads} />
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Contact</th>
-              <th>Intent</th>
-              <th>Stage</th>
-              <th>Source</th>
-              <th>Viewed</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leads.map((l) => (
-              <tr
-                key={l.id}
-                className={styles.row}
-                onClick={() => void router.push(`/admin/leads/${l.id}`)}
-              >
-                <td>
-                  <Link href={`/admin/leads/${l.id}`}>{l.name ?? "—"}</Link>
-                </td>
-                <td className={styles.contact}>{l.email ?? l.phone ?? "—"}</td>
-                <td>
-                  <StatusBadge kind="intent" value={l.intent} />
-                </td>
-                <td>
-                  <StatusBadge kind="status" value={l.status} />
-                </td>
-                <td className={styles.src}>{l.source ?? "—"}</td>
-                <td>{l.viewedCount}</td>
-                <td className={styles.date}>{formatDate(l.createdAt)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <p className={styles.count}>
+            {leads.length} {leads.length === 1 ? "lead" : "leads"}
+          </p>
+          {leads.length === 0 ? (
+            <p className={styles.empty}>No leads match these filters.</p>
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Intent</th>
+                  <th>Stage</th>
+                  <th>Source</th>
+                  <th>Viewed</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((l) => (
+                  <tr
+                    key={l.id}
+                    className={styles.row}
+                    onClick={() => void router.push(`/admin/leads/${l.id}`)}
+                  >
+                    <td>
+                      <Link href={`/admin/leads/${l.id}`}>{l.name ?? "—"}</Link>
+                    </td>
+                    <td className={styles.contact}>{l.email ?? l.phone ?? "—"}</td>
+                    <td>
+                      <StatusBadge kind="intent" value={l.intent} />
+                    </td>
+                    <td>
+                      <StatusBadge kind="status" value={l.status} />
+                    </td>
+                    <td className={styles.src}>{l.source ?? "—"}</td>
+                    <td>{l.viewedCount}</td>
+                    <td className={styles.date}>{formatDate(l.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
     </AdminLayout>
   );

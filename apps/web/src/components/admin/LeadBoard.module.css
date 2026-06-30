@@ -1,0 +1,100 @@
+.board {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  align-items: flex-start;
+}
+.column {
+  flex: 0 0 220px;
+  background: var(--color-sand-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  min-height: 120px;
+}
+.colHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+.colLabel {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-stone);
+}
+.colCount {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-forest);
+  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  padding: 1px 9px;
+}
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+.cardName {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-forest);
+  text-decoration: none;
+}
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cardContact {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--color-stone);
+}
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.cardDate {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--color-stone-soft);
+}
+.move {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: 3px 4px;
+  cursor: pointer;
+}
+.colEmpty {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--color-stone-soft);
+  text-align: center;
+  font-size: 13px;
+  margin: 4px 0;
+}

@@ -5,6 +5,27 @@
   color: var(--color-forest);
   margin: 0 0 16px;
 }
+.viewToggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background: var(--color-sand-100);
+  padding: 4px;
+  border-radius: var(--radius-md);
+}
+.viewTab {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+}
+.viewOn {
+  background: var(--color-forest);
+  color: #fff;
+}
 .pipeline {
   display: flex;
   flex-wrap: wrap;
