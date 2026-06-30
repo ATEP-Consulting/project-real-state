@@ -39,19 +39,21 @@ export function Hero() {
             rent with close, expert guidance.
           </p>
 
-          {/* PRIMARY — lead capture (the hero's #1 action) */}
-          <div className={styles.capture}>
-            {CAPTURE.map((c) => (
-              <button
-                key={c.intent}
-                type="button"
-                className={styles.captureBtn}
-                onClick={() => openCapture(c.intent)}
-              >
-                <span className={styles.captureSmall}>I want to</span>
-                <span className={styles.captureVerb}>{c.verb}</span>
-              </button>
-            ))}
+          {/* PRIMARY — lead capture (the hero's #1 action), styled like the search tabs */}
+          <div className={styles.captureWrap}>
+            <span className={styles.captureLabel}>I want to</span>
+            <div className={styles.capture} role="group" aria-label="Start with Nilyan">
+              {CAPTURE.map((c) => (
+                <button
+                  key={c.intent}
+                  type="button"
+                  className={styles.captureBtn}
+                  onClick={() => openCapture(c.intent)}
+                >
+                  {c.verb}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* SECONDARY — explore listings yourself (the signature /search) */}

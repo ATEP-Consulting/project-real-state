@@ -2,14 +2,6 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/router";
 import styles from "./HeroSearch.module.css";
 
-type Intent = "buy" | "rent" | "sell";
-
-const TABS: { id: Intent; label: string }[] = [
-  { id: "buy", label: "Buy" },
-  { id: "sell", label: "Sell" },
-  { id: "rent", label: "Rent" },
-];
-
 const TYPES = [
   { value: "", label: "Type" },
   { value: "single_family", label: "Single-family" },
@@ -32,36 +24,22 @@ function SearchIcon() {
 
 export function HeroSearch() {
   const router = useRouter();
-  const [intent, setIntent] = useState<Intent>("buy");
   const [q, setQ] = useState("");
   const [type, setType] = useState("");
 
-  // D2/D3/D7 refine this; for now the controls just shape the /search query string.
+  // The hero's Buy/Sell/Rent capture buttons now own intent; this card is the
+  // "explore listings yourself" path → /search by location + property type.
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const params = new URLSearchParams({ intent });
+    const params = new URLSearchParams();
     if (q.trim()) params.set("q", q.trim());
     if (type) params.set("type", type);
-    void router.push(`/search?${params.toString()}`);
+    const qs = params.toString();
+    void router.push(qs ? `/search?${qs}` : "/search");
   }
 
   return (
     <form className={styles.card} onSubmit={onSubmit} role="search">
-      <div className={styles.tabs} role="tablist" aria-label="Search intent">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={intent === t.id}
-            className={`${styles.tab} ${intent === t.id ? styles.tabActive : ""}`}
-            onClick={() => setIntent(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
       <div className={styles.row}>
         <span className={styles.searchIcon} aria-hidden="true">
           <SearchIcon />

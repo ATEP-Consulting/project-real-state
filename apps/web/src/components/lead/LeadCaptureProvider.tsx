@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -11,6 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { QualificationQuestionConfig } from "@herrera/db";
 import { DURATION, EASE } from "@/theme/motion";
 import { LeadCaptureFlow } from "./LeadCaptureFlow";
+import { FlowSkeleton } from "./FlowSkeleton";
 import type { Answers, Intent } from "@/lib/lead-capture";
 import styles from "./LeadCaptureProvider.module.css";
 
@@ -33,6 +35,9 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
   const [intent, setIntent] = useState<Intent | null>(null);
   const [initialAnswers, setInitialAnswers] = useState<Answers>({});
   const [loaded, setLoaded] = useState<Loaded>({ state: "loading" });
+
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
 
   const openCapture = useCallback<Ctx["openCapture"]>((i, opts) => {
     setIntent(i);
@@ -73,6 +78,54 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
     };
   }, [intent, close]);
 
+  // Remember what was focused when the overlay opened; restore it on close.
+  useEffect(() => {
+    if (intent) {
+      restoreFocusRef.current = document.activeElement as HTMLElement | null;
+    } else if (restoreFocusRef.current) {
+      restoreFocusRef.current.focus?.();
+      restoreFocusRef.current = null;
+    }
+  }, [intent]);
+
+  // Move focus into the sheet on open / content change, and trap Tab inside it.
+  useEffect(() => {
+    if (!intent) return;
+    const sheet = sheetRef.current;
+    if (!sheet) return;
+    const focusable = () =>
+      Array.from(
+        sheet.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => el.offsetParent !== null);
+    // Respect an autoFocused field; otherwise focus the first control (or the sheet).
+    if (!sheet.contains(document.activeElement)) {
+      const f = focusable();
+      (f[0] ?? sheet).focus();
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const f = focusable();
+      if (f.length === 0) {
+        e.preventDefault();
+        sheet.focus();
+        return;
+      }
+      const first = f[0]!;
+      const last = f[f.length - 1]!;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    sheet.addEventListener("keydown", onKey);
+    return () => sheet.removeEventListener("keydown", onKey);
+  }, [intent, loaded.state]);
+
   const value = useMemo<Ctx>(() => ({ openCapture }), [openCapture]);
 
   const overlayAnim = reduce
@@ -106,11 +159,13 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
             {...overlayAnim}
           >
             <motion.div
+              ref={sheetRef}
+              tabIndex={-1}
               className={styles.sheet}
               onClick={(e) => e.stopPropagation()}
               {...sheetAnim}
             >
-              {loaded.state === "loading" && <p className={styles.note}>Loading…</p>}
+              {loaded.state === "loading" && <FlowSkeleton />}
               {loaded.state === "error" && (
                 <div className={styles.note}>
                   <p>We couldn&rsquo;t load the form. Please try again.</p>

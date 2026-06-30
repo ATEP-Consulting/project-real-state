@@ -8,22 +8,35 @@
   padding: clamp(20px, 4vw, 32px);
   position: relative;
 }
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  /* pull the X into the panel's top-right corner, above the progress bar */
+  margin: -6px -8px -2px 0;
+}
 .close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 36px;
-  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   border: none;
   background: transparent;
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
-  color: var(--color-ink);
+  color: var(--color-stone);
   border-radius: var(--radius-full);
+  transition: background-color var(--dur-fast) var(--ease-standard);
 }
 .close:hover {
   background: var(--color-sand-100);
+  color: var(--color-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .close {
+    transition: none;
+  }
 }
 
 .progressTrack {
@@ -85,8 +98,7 @@
   cursor: pointer;
   transition:
     border-color var(--dur-fast) var(--ease-standard),
-    background-color var(--dur-fast) var(--ease-standard),
-    transform var(--dur-fast) var(--ease-standard);
+    background-color var(--dur-fast) var(--ease-standard);
 }
 .option:hover {
   border-color: var(--color-bronze);

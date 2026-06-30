@@ -107,61 +107,57 @@
   }
 }
 
-/* PRIMARY capture buttons — the hero's lead action */
+/* PRIMARY — lead-capture launcher, styled like the search tabs (a white segmented bar) */
+.captureWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+.captureLabel {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
 .capture {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 34px;
+  gap: 6px;
+  padding: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
 }
 .captureBtn {
   appearance: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-  min-width: 188px;
-  padding: 16px 30px;
   border: none;
-  border-radius: 16px;
-  background: var(--color-paper);
   cursor: pointer;
-  text-align: left;
-  box-shadow: 0 12px 32px rgba(11, 24, 22, 0.3);
+  min-width: 120px;
+  padding: 14px 24px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-forest);
+  background: var(--color-sand-100);
+  border-radius: var(--radius-sm);
   transition:
-    transform var(--dur-fast) var(--ease-standard),
-    box-shadow var(--dur-fast) var(--ease-standard);
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
 }
 .captureBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 44px rgba(11, 24, 22, 0.38);
+  background: var(--color-forest);
+  color: #fff;
 }
 .captureBtn:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-}
-.captureSmall {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-bronze);
-}
-.captureVerb {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 27px;
-  font-weight: 500;
-  line-height: 1.04;
-  color: var(--color-forest);
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
   .captureBtn {
     transition: none;
-  }
-  .captureBtn:hover {
-    transform: none;
   }
 }
 
@@ -192,12 +188,12 @@
     padding-block: 72px 110px;
   }
   .capture {
-    flex-direction: column;
+    width: 100%;
+    max-width: 360px;
   }
   .captureBtn {
-    width: 100%;
+    flex: 1;
     min-width: 0;
-    align-items: center;
-    text-align: center;
+    padding: 13px 8px;
   }
 }

@@ -83,6 +83,10 @@
 .valInput::placeholder {
   color: rgba(255, 255, 255, 0.65);
 }
+.valInput:focus-visible {
+  outline: 2px solid var(--color-bronze-light);
+  outline-offset: 2px;
+}
 .valBtn {
   flex-shrink: 0;
   font-family: var(--font-sans), system-ui, sans-serif;

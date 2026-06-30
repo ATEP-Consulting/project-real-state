@@ -198,9 +198,11 @@ export function LeadCaptureFlow({
     return (
       <div className={styles.panel}>
         {onClose && (
-          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-            ×
-          </button>
+          <div className={styles.topbar}>
+            <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+              ×
+            </button>
+          </div>
         )}
         <div className={styles.done}>
           <h2 className={styles.doneTitle}>Thanks — we&rsquo;ll be in touch shortly.</h2>
@@ -228,9 +230,11 @@ export function LeadCaptureFlow({
   return (
     <div className={styles.panel}>
       {onClose && (
-        <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-          ×
-        </button>
+        <div className={styles.topbar}>
+          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+            ×
+          </button>
+        </div>
       )}
       <div className={styles.progressTrack} aria-hidden="true">
         <div className={styles.progressBar} style={{ width: `${progressPct(i, steps.length)}%` }} />
@@ -266,6 +270,7 @@ export function LeadCaptureFlow({
               <h2 className={styles.q}>How should Nilyan reach you?</h2>
               <input
                 className={styles.input}
+                aria-label="Your name"
                 placeholder="Your name"
                 autoComplete="name"
                 value={contact.name ?? ""}
@@ -273,6 +278,7 @@ export function LeadCaptureFlow({
               />
               <input
                 className={styles.input}
+                aria-label="Email address"
                 type="email"
                 placeholder="Email"
                 autoComplete="email"
@@ -281,6 +287,7 @@ export function LeadCaptureFlow({
               />
               <input
                 className={styles.input}
+                aria-label="Phone number"
                 type="tel"
                 placeholder="Phone"
                 autoComplete="tel"
