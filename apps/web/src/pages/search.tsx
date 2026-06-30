@@ -1,5 +1,6 @@
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
+import { getSearchFilters, type SearchFilterConfig } from "@herrera/db";
 import { Header } from "@/components/layout/Header";
 import { SearchView } from "@/components/search/SearchView";
 import { runSearch, type SearchResult } from "@/server/run-search";
@@ -14,6 +15,7 @@ type Props = {
   params: SearchParams;
   query: Record<string, string>;
   styleUrl: string;
+  filters: SearchFilterConfig[];
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
@@ -30,6 +32,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const b = boundsFromPoints(initial.points);
     initialView = b ? { kind: "bounds", bounds: b } : { kind: "center", ...DEFAULT_VIEW };
   }
+  let filters: SearchFilterConfig[] = [];
+  try {
+    filters = await getSearchFilters();
+  } catch (e) {
+    console.warn("[search] filter config failed:", (e as Error).message);
+  }
   return {
     props: {
       initial,
@@ -37,6 +45,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
       params,
       query: serializeSearchQuery(params),
       styleUrl: MAP_STYLE_URL,
+      filters,
     },
   };
 };

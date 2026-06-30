@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import type { SearchFilterConfig } from "@herrera/db";
 import { SearchResults } from "./SearchResults";
 import { debounce } from "@/lib/debounce";
 import { serializeSearchQuery, type Bbox, type SearchParams } from "@/lib/search-params";
@@ -26,6 +27,7 @@ export function SearchView({
   params: SearchParams;
   query: Record<string, string>;
   styleUrl: string;
+  filters: SearchFilterConfig[];
 }) {
   const router = useRouter();
   const [cards, setCards] = useState<ListingCardVM[]>(initial.cards);
