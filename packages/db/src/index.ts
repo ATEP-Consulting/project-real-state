@@ -12,5 +12,18 @@ export {
   type QualificationQuestionConfig,
 } from "./qualification";
 export { createLeadWithConsent, type CreateLeadInput, type LeadIntent } from "./leads-create";
+export {
+  listLeads,
+  getPipelineCounts,
+  getLeadSources,
+  getLeadDetail,
+  type LeadStatus,
+  type LeadFilters,
+  type LeadListItem,
+  type LeadActivity,
+  type LeadConsent,
+  type ViewedListing,
+  type LeadDetail,
+} from "./admin-leads";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";

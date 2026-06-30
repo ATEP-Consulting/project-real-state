@@ -33,14 +33,7 @@ const STATUSES = [
   "closed",
   "lost",
 ] as const;
-const SOURCES = [
-  "home_hero",
-  "listing_inquiry",
-  "home_value",
-  "search",
-  "contact",
-  "floridacost_cta",
-] as const;
+const SOURCES = ["qualification_flow", "listing_inquiry"] as const;
 const INTENTS = ["buy", "sell", "rent"] as const;
 
 export function generateLeads(rng: Rng, listings: SeedListing[]): SeedLeadBundle {
