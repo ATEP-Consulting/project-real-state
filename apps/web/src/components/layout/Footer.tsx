@@ -67,6 +67,10 @@ export function Footer() {
             <Link href="/terms" className={styles.legalLink}>
               Terms
             </Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/fair-housing" className={styles.legalLink}>
+              Fair Housing
+            </Link>
           </div>
         </div>
       </Container>

@@ -6,8 +6,10 @@ import { FEATURED_AREAS, type Area } from "@/data/areas";
 import styles from "./ExploreAreas.module.css";
 
 function AreaTile({ area, big = false }: { area: Area; big?: boolean }) {
+  // D12 Phase A: restore the per-area link (/areas/[city]) when the Miami feed lands.
+  // For now tiles route to /search to avoid dead links on mock-Orlando area pages.
   return (
-    <Link href={`/areas/${area.slug}`} className={`${styles.tile} ${big ? styles.big : ""}`}>
+    <Link href="/search" className={`${styles.tile} ${big ? styles.big : ""}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={area.image} alt={area.name} className={styles.img} loading="lazy" />
       <div className={styles.scrim} />
