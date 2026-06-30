@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { KeyFacts } from "@/components/listing/KeyFacts";
 import { PhotoGallery } from "@/components/listing/PhotoGallery";
+import { MortgageCalculator } from "@/components/listing/MortgageCalculator";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
@@ -129,7 +130,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
               </section>
             )}
 
-            {/* D4-TASK7 SEAM: <MortgageCalculator /> mounts here */}
+            <MortgageCalculator price={vm.price} />
 
             <ListingCompliance
               compliance={vm.compliance}
