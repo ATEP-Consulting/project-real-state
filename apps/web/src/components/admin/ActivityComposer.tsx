@@ -56,6 +56,7 @@ export function ActivityComposer({ leadId }: { leadId: string }) {
           <button
             key={t.id}
             type="button"
+            aria-pressed={kind === t.id}
             className={`${styles.tab} ${kind === t.id ? styles.tabOn : ""}`}
             onClick={() => setKind(t.id)}
           >

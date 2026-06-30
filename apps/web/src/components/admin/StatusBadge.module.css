@@ -13,7 +13,7 @@
 /* pipeline progression — cool→warm; closed = forest, lost = muted */
 .s_new {
   background: var(--color-sand-200);
-  color: var(--color-stone);
+  color: var(--color-ink-soft);
 }
 .s_contacted {
   background: #e7eef0;
@@ -25,11 +25,11 @@
 }
 .s_appointment {
   background: #f4ebdc;
-  color: var(--color-bronze-dark);
+  color: #6a4824;
 }
 .s_offer {
   background: #f1e6d3;
-  color: var(--color-bronze-dark);
+  color: #6a4824;
 }
 .s_closed {
   background: var(--color-forest);

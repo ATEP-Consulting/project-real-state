@@ -251,8 +251,11 @@ export async function addActivity(leadId: string, input: ActivityCreate): Promis
   // ADR-008 webhook seam (lead-updated). Not in v1.
 }
 
-/** Mark a reminder activity as done. */
+/** Mark a reminder activity as done (scoped to reminders so a stray id can't stamp other rows). */
 export async function completeReminder(activityId: string): Promise<void> {
   const db = getDb();
-  await db.update(activities).set({ completedAt: new Date() }).where(eq(activities.id, activityId));
+  await db
+    .update(activities)
+    .set({ completedAt: new Date() })
+    .where(and(eq(activities.id, activityId), eq(activities.type, "reminder")));
 }

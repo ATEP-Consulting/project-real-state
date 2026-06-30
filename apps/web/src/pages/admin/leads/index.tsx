@@ -80,12 +80,14 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
         <Link
           href={{ pathname: "/admin/leads", query: stripView(q) }}
           className={`${styles.viewTab} ${view === "list" ? styles.viewOn : ""}`}
+          aria-current={view === "list" ? "page" : undefined}
         >
           List
         </Link>
         <Link
           href={{ pathname: "/admin/leads", query: { ...stripView(q), view: "board" } }}
           className={`${styles.viewTab} ${view === "board" ? styles.viewOn : ""}`}
+          aria-current={view === "board" ? "page" : undefined}
         >
           Board
         </Link>
@@ -97,6 +99,7 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
             <button
               key={st}
               type="button"
+              aria-pressed={q.status === st}
               className={`${styles.stage} ${q.status === st ? styles.stageOn : ""}`}
               onClick={() => apply({ status: q.status === st ? "" : st })}
             >
@@ -114,13 +117,21 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
           apply({ q: search.trim() });
         }}
       >
-        <select value={q.intent} onChange={(e) => apply({ intent: e.target.value })}>
+        <select
+          aria-label="Filter by intent"
+          value={q.intent}
+          onChange={(e) => apply({ intent: e.target.value })}
+        >
           <option value="">All intents</option>
           <option value="buy">Buy</option>
           <option value="sell">Sell</option>
           <option value="rent">Rent</option>
         </select>
-        <select value={q.source} onChange={(e) => apply({ source: e.target.value })}>
+        <select
+          aria-label="Filter by source"
+          value={q.source}
+          onChange={(e) => apply({ source: e.target.value })}
+        >
           <option value="">All sources</option>
           {sources.map((s) => (
             <option key={s} value={s}>
@@ -128,7 +139,11 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
             </option>
           ))}
         </select>
-        <select value={q.range} onChange={(e) => apply({ range: e.target.value })}>
+        <select
+          aria-label="Filter by date range"
+          value={q.range}
+          onChange={(e) => apply({ range: e.target.value })}
+        >
           {RANGE_OPTIONS.map((r) => (
             <option key={r.value} value={r.value}>
               {r.label}
@@ -163,42 +178,44 @@ export default function LeadInbox({ leads, counts, sources, view, q }: Props) {
           {leads.length === 0 ? (
             <p className={styles.empty}>No leads match these filters.</p>
           ) : (
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Contact</th>
-                  <th>Intent</th>
-                  <th>Stage</th>
-                  <th>Source</th>
-                  <th>Viewed</th>
-                  <th>Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leads.map((l) => (
-                  <tr
-                    key={l.id}
-                    className={styles.row}
-                    onClick={() => void router.push(`/admin/leads/${l.id}`)}
-                  >
-                    <td>
-                      <Link href={`/admin/leads/${l.id}`}>{l.name ?? "—"}</Link>
-                    </td>
-                    <td className={styles.contact}>{l.email ?? l.phone ?? "—"}</td>
-                    <td>
-                      <StatusBadge kind="intent" value={l.intent} />
-                    </td>
-                    <td>
-                      <StatusBadge kind="status" value={l.status} />
-                    </td>
-                    <td className={styles.src}>{l.source ?? "—"}</td>
-                    <td>{l.viewedCount}</td>
-                    <td className={styles.date}>{formatDate(l.createdAt)}</td>
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Intent</th>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Viewed</th>
+                    <th scope="col">Created</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {leads.map((l) => (
+                    <tr
+                      key={l.id}
+                      className={styles.row}
+                      onClick={() => void router.push(`/admin/leads/${l.id}`)}
+                    >
+                      <td>
+                        <Link href={`/admin/leads/${l.id}`}>{l.name ?? "—"}</Link>
+                      </td>
+                      <td className={styles.contact}>{l.email ?? l.phone ?? "—"}</td>
+                      <td>
+                        <StatusBadge kind="intent" value={l.intent} />
+                      </td>
+                      <td>
+                        <StatusBadge kind="status" value={l.status} />
+                      </td>
+                      <td className={styles.src}>{l.source ?? "—"}</td>
+                      <td>{l.viewedCount}</td>
+                      <td className={styles.date}>{formatDate(l.createdAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </>
       )}
