@@ -1,10 +1,12 @@
 /* ---- Trigger (the closed box) ---- */
 .trigger {
+  /* Content-sized like a native <select> (do NOT force width:100% — in a flex
+     row it would squash siblings; in a stretch column it still fills). */
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  width: 100%;
+  max-width: 100%;
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--color-ink);
   background: transparent;
