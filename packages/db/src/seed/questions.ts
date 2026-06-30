@@ -46,8 +46,22 @@ export const QUESTIONS: NewQualificationQuestion[] = [
   },
   {
     intent: "buy",
+    key: "also_selling",
+    sortOrder: 5,
+    type: "single_select",
+    required: false,
+    label: "Do you also need to sell a home?",
+    labelEs: "¿También necesitas vender una propiedad?",
+    options: [
+      { value: "yes", label: "Yes", labelEs: "Sí" },
+      { value: "no", label: "No", labelEs: "No" },
+      { value: "unsure", label: "Not sure", labelEs: "No estoy seguro" },
+    ],
+  },
+  {
+    intent: "buy",
     key: "beds",
-    sortOrder: 4,
+    sortOrder: 6,
     type: "number",
     required: false,
     label: "How many bedrooms do you need?",

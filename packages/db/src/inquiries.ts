@@ -1,8 +1,6 @@
 import { z } from "zod";
-import { getDb } from "./client";
-import { consentRecords, type NewConsentRecord } from "./schema/consent";
-import { leads } from "./schema/leads";
 import { attributionSchema } from "./schema/json";
+import { createLeadWithConsent } from "./leads-create";
 
 export const listingInquirySchema = z
   .object({
@@ -29,46 +27,22 @@ const CONSENT_WORDING =
 
 /** Create a lead + per-channel consent records from a per-listing inquiry (ADR-007/011). */
 export async function createListingInquiry(input: ListingInquiry): Promise<{ leadId: string }> {
-  const db = getDb();
-  const inserted = await db
-    .insert(leads)
-    .values({
-      intent: "buy",
-      name: input.name ?? null,
-      email: input.email ?? null,
-      phone: input.phone ?? null,
-      answers: {
-        requestType: input.requestType,
-        message: input.message ?? null,
-        preferredDate: input.preferredDate ?? null,
-        listingSlug: input.listingSlug,
-      },
-      source: "listing_inquiry",
-      attribution: input.attribution,
-      viewedListingIds: [input.listingSlug],
-    })
-    .returning({ id: leads.id });
-  const leadId = inserted[0]!.id;
-
-  const consents: NewConsentRecord[] = [];
-  if (input.email && input.consentEmail)
-    consents.push({
-      leadId,
-      channel: "email",
-      granted: true,
-      wording: CONSENT_WORDING,
-      source: "listing_inquiry",
-    });
-  if (input.phone && input.consentPhone)
-    consents.push({
-      leadId,
-      channel: "phone",
-      granted: true,
-      wording: CONSENT_WORDING,
-      source: "listing_inquiry",
-    });
-  if (consents.length) await db.insert(consentRecords).values(consents);
-
-  // D8 SEAM (ADR-009): trigger Nilyan's instant email/WhatsApp alert + daily digest here. Not in D4.
-  return { leadId };
+  return createLeadWithConsent({
+    intent: "buy",
+    name: input.name ?? null,
+    email: input.email ?? null,
+    phone: input.phone ?? null,
+    answers: {
+      requestType: input.requestType,
+      message: input.message ?? null,
+      preferredDate: input.preferredDate ?? null,
+      listingSlug: input.listingSlug,
+    },
+    source: "listing_inquiry",
+    attribution: input.attribution,
+    viewedListingIds: [input.listingSlug],
+    consentEmail: input.email ? input.consentEmail : false,
+    consentPhone: input.phone ? input.consentPhone : false,
+    consentWording: CONSENT_WORDING,
+  });
 }

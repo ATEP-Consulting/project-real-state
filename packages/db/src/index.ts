@@ -4,5 +4,13 @@ export { searchListings, type SearchListing, type SearchListingParams } from "./
 export { getListingBySlug, getSimilarListings, getPublishedListingSlugs } from "./listings-detail";
 export { getSearchFilters, type SearchFilterConfig } from "./search-filters";
 export { listingInquirySchema, createListingInquiry, type ListingInquiry } from "./inquiries";
+export {
+  qualificationLeadSchema,
+  createQualificationLead,
+  getQualificationQuestions,
+  type QualificationLead,
+  type QualificationQuestionConfig,
+} from "./qualification";
+export { createLeadWithConsent, type CreateLeadInput, type LeadIntent } from "./leads-create";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";
