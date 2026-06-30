@@ -8,6 +8,7 @@ import { KeyFacts } from "@/components/listing/KeyFacts";
 import { PhotoGallery } from "@/components/listing/PhotoGallery";
 import { MortgageCalculator } from "@/components/listing/MortgageCalculator";
 import { InquiryForm } from "@/components/listing/InquiryForm";
+import { SimilarListings } from "@/components/listing/SimilarListings";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
@@ -72,7 +73,6 @@ export const getStaticProps: GetStaticProps<DetailProps> = async (ctx) => {
 };
 
 export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }: DetailProps) {
-  void similar; // mounted in Task 10
   return (
     <SiteLayout>
       <Head>
@@ -144,7 +144,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
           </aside>
         </div>
 
-        {/* D4-TASK10 SEAM: <SimilarListings /> mounts here */}
+        <SimilarListings listings={similar} />
       </Container>
     </SiteLayout>
   );
