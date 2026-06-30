@@ -49,3 +49,18 @@ a near-drop-in swap (shared GL API).
   premium look; rejected as default.
 - **Leaflet (raster)** — simpler, but no vector/WebGL polish, weaker clustering/draw UX for the
   signature screen.
+
+## Addendum (D3, 2026-06-30) — search filters
+
+- `/search` gains an **Idealista-pattern filter bar** (price, beds, baths, property type) + a
+  **"More filters"** panel (Florida filters: waterfront, pool, 55+, no-HOA). Filters apply **live**
+  over the existing synced list+map and live in the **query string** alongside `bbox`/`poly`
+  (shareable, SSR-friendly) — they compose with the viewport and draw-a-zone, they don't replace them.
+- The **exposed filter SET is admin-configurable** (ADR-007 parallel): rows in a `search_filters`
+  table (key, control, label/labelEs, options, order, advanced flag, active) drive *presentation*;
+  a code registry keyed by the stable `key` owns the param parsing + PostGIS predicate (injection-safe).
+  Nilyan edits the set in `/admin` in **D11**; D3 ships the data model + seam only.
+- A **list-only ↔ list+map** layout toggle (desktop) and a mobile **Filters** sheet; the set stays
+  intentionally limited (lead-gen).
+- **UX reference is pattern, not aesthetic** (Idealista); visuals stay ours (forest/cream/bronze,
+  Spectral/Hanken). See `docs/visual-direction.md` §10.

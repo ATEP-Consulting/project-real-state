@@ -298,3 +298,18 @@ The prototype renders in Spanish; v1 ships **English** copy (ADR-018) with the s
 9. **Footer** (`screens/section_h_footer.png`) — forest; brand block (monogram + wordmark + tagline +
    phone) + **3 columns** (Explore / Areas / Contact); bottom row: "© … FL License …" and
    "Equal Housing Opportunity · Privacy · Terms" (+ a subtle "Sample data — demo" marker for the demo).
+
+## 10. Search & filter UX reference (pattern, not aesthetic)
+
+- **Search & filter UX reference:** **Idealista** (idealista.com) — the most-used property portal in
+  Spain. We model the *functionality/interaction* on it: a compact filter bar of dropdown "pills"
+  (price, beds, baths, type) + a **"More filters"** panel with a live **"See N homes"** count,
+  filters that apply live (no full reload) over a synced list+map, a **list-only ↔ list+map** layout
+  choice, a draw-your-area tool, and a clear shareable results count. **Patterns only — never the
+  visuals.** (Idealista has strong anti-bot protection; the patterns above are the well-known portal
+  conventions it uses, not scraped specifics.)
+- **Site-structure reference:** **Carolina** (competitor portal) — overall page/section structure.
+- **Visual source of truth:** **our `Prototipo.dc.html`** (Claude Design) + the committed offline
+  export — forest/cream/bronze, Spectral/Hanken. Any reference informs *behavior*, never *look*.
+- **Lead-gen guardrail (ADR-007/012):** the exposed filter set is intentionally limited; tools are
+  useful but not exhaustive, leaving good reasons to contact Nilyan.
