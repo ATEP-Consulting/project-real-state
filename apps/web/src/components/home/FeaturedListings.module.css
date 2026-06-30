@@ -35,9 +35,26 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Phones: turn the long single-column stack into a horizontal scroll-snap rail.
+   Native scroll, no JS — the next card peeks ~18% to signal "there's more". */
 @media (max-width: 560px) {
   .grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    grid-template-columns: none;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Breathing room so the card shadow isn't clipped by the scroll box. */
+    padding-block: 6px;
+    scrollbar-width: none; /* Firefox */
+  }
+  .grid::-webkit-scrollbar {
+    display: none; /* WebKit */
+  }
+  .grid > * {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
   }
   .head {
     flex-direction: column;

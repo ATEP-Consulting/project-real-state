@@ -12,8 +12,8 @@ export const REALTOR = {
   reviews: 98,
   rating: 5,
   copyrightYear: 2026,
-  // Sample portrait (free-license). Replace with Nilyan's real photo before launch.
-  photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&q=70",
+  // Nilyan's real portrait (served from apps/web/public/images).
+  photo: "/images/nilyan-herrera.jpg",
   stats: [
     { value: "12", label: "years" },
     { value: "240+", label: "deals closed" },

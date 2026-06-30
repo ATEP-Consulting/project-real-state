@@ -13,7 +13,6 @@ export function Trust() {
         <Reveal>
           <div className={styles.grid}>
             <div className={styles.photoWrap}>
-              {/* Sample portrait (free-license); replace with Nilyan's real photo. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={REALTOR.photo} alt={REALTOR.name} className={styles.photo} loading="lazy" />
               <div className={styles.stats}>

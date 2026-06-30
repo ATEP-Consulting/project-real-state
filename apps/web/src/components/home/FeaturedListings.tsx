@@ -20,17 +20,23 @@ export function FeaturedListings({ listings }: { listings: ListingCardVM[] }) {
               View all listings →
             </Link>
           </div>
-
-          {listings.length > 0 ? (
-            <div className={styles.grid}>
-              {listings.map((l) => (
-                <ListingCard key={l.slug} listing={l} />
-              ))}
-            </div>
-          ) : (
-            <p className={styles.empty}>Listings are loading — please check back shortly.</p>
-          )}
         </Reveal>
+
+        {listings.length > 0 ? (
+          <div className={styles.grid}>
+            {listings.map((l, i) => (
+              // Staggered cascade: each card eases in just after the previous one.
+              // Delay is capped so the last cards don't lag noticeably behind.
+              <Reveal key={l.slug} delay={Math.min(i, 5) * 0.06}>
+                <ListingCard listing={l} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <Reveal>
+            <p className={styles.empty}>Listings are loading — please check back shortly.</p>
+          </Reveal>
+        )}
       </Container>
     </section>
   );
