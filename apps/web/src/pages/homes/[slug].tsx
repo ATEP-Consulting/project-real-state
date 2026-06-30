@@ -4,6 +4,7 @@ import { getListingBySlug, getPublishedListingSlugs, getSimilarListings } from "
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { KeyFacts } from "@/components/listing/KeyFacts";
+import { PhotoGallery } from "@/components/listing/PhotoGallery";
 import { ListingCompliance } from "@/components/listing/ListingCompliance";
 import { toListingDetailVM, toListingJsonLd, type ListingDetailVM } from "@/lib/listing-detail";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
@@ -80,7 +81,11 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
       <Container>
         <div className={styles.layout}>
           <div className={styles.main}>
-            {/* D4-TASK5 SEAM: <PhotoGallery /> mounts here */}
+            <PhotoGallery
+              gallery={vm.gallery}
+              video={vm.video}
+              virtualTourUrl={vm.virtualTourUrl}
+            />
             <header className={styles.head}>
               <p className={styles.price}>{vm.priceLabel}</p>
               <h1 className={styles.title}>{vm.title}</h1>
