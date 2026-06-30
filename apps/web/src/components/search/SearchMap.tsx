@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import {
   Map as MlMap,
+  Marker,
   NavigationControl,
   type GeoJSONSource,
   type LngLatBoundsLike,
@@ -43,6 +44,11 @@ export function SearchMap({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
+  // Unclustered listings render as HTML-marker price pills (white chip + shadow + dark price —
+  // the Redfin/Idealista look), pooled by slug. A symbol layer can't do this cleanly: SDF tinting
+  // balloons the icon, plain icons can't tint on hover, and 9-slice sizing is brittle. DOM markers
+  // give full CSS control (shadow, hover scale), reliable two-way hover, and easy clicks.
+  const markersRef = useRef<globalThis.Map<string, Marker>>(new window.Map());
   const hoveredRef = useRef<string | null>(null);
   const reduce =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -63,6 +69,55 @@ export function SearchMap({
     });
     mapRef.current = map;
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+    const markerPool = markersRef.current; // stable Map instance; safe to use in cleanup
+
+    // Build (or refresh) the price-pill markers for the unclustered listings currently in view.
+    // Pooled by slug: existing markers are re-positioned, gone ones removed, new ones created.
+    const syncMarkers = () => {
+      if (!map.getSource(SRC)) return;
+      let feats: ReturnType<typeof map.querySourceFeatures>;
+      try {
+        feats = map.querySourceFeatures(SRC, { filter: ["!", ["has", "point_count"]] });
+      } catch {
+        return;
+      }
+      const pool = markerPool;
+      const seen = new Set<string>();
+      for (const f of feats) {
+        const slug = f.properties?.slug as string | undefined;
+        if (!slug || seen.has(slug)) continue; // dedupe: a point can appear in several tiles
+        seen.add(slug);
+        const coords = (f.geometry as GeoJSON.Point).coordinates as [number, number];
+        const existing = pool.get(slug);
+        if (existing) {
+          existing.setLngLat(coords);
+          continue;
+        }
+        // marker root (positioned by MapLibre) wraps the pill button (free to scale on hover
+        // without fighting MapLibre's positioning transform on the root).
+        const root = document.createElement("div");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = styles.pricePin!;
+        btn.textContent = (f.properties?.priceLabel as string | undefined) ?? "";
+        btn.setAttribute("aria-label", `View listing — ${btn.textContent}`);
+        if (slug === hoveredRef.current) btn.classList.add(styles.pricePinActive!);
+        btn.addEventListener("mouseenter", () => onHoverSlug(slug));
+        btn.addEventListener("mouseleave", () => onHoverSlug(null));
+        btn.addEventListener("focus", () => onHoverSlug(slug));
+        btn.addEventListener("blur", () => onHoverSlug(null));
+        btn.addEventListener("click", () => window.location.assign(`/homes/${slug}`));
+        root.appendChild(btn);
+        const marker = new Marker({ element: root }).setLngLat(coords).addTo(map);
+        pool.set(slug, marker);
+      }
+      for (const [slug, marker] of pool) {
+        if (!seen.has(slug)) {
+          marker.remove();
+          pool.delete(slug);
+        }
+      }
+    };
 
     map.on("load", () => {
       // Add the clustered source + layers once the map has settled (first idle). Adding it
@@ -74,16 +129,16 @@ export function SearchMap({
           type: "geojson",
           data: pointsToGeoJSON(points),
           cluster: true,
-          clusterRadius: 24,
-          // clusterMaxZoom = the deepest zoom supercluster builds cluster levels for; ABOVE it
-          // MapLibre just overzooms the last tile (so a LOW value keeps everything lumped — the
-          // opposite of what you want). Keep it high so homes separate into individual price pins
-          // at neighborhood/street zoom (the Redfin/Idealista feel); region zoom still clusters.
-          clusterMaxZoom: 16,
+          // Seed homes are tightly concentrated (~3km/city, e.g. 16 in Winter Park). Cluster them
+          // into a clean numbered circle at region/metro zoom; from neighborhood zoom in
+          // (> clusterMaxZoom) supercluster returns individual points which become price-pill
+          // markers (see syncMarkers).
+          clusterRadius: 50,
+          clusterMaxZoom: 12,
           promoteId: "slug",
         });
 
-        // Clusters
+        // Clusters: a forest circle with a white count.
         map.addLayer({
           id: "clusters",
           type: "circle",
@@ -109,71 +164,14 @@ export function SearchMap({
           paint: { "text-color": "#ffffff" },
         });
 
-        // Unclustered: a pill behind a price label, hover-aware via feature-state.
-        const hoverColor = [
-          "case",
-          ["boolean", ["feature-state", "hover"], false],
-          "#a9794a",
-          "#ffffff",
-        ];
-        map.addLayer({
-          id: "pins",
-          type: "circle",
-          source: SRC,
-          filter: ["!", ["has", "point_count"]],
-          paint: {
-            "circle-radius": 13,
-            "circle-color": hoverColor as never,
-            "circle-stroke-width": 1.5,
-            "circle-stroke-color": "#15302c",
-          },
-        });
-        map.addLayer({
-          id: "pin-labels",
-          type: "symbol",
-          source: SRC,
-          filter: ["!", ["has", "point_count"]],
-          layout: {
-            "text-field": ["get", "priceLabel"],
-            "text-size": 11,
-            "text-font": ["Noto Sans Bold"],
-            "text-allow-overlap": true,
-          },
-          paint: {
-            "text-color": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              "#ffffff",
-              "#15302c",
-            ],
-          },
-        });
-
         // D6 SEED: intelligence layers (schools/transit/walkability/POI) mount here as
         // toggleable map layers fed by a swappable data source. Not built in D2.
 
-        const setHover = (slug: string | null) => {
-          if (hoveredRef.current === slug) return;
-          if (hoveredRef.current)
-            map.setFeatureState({ source: SRC, id: hoveredRef.current }, { hover: false });
-          hoveredRef.current = slug;
-          if (slug) map.setFeatureState({ source: SRC, id: slug }, { hover: true });
-          onHoverSlug(slug);
-        };
+        // Keep the price-pill markers in sync with whatever is unclustered + in view. `idle` fires
+        // after every move settle AND after setData re-tiles, so this single hook covers the
+        // initial fit, panning/zooming, and data refetches.
+        map.on("idle", syncMarkers);
 
-        map.on("mousemove", "pins", (e) => {
-          map.getCanvas().style.cursor = "pointer";
-          const f = e.features?.[0];
-          if (f?.id != null) setHover(String(f.id));
-        });
-        map.on("mouseleave", "pins", () => {
-          map.getCanvas().style.cursor = "";
-          setHover(null);
-        });
-        map.on("click", "pins", (e) => {
-          const slug = e.features?.[0]?.properties?.slug;
-          if (slug) window.location.assign(`/homes/${slug}`);
-        });
         map.on("click", "clusters", (e: MapMouseEvent) => {
           const f = map.queryRenderedFeatures(e.point, { layers: ["clusters"] })[0];
           if (!f) return;
@@ -187,6 +185,12 @@ export function SearchMap({
             });
           });
         });
+        map.on("mouseenter", "clusters", () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+        map.on("mouseleave", "clusters", () => {
+          map.getCanvas().style.cursor = "";
+        });
 
         // Now move to the target view. Animate it (briefly) so the clustered source re-tiles
         // through the intermediate zooms — a hard jump to high zoom leaves its tiles ungenerated
@@ -194,7 +198,11 @@ export function SearchMap({
         if (initialView.kind === "bounds") {
           map.fitBounds(initialView.bounds as LngLatBoundsLike, {
             padding: 64,
-            maxZoom: reduce ? 11 : 15,
+            maxZoom: 15,
+            // Honour prefers-reduced-motion: jump (no fly animation). The clustered source is born
+            // at a low zoom and the price-pill markers sync on `idle` (after tiles load), so a hard
+            // jump to the target zoom tiles + renders fine — no need to cap the zoom (which would
+            // strand reduced-motion users in a clusters-only view with no price pills).
             animate: !reduce,
             duration: 600,
           });
@@ -218,27 +226,29 @@ export function SearchMap({
     });
 
     return () => {
+      markerPool.forEach((m) => m.remove());
+      markerPool.clear();
       map.remove();
       mapRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Push new data when points change (viewport/filter refetch).
+  // Push new data when points change (viewport/filter refetch). Marker refresh follows on the
+  // resulting `idle`.
   useEffect(() => {
     const map = mapRef.current;
     const src = map?.getSource(SRC) as GeoJSONSource | undefined;
     if (src) src.setData(pointsToGeoJSON(points));
   }, [points]);
 
-  // Reflect card-hover → pin highlight.
+  // Reflect card-hover → pin highlight (and keep hoveredRef current for freshly-created markers).
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !map.getSource(SRC)) return;
-    if (hoveredRef.current && hoveredRef.current !== hoveredSlug)
-      map.setFeatureState({ source: SRC, id: hoveredRef.current }, { hover: false });
     hoveredRef.current = hoveredSlug;
-    if (hoveredSlug) map.setFeatureState({ source: SRC, id: hoveredSlug }, { hover: true });
+    markersRef.current.forEach((marker, slug) => {
+      const btn = marker.getElement().firstElementChild;
+      btn?.classList.toggle(styles.pricePinActive!, slug === hoveredSlug);
+    });
   }, [hoveredSlug]);
 
   // Draw-zone control (Task 8).

@@ -5,3 +5,57 @@
 .map :global(.maplibregl-ctrl-attrib) {
   font-size: 10px;
 }
+
+/* Price-pill marker: a white chip with the listing price, lifted off the basemap by a soft
+   shadow (the Redfin/Idealista look). The marker root is positioned by MapLibre; this inner
+   button is free to scale on hover/active without disturbing that. */
+.pricePin {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 9px;
+  border: 1px solid rgba(21, 48, 44, 0.16);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #15302c;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow:
+    0 1px 3px rgba(21, 48, 44, 0.28),
+    0 0 0 0.5px rgba(21, 48, 44, 0.04);
+  transition:
+    transform 120ms ease,
+    background 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+/* Hover (mouse over the pin) and active (card hovered in the list) share the bronze highlight. */
+.pricePin:hover,
+.pricePinActive {
+  background: #a9794a;
+  border-color: #a9794a;
+  color: #ffffff;
+  transform: scale(1.07);
+  box-shadow: 0 3px 10px rgba(21, 48, 44, 0.36);
+  z-index: 3;
+}
+
+.pricePin:focus-visible {
+  outline: 2px solid #a9794a;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricePin {
+    transition: none;
+  }
+  .pricePin:hover,
+  .pricePinActive {
+    transform: none;
+  }
+}
