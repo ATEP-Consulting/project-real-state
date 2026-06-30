@@ -109,8 +109,14 @@ function buildOne(place: Place, index: number, rng: Rng, source: "mock" | "manua
     ageRestricted,
     ...estimates,
     photos: photoUrls(slug, rng.int(4, 7)),
-    videoUrl: null,
-    virtualTourUrl: null,
+    // A deterministic ~18% / ~25% of mock rows carry media so the demo exercises video + 3D tour.
+    // Public sample embeds — replaced with real per-listing media when the MLS feed arrives.
+    videoUrl:
+      source === "mock" && rng.chance(0.18) ? "https://www.youtube.com/embed/aqz-KE-bpKQ" : null,
+    virtualTourUrl:
+      source === "mock" && rng.chance(0.25)
+        ? "https://my.matterport.com/show/?m=SxQL3iGyvQk"
+        : null,
   };
 }
 
