@@ -1,8 +1,34 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--header-h));
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+/* Mobile entry point for the full filter sheet; hidden on desktop (FilterBar owns the bar there). */
+.mFilters {
+  display: none;
+}
 .shell {
   position: relative;
   display: grid;
   grid-template-columns: minmax(420px, 44%) 1fr;
-  height: calc(100dvh - var(--header-h));
+  flex: 1;
+  min-height: 0;
+}
+/* list-only layout: hide the map, let the results span the full width */
+.shell[data-layout="list"] {
+  grid-template-columns: 1fr;
+}
+.shell[data-layout="list"] .mapWrap {
+  display: none;
 }
 .results {
   min-width: 0;
@@ -60,6 +86,10 @@
   .shell {
     grid-template-columns: 1fr;
   }
+  /* on mobile, layout is driven by the List/Map toggle, not the desktop Split/List toggle */
+  .shell[data-layout="list"] .mapWrap {
+    display: revert;
+  }
   .results,
   .mapWrap {
     grid-column: 1;
@@ -67,6 +97,19 @@
   }
   .hideMobile {
     display: none;
+  }
+  .mFilters {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-forest);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    padding: 9px 16px;
+    cursor: pointer;
   }
   .mobileToggle {
     position: fixed;

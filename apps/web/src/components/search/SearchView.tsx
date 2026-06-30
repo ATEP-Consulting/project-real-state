@@ -3,6 +3,9 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import type { SearchFilterConfig } from "@herrera/db";
 import { SearchResults } from "./SearchResults";
+import { FilterBar } from "./FilterBar";
+import { MoreFiltersPanel } from "./MoreFiltersPanel";
+import { activeFilterCount, clearKeysPatch } from "@/lib/filters";
 import { debounce } from "@/lib/debounce";
 import { serializeSearchQuery, type Bbox, type SearchParams } from "@/lib/search-params";
 import type { ListingCardVM } from "@/lib/listing";
@@ -21,6 +24,7 @@ export function SearchView({
   initialView,
   params,
   styleUrl,
+  filters,
 }: {
   initial: SearchResult;
   initialView: InitialView;
@@ -38,6 +42,11 @@ export function SearchView({
   const [drawing, setDrawing] = useState(false);
   const [poly, setPoly] = useState<[number, number][] | null>(params.poly ?? null);
   const [mobileView, setMobileView] = useState<"list" | "map">("map");
+  // Reactive copy of the live params for the filter UI; `paramsRef` is the race-safe source the
+  // debounced viewport handler reads/writes.
+  const [paramsState, setParamsState] = useState<SearchParams>(params);
+  const [layout, setLayout] = useState<"split" | "list">("split");
+  const [mobileFilters, setMobileFilters] = useState(false);
   const paramsRef = useRef<SearchParams>(params);
   // True once a navigation AWAY from /search begins. Map interactions (zoom/pan/draw)
   // can leave a refetch in flight; without this guard that late router.replace({pathname:
@@ -48,6 +57,7 @@ export function SearchView({
     async (next: SearchParams) => {
       if (leavingRef.current) return;
       paramsRef.current = next;
+      setParamsState(next);
       const qs = serializeSearchQuery(next);
       void router.replace({ pathname: "/search", query: qs }, undefined, { shallow: true });
       setLoading(true);
@@ -63,6 +73,23 @@ export function SearchView({
       }
     },
     [router],
+  );
+
+  // Apply a filter patch over the LIVE params (keeps the current viewport/zone); undefined clears.
+  const applyPatch = useCallback(
+    (patch: SearchParams) => {
+      const next: SearchParams = { ...paramsRef.current, ...patch };
+      (Object.keys(next) as (keyof SearchParams)[]).forEach((k) => {
+        if (next[k] === undefined) delete next[k];
+      });
+      void fetchFor(next);
+    },
+    [fetchFor],
+  );
+
+  const clearAllFilters = useCallback(
+    () => applyPatch(clearKeysPatch(filters)),
+    [applyPatch, filters],
   );
 
   // Debounced viewport-driven refetch (drops bbox while a drawn zone is active — the polygon wins).
@@ -103,72 +130,109 @@ export function SearchView({
     [fetchFor],
   );
 
+  const filteredActive = activeFilterCount(paramsState, filters) > 0;
+
   return (
-    <div className={styles.shell}>
-      <div
-        className={`${styles.results} ${mobileView === "list" ? styles.show : styles.hideMobile}`}
-      >
-        <SearchResults
-          cards={cards}
+    <div className={styles.page}>
+      <div className={styles.toolbar}>
+        <FilterBar
+          filters={filters}
+          params={paramsState}
           total={total}
-          loading={loading}
-          hoveredSlug={hoveredSlug}
-          onHover={setHoveredSlug}
+          onApply={applyPatch}
+          onClear={clearAllFilters}
+          layout={layout}
+          onLayoutChange={setLayout}
         />
+        <button
+          type="button"
+          className={styles.mFilters}
+          onClick={() => setMobileFilters(true)}
+          aria-haspopup="dialog"
+        >
+          Filters{filteredActive ? ` · ${activeFilterCount(paramsState, filters)}` : ""}
+        </button>
       </div>
 
-      <div
-        className={`${styles.mapWrap} ${mobileView === "map" ? styles.show : styles.hideMobile}`}
-      >
-        <SearchMap
-          points={points}
-          initialView={initialView}
-          hoveredSlug={hoveredSlug}
-          onHoverSlug={setHoveredSlug}
-          onViewportChange={onViewportChange}
-          styleUrl={styleUrl}
-          drawnPoly={poly}
-          onPolyChange={onPolyChange}
-          drawing={drawing}
-          onDrawingChange={setDrawing}
-        />
-        <div className={styles.tools}>
-          {poly ? (
-            <button type="button" className={styles.tool} onClick={() => onPolyChange(null)}>
-              Clear zone
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={`${styles.tool} ${drawing ? styles.toolActive : ""}`}
-              onClick={() => setDrawing((d) => !d)}
-            >
-              {drawing ? "Click points · double-click to finish" : "Draw a zone"}
-            </button>
-          )}
+      <div className={styles.shell} data-layout={layout}>
+        <div
+          className={`${styles.results} ${mobileView === "list" ? styles.show : styles.hideMobile}`}
+        >
+          <SearchResults
+            cards={cards}
+            total={total}
+            loading={loading}
+            hoveredSlug={hoveredSlug}
+            onHover={setHoveredSlug}
+            filtered={filteredActive}
+            wide={layout === "list"}
+          />
+        </div>
+
+        <div
+          className={`${styles.mapWrap} ${mobileView === "map" ? styles.show : styles.hideMobile}`}
+        >
+          <SearchMap
+            points={points}
+            initialView={initialView}
+            hoveredSlug={hoveredSlug}
+            onHoverSlug={setHoveredSlug}
+            onViewportChange={onViewportChange}
+            styleUrl={styleUrl}
+            drawnPoly={poly}
+            onPolyChange={onPolyChange}
+            drawing={drawing}
+            onDrawingChange={setDrawing}
+          />
+          <div className={styles.tools}>
+            {poly ? (
+              <button type="button" className={styles.tool} onClick={() => onPolyChange(null)}>
+                Clear zone
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={`${styles.tool} ${drawing ? styles.toolActive : ""}`}
+                onClick={() => setDrawing((d) => !d)}
+              >
+                {drawing ? "Click points · double-click to finish" : "Draw a zone"}
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.mobileToggle} role="tablist" aria-label="View">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mobileView === "list"}
+            className={mobileView === "list" ? styles.mtActive : ""}
+            onClick={() => setMobileView("list")}
+          >
+            List
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mobileView === "map"}
+            className={mobileView === "map" ? styles.mtActive : ""}
+            onClick={() => setMobileView("map")}
+          >
+            Map
+          </button>
         </div>
       </div>
 
-      <div className={styles.mobileToggle} role="tablist" aria-label="View">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mobileView === "list"}
-          className={mobileView === "list" ? styles.mtActive : ""}
-          onClick={() => setMobileView("list")}
-        >
-          List
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mobileView === "map"}
-          className={mobileView === "map" ? styles.mtActive : ""}
-          onClick={() => setMobileView("map")}
-        >
-          Map
-        </button>
-      </div>
+      {/* Mobile: one sheet exposing the full filter set (primary + advanced). */}
+      <MoreFiltersPanel
+        filters={filters}
+        params={paramsState}
+        open={mobileFilters}
+        total={total}
+        onClose={() => setMobileFilters(false)}
+        onApply={applyPatch}
+        title="Filters"
+      />
     </div>
   );
 }
