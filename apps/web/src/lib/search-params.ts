@@ -14,24 +14,33 @@ export const PROPERTY_TYPES = [
 
 export type Bbox = [number, number, number, number];
 export type Ring = [number, number][];
+export type PropertyType = (typeof PROPERTY_TYPES)[number];
 export type SearchParams = {
   q?: string;
-  type?: (typeof PROPERTY_TYPES)[number];
+  types?: PropertyType[];
   intent?: "buy" | "sell" | "rent";
   bbox?: Bbox;
   poly?: Ring;
   minPrice?: number;
   maxPrice?: number;
   minBeds?: number;
+  minBaths?: number;
+  waterfront?: boolean;
+  pool?: boolean;
+  age55?: boolean;
+  noHoa?: boolean;
 };
 
 type Query = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 const floats = (s: string) => s.split(",").map((x) => Number(x.trim()));
 
-const TypeSchema = z.enum(PROPERTY_TYPES);
 const IntentSchema = z.enum(["buy", "sell", "rent"]);
 const PosInt = z.coerce.number().finite().nonnegative();
+
+const TRUTHY = new Set(["1", "true", "yes", "on"]);
+const readBool = (v: string | string[] | undefined): true | undefined =>
+  TRUTHY.has((first(v) ?? "").trim().toLowerCase()) ? true : undefined;
 
 /** Tolerant boundary validator: keeps valid params, silently drops malformed ones (shared links must degrade gracefully). */
 export function parseSearchParams(query: Query): SearchParams {
@@ -40,8 +49,14 @@ export function parseSearchParams(query: Query): SearchParams {
   const q = first(query.q)?.trim();
   if (q) out.q = q.slice(0, 80);
 
-  const t = TypeSchema.safeParse(first(query.type));
-  if (t.success) out.type = t.data;
+  const rawTypes = first(query.type);
+  if (rawTypes) {
+    const types = rawTypes
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s): s is PropertyType => (PROPERTY_TYPES as readonly string[]).includes(s));
+    if (types.length) out.types = types;
+  }
 
   const i = IntentSchema.safeParse(first(query.intent));
   if (i.success) out.intent = i.data;
@@ -71,6 +86,13 @@ export function parseSearchParams(query: Query): SearchParams {
   if (mx.success) out.maxPrice = mx.data;
   const mb = PosInt.safeParse(first(query.minBeds));
   if (mb.success) out.minBeds = mb.data;
+  const mba = PosInt.safeParse(first(query.minBaths));
+  if (mba.success) out.minBaths = mba.data;
+
+  if (readBool(query.waterfront)) out.waterfront = true;
+  if (readBool(query.pool)) out.pool = true;
+  if (readBool(query.age55)) out.age55 = true;
+  if (readBool(query.noHoa)) out.noHoa = true;
 
   return out;
 }
@@ -78,12 +100,17 @@ export function parseSearchParams(query: Query): SearchParams {
 export function serializeSearchQuery(p: SearchParams): Record<string, string> {
   const q: Record<string, string> = {};
   if (p.q) q.q = p.q;
-  if (p.type) q.type = p.type;
+  if (p.types?.length) q.type = p.types.join(",");
   if (p.intent) q.intent = p.intent;
   if (p.bbox) q.bbox = p.bbox.join(",");
   if (p.poly) q.poly = p.poly.flat().join(",");
   if (p.minPrice != null) q.minPrice = String(p.minPrice);
   if (p.maxPrice != null) q.maxPrice = String(p.maxPrice);
   if (p.minBeds != null) q.minBeds = String(p.minBeds);
+  if (p.minBaths != null) q.minBaths = String(p.minBaths);
+  if (p.waterfront) q.waterfront = "1";
+  if (p.pool) q.pool = "1";
+  if (p.age55) q.age55 = "1";
+  if (p.noHoa) q.noHoa = "1";
   return q;
 }

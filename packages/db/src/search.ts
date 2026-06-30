@@ -22,10 +22,15 @@ export type SearchListingParams = {
   bbox?: [number, number, number, number]; // minLng,minLat,maxLng,maxLat
   poly?: [number, number][]; // ring of [lng,lat]
   q?: string;
-  type?: string;
+  types?: string[]; // property_type IN (...)
   minPrice?: number;
   maxPrice?: number;
   minBeds?: number;
+  minBaths?: number;
+  waterfront?: boolean;
+  pool?: boolean;
+  age55?: boolean;
+  noHoa?: boolean;
   limit?: number;
 };
 
@@ -58,10 +63,21 @@ export async function searchListings(
     const like = `%${p.q}%`;
     conds.push(sql`(l.city ILIKE ${like} OR l.address_line1 ILIKE ${like} OR l.zip ILIKE ${like})`);
   }
-  if (p.type) conds.push(sql`l.property_type = ${p.type}`);
+  if (p.types && p.types.length)
+    conds.push(
+      sql`l.property_type IN (${sql.join(
+        p.types.map((t) => sql`${t}`),
+        sql`, `,
+      )})`,
+    );
   if (p.minPrice != null) conds.push(sql`l.price >= ${p.minPrice}`);
   if (p.maxPrice != null) conds.push(sql`l.price <= ${p.maxPrice}`);
   if (p.minBeds != null) conds.push(sql`l.bedrooms >= ${p.minBeds}`);
+  if (p.minBaths != null) conds.push(sql`l.bathrooms >= ${p.minBaths}`);
+  if (p.waterfront) conds.push(sql`l.waterfront = true`);
+  if (p.pool) conds.push(sql`l.pool = true`);
+  if (p.age55) conds.push(sql`l.age_restricted = true`);
+  if (p.noHoa) conds.push(sql`(l.hoa_fee_monthly IS NULL OR l.hoa_fee_monthly = 0)`);
 
   const where = sql.join(conds, sql` AND `);
   const result = (await getDb().execute(sql`

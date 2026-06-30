@@ -5,7 +5,7 @@ describe("parseSearchParams", () => {
   it("reads q (trimmed, capped) and a valid type/intent", () => {
     expect(parseSearchParams({ q: "  Coral Gables  ", type: "condo", intent: "buy" })).toEqual({
       q: "Coral Gables",
-      type: "condo",
+      types: ["condo"],
       intent: "buy",
     });
   });
@@ -50,7 +50,7 @@ describe("serializeSearchQuery", () => {
     expect(
       serializeSearchQuery({
         q: "Miami",
-        type: "condo",
+        types: ["condo"],
         bbox: [-81.5, 28.4, -81.2, 28.7],
         minBeds: 2,
       }),
@@ -66,5 +66,40 @@ describe("serializeSearchQuery", () => {
         ],
       }).poly,
     ).toBe("-81.5,28.4,-81.2,28.4,-81.2,28.7");
+  });
+});
+
+describe("parseSearchParams — D3 filters", () => {
+  it("parses a multi property-type list from the `type` param, dropping invalids", () => {
+    expect(parseSearchParams({ type: "condo,townhouse,mansion" }).types).toEqual([
+      "condo",
+      "townhouse",
+    ]);
+  });
+  it("keeps single `type=condo` working (home-hero link)", () => {
+    expect(parseSearchParams({ type: "condo" }).types).toEqual(["condo"]);
+  });
+  it("parses minBaths and the boolean feature flags (only when truthy)", () => {
+    expect(parseSearchParams({ minBaths: "2", waterfront: "1", pool: "true" })).toMatchObject({
+      minBaths: 2,
+      waterfront: true,
+      pool: true,
+    });
+    const none = parseSearchParams({ waterfront: "0", pool: "false", age55: "" });
+    expect(none.waterfront).toBeUndefined();
+    expect(none.pool).toBeUndefined();
+    expect(none.age55).toBeUndefined();
+  });
+  it("round-trips through serialize", () => {
+    const p = parseSearchParams({
+      type: "condo,villa",
+      minPrice: "300000",
+      maxPrice: "800000",
+      minBeds: "2",
+      minBaths: "2",
+      waterfront: "1",
+      noHoa: "1",
+    });
+    expect(parseSearchParams(serializeSearchQuery(p))).toEqual(p);
   });
 });

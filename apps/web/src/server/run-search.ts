@@ -10,10 +10,15 @@ export async function runSearch(p: SearchParams): Promise<SearchResult> {
     bbox: p.bbox,
     poly: p.poly,
     q: p.q,
-    type: p.type,
+    types: p.types,
     minPrice: p.minPrice,
     maxPrice: p.maxPrice,
     minBeds: p.minBeds,
+    minBaths: p.minBaths,
+    waterfront: p.waterfront,
+    pool: p.pool,
+    age55: p.age55,
+    noHoa: p.noHoa,
   });
   const cards = rows.map(toListingCardVM);
   const points = rows.map(toMapPoint).filter((x): x is ListingMapPoint => x !== null);
