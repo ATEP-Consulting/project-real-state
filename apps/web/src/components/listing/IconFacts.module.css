@@ -1,0 +1,35 @@
+.strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+.icon {
+  color: var(--color-bronze);
+  margin-bottom: 4px;
+}
+.value {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 22px;
+  line-height: 1.05;
+  color: var(--color-forest);
+}
+.label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--color-stone);
+}
+
+@media (max-width: 620px) {
+  .strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

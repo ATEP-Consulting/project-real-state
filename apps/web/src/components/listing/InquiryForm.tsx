@@ -1,11 +1,30 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { StarRating } from "@/components/ui/StarRating";
+import { REALTOR } from "@/data/realtor";
 import styles from "./InquiryForm.module.css";
 
 type Status = "idle" | "submitting" | "done" | "error";
 
+const TEL = `tel:${REALTOR.phone.replace(/[^\d+]/g, "")}`;
+
+function AgentHeader() {
+  return (
+    <div className={styles.agent}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={REALTOR.photo} alt={REALTOR.name} className={styles.avatar} loading="lazy" />
+      <div className={styles.agentMeta}>
+        <p className={styles.agentName}>{REALTOR.name}</p>
+        <p className={styles.agentRole}>{REALTOR.title} · Your agent</p>
+        <p className={styles.reviews}>
+          <StarRating value={REALTOR.rating} /> <span>{REALTOR.reviews} reviews</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function InquiryForm({ slug, title }: { slug: string; title: string }) {
-  const [requestType, setRequestType] = useState<"info" | "tour">("info");
   const [status, setStatus] = useState<Status>("idle");
   const [err, setErr] = useState<string | null>(null);
 
@@ -30,12 +49,11 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           listingSlug: slug,
-          requestType,
+          requestType: "tour",
           name: String(fd.get("name") ?? "").trim() || undefined,
           email: email || undefined,
           phone: phone || undefined,
           message: String(fd.get("message") ?? "").trim() || undefined,
-          preferredDate: String(fd.get("preferredDate") ?? "").trim() || undefined,
           consentEmail: Boolean(email),
           consentPhone: Boolean(phone),
           attribution: { landingPath: `/homes/${slug}` },
@@ -52,35 +70,20 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
   if (status === "done") {
     return (
       <div className={styles.card}>
+        <AgentHeader />
         <h2 className={styles.h2}>Thanks — we&rsquo;ll be in touch shortly.</h2>
         <p className={styles.sub}>Nilyan personally follows up on every inquiry about {title}.</p>
+        <a className={styles.call} href={TEL}>
+          Call · {REALTOR.phone}
+        </a>
       </div>
     );
   }
 
   return (
     <form className={styles.card} onSubmit={onSubmit} noValidate>
-      <h2 className={styles.h2}>Interested in this home?</h2>
-      <div className={styles.tabs} role="tablist" aria-label="Request type">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={requestType === "info"}
-          className={requestType === "info" ? styles.tabOn : styles.tab}
-          onClick={() => setRequestType("info")}
-        >
-          Request info
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={requestType === "tour"}
-          className={requestType === "tour" ? styles.tabOn : styles.tab}
-          onClick={() => setRequestType("tour")}
-        >
-          Schedule a tour
-        </button>
-      </div>
+      <AgentHeader />
+      <h2 className={styles.h2}>Request a visit</h2>
       <input className={styles.input} name="name" placeholder="Your name" autoComplete="name" />
       <input
         className={styles.input}
@@ -96,22 +99,11 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         placeholder="Phone"
         autoComplete="tel"
       />
-      {requestType === "tour" && (
-        <input
-          className={styles.input}
-          name="preferredDate"
-          placeholder="Preferred day/time (e.g. Sat AM)"
-        />
-      )}
       <textarea
         className={styles.textarea}
         name="message"
         rows={3}
-        placeholder={
-          requestType === "tour"
-            ? "Anything we should know?"
-            : "I'd like more information about this home."
-        }
+        placeholder="I'd like more information about this home."
       />
       <label className={styles.consent}>
         <input type="checkbox" name="consent" />
@@ -125,14 +117,13 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         </p>
       )}
       <Button type="submit" size="lg" disabled={status === "submitting"}>
-        {status === "submitting"
-          ? "Sending…"
-          : requestType === "tour"
-            ? "Request tour"
-            : "Request info"}
+        {status === "submitting" ? "Sending…" : "Contact Nilyan"}
       </Button>
+      <a className={styles.call} href={TEL}>
+        Call · {REALTOR.phone}
+      </a>
       <p className={styles.fine}>
-        Phone <em>or</em> email is enough — we never require both.
+        By sending you accept the privacy policy. No obligation — phone <em>or</em> email is enough.
       </p>
     </form>
   );
