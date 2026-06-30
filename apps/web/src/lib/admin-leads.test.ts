@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { QualificationQuestionConfig } from "@herrera/db";
-import { formatAnswers, isOverdue, parseLeadFilters } from "./admin-leads";
+import { formatAnswers, isOverdue, parseLeadFilters, relativeAge } from "./admin-leads";
 
 const NOW = new Date("2026-06-30T12:00:00.000Z");
 
@@ -70,5 +70,18 @@ describe("isOverdue", () => {
     expect(isOverdue("2026-06-29T12:00:00.000Z", "2026-06-29T13:00:00.000Z", now)).toBe(false);
     expect(isOverdue("2026-07-05T12:00:00.000Z", null, now)).toBe(false);
     expect(isOverdue(null, null, now)).toBe(false);
+  });
+});
+
+describe("relativeAge", () => {
+  const now = new Date("2026-06-30T12:00:00.000Z");
+  it("says 'just now' under an hour", () => {
+    expect(relativeAge("2026-06-30T11:30:00.000Z", now)).toBe("just now");
+  });
+  it("counts whole hours under a day", () => {
+    expect(relativeAge("2026-06-30T09:00:00.000Z", now)).toBe("3h ago");
+  });
+  it("counts whole days from a day out", () => {
+    expect(relativeAge("2026-06-28T12:00:00.000Z", now)).toBe("2d ago");
   });
 });

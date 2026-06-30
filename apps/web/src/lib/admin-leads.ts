@@ -66,3 +66,11 @@ export function isOverdue(dueAt: string | null, completedAt: string | null, now:
   if (!dueAt || completedAt) return false;
   return new Date(dueAt).getTime() < now.getTime();
 }
+
+/** Compact age of a past timestamp for action lists: "just now" / "3h ago" / "2d ago". */
+export function relativeAge(iso: string, now: Date): string {
+  const h = Math.floor((now.getTime() - new Date(iso).getTime()) / 3_600_000);
+  if (h < 1) return "just now";
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
