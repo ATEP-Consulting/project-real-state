@@ -41,5 +41,6 @@ export {
   type DashboardData,
 } from "./admin-leads";
 export { getPublishedGuides, getGuideBySlug, type GuideSummary, type GuideDetail } from "./content";
+export { contactLeadSchema, createContactLead, type ContactLead } from "./contact";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";
