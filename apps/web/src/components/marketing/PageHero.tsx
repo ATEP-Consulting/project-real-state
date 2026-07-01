@@ -13,21 +13,27 @@ export function PageHero({
   title,
   lede,
 }: {
-  image: string;
+  image?: string;
   eyebrow?: string;
   title: string;
   lede?: string;
 }) {
   return (
     <>
-      <Head>
-        <link rel="preload" as="image" href={image} />
-      </Head>
+      {image && (
+        <Head>
+          <link rel="preload" as="image" href={image} />
+        </Head>
+      )}
       <section
         className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(rgba(11,24,22,.5), rgba(11,24,22,.6)), url(${image})`,
-        }}
+        style={
+          image
+            ? {
+                backgroundImage: `linear-gradient(rgba(11,24,22,.5), rgba(11,24,22,.6)), url(${image})`,
+              }
+            : undefined
+        }
       >
         <Container>
           <div className={styles.inner}>
