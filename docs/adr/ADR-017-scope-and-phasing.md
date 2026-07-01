@@ -34,8 +34,14 @@ login-less favorites, trust/content, **complete admin/CRM**, EN/ES.
 - Passwordless **client accounts** — ADR-010.
 - **Saved searches** + email/SMS **alerts**; **nurturing/automation** — consent/suppression +
   saved-search **shape** only (ADR-011).
+- **Email marketing campaigns** (mass outbound to CRM leads, "new listings this month") — a full
+  subsystem under CAN-SPAM; **only the marketing opt-in + its consent seam ship in v1 (D11)**, the
+  campaign engine is Phase 2 — ADR-020.
 - **AI lead scoring** by behavior.
 - **Automated SEO blog generation** (human-reviewed) — ADR-015.
+- **D12 Phase A — area/location pages** (`/areas/*`): deferred until the real MIAMI REALTORS® feed
+  (with the MLS worker, ADR-004); local-SEO geography is built once on real Miami data, never on the
+  mock Orlando seed — see `docs/superpowers/plans/2026-06-30-d12-seo.md`.
 
 ## Consequences
 

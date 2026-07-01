@@ -44,3 +44,30 @@ seams in the data model from day one.
 
 - **Deferring the consent model to v2** — rejected; retrofitting consent/suppression onto existing
   leads is risky and the brief mandates the seam now.
+
+## Addendum (2026-07-01) — transactional consent vs marketing consent (ADR-020)
+
+We now capture **two distinct kinds of consent**, and they must never be conflated:
+
+1. **Transactional / contact consent** — the per-channel consent decided above (email/phone).
+   **Required** on every form so Nilyan may reply to *this* enquiry. This is a **transactional**
+   posture (a direct reply to a submission), which is why v1 stays clear of marketing CAN-SPAM/TCPA
+   send-time rules. **Unchanged.**
+2. **Marketing consent** — an **optional** opt-in to receive ongoing marketing (news / new listings),
+   added to all capture forms in D11, gating the **Phase 2** email campaigns (ADR-020).
+
+**HARD RULE — the marketing opt-in must always be, on every form, forever:**
+- **Optional** — the form submits successfully without it; it is never required/blocking.
+- **Unchecked by default** — **never pre-ticked**; opt-in is an affirmative act only.
+- **Separately worded** — its own label, distinct from the contact consent
+  (*"I'd like to receive news and new listings by email"*).
+
+No future task may make the marketing opt-in required, pre-checked, or merged into the contact
+consent. **Data model:** the two are told apart by a **`purpose` discriminator** on `consent_records`
+(`transactional` | `marketing`; existing rows are `transactional`). **Every submission writes a
+marketing row: ticked → `channel='email'`, `purpose='marketing'`, `granted=true`; left unticked →
+the same row with `granted=false`** (never omitted, never a silent default-true). Recording the
+negative is deliberate — a dated, worded, **auditable** proof that the choice was offered and
+declined, so an affirmative opt-in is provable and a later flip is reasoned against a record, not an
+absence. The **suppression seam** handles later opt-outs. The recipient list for Phase 2 = leads with
+a `granted=true, purpose='marketing'` email consent. Full decision: **ADR-020**.

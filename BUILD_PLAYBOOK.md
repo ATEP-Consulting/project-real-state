@@ -192,12 +192,20 @@ detail (contact + qualification answers + viewed listings), a pipeline
 reminders. Plan first, then stop and show me.
 ```
 
-**D11 · Admin (off-market, content, questions, analytics)**
+**D11 · Admin management editors (questions, off-market, guides)** — revised 2026-07-01, ADR-008/020
 ```
-Complete the admin per ADR-008/005: off-market listing CRUD with the visibility toggle
-(public/registered/private_link); content editing for neighborhood pages; the configurable
-qualification-questions editor; and analytics (lead sources, conversion, most-viewed listings).
-Plan first, then stop and show me.
+Build three admin-only management editors (behind F4 requireAdmin, reusing existing tables/seams,
+no new auth): (1) qualification-questions editor — CRUD + reorder + activate/deactivate the
+qualification_questions the Buy/Sell/Rent flow reads live (the editor D7 deferred here); (2)
+off-market listings management — CRUD for Nilyan's own manual listings + the 3-state visibility
+toggle (public/registered/private_link); works on real data now, independent of the Miami feed;
+(3) guides/blog editor — CRUD/publish/unpublish for the content guides seeded in D12. Also add the
+optional, unchecked-by-default marketing opt-in to the four capture forms (ADR-020). Plan first,
+then stop and show me.
+
+DEFERRED out of D11: analytics (D10's dashboard covers the demo; deeper analytics needs real
+data) and area/neighborhood content editing (tied to the deferred D12 Phase A area pages).
+NOT in scope: email marketing campaigns — Phase 2 (ADR-020); the MLS worker — Phase 3 (ADR-004).
 ```
 
 **D12 · Neighborhood SEO pages**
@@ -248,7 +256,11 @@ first, then stop and show me.
 - AI natural-language search + concierge chat per ADR-014, with the guardrails (grounded in our
   data, no legal/insurance advice, Fair Housing no-steering).
 - Then the rest of v2: passwordless client accounts, saved searches + alerts, automation, AI lead
-  scoring, automated (human-reviewed) SEO blog.
+  scoring, automated (human-reviewed) SEO blog, and **email marketing campaigns** (mass outbound to
+  CRM leads under CAN-SPAM — recipient lists/templates/scheduling/ESP/tracking/unsubscribe; the
+  marketing opt-in + consent seam already ship in v1/D11, ADR-020).
+- **D12 Phase A — area/location pages** (`/areas/*`) also wait for the Miami feed (built with the
+  MLS worker on real data; not on the mock Orlando seed).
 
 ---
 

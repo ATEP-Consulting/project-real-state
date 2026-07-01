@@ -47,3 +47,16 @@ herself without a developer.
 - **Single long form** — rejected; higher abandonment, weaker qualification.
 - **Hardcoded questions** — rejected; violates the "Nilyan configures" requirement.
 - **Requiring both phone and email** — rejected explicitly by the brief.
+
+## Addendum (2026-07-01, D11) — optional marketing opt-in on every capture form
+
+All **four** capture surfaces — the per-listing inquiry, the Buy/Sell/Rent flow, `/contact`, and the
+**home-valuation flow** (the *sell* branch with the address pre-filled — a **sell-flow variant**, not
+a standalone `/home-value` page, which stays deferred) — gain **one optional marketing opt-in
+checkbox** (added in D11), **separate from and in addition to** the required per-channel contact
+consent. It is **optional** (the form submits fine without it), **unchecked by default** (never
+pre-ticked), and **separately worded** (*"I'd like to receive news and new listings by email"*). It
+always records its own marketing `consent_records` row — `granted=true` when ticked, **`granted=false`
+when left unticked** (auditable, never omitted) — and gates the **Phase 2** email campaigns. The
+**contact rule above stays required and unchanged.** Full decision + hard rules: **ADR-020** (and
+ADR-011).

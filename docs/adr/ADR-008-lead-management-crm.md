@@ -61,3 +61,20 @@ lead) — see ADR-005/007/011.
 - D10 scope is **lead inbox + detail + pipeline (both views) + activities**. Analytics, off-market CRUD,
   content editing, the configurable-questions editor, and the outbound webhook remain **D11** (the
   webhook is a one-line seam comment in the D10 mutation helpers).
+
+## Addendum (2026-07-01, D11) — revised D11 scope; campaigns are Phase 2
+
+- **D11 = three admin management editors** (all admin-only behind F4 `requireAdmin`, reusing existing
+  tables/seams, no new auth): **(1) qualification-questions editor** (CRUD + reorder + activate/
+  deactivate `qualification_questions`, the editor D7 deferred here); **(2) off-market listings
+  management** — CRUD for Nilyan's own manually-entered listings + the 3-state **visibility toggle**
+  (`public` / `registered` / `private_link`); works on **real data now**, independent of the Miami
+  feed; **(3) guides/blog editor** — CRUD/publish/unpublish for the `content` guides seeded in D12.
+  D11 also adds the **optional marketing opt-in** to the four capture forms (ADR-007/020) — small and
+  consent-related.
+- **Deferred out of D11:** **analytics** (the D10 dashboard covers the demo; deeper time-series/
+  per-source analytics needs real leads/listings) and **area/neighborhood content editing** (tied to
+  the deferred Phase A area pages — ADR-019/`docs/superpowers/plans/2026-06-30-d12-seo.md`).
+- **Email marketing campaigns are NOT in the CRM v1 — they are Phase 2 (ADR-020).** The CRM stays
+  **manual-workflow, no automated consumer outbound** (as in the original decision above); D11 only
+  captures the marketing consent that a future campaign system will rely on.

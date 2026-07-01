@@ -32,6 +32,7 @@ leaves the seams. `Proposed` — has an open question pending review (see the ki
 | [017](./ADR-017-scope-and-phasing.md) | Scope & phasing | Accepted |
 | [018](./ADR-018-internationalization.md) | Internationalization (EN/ES) | Accepted (EN default) |
 | [019](./ADR-019-pages-and-routes.md) | Pages & routes (sitemap) | Accepted |
+| [020](./ADR-020-marketing-consent-and-campaigns.md) | Marketing consent vs transactional consent; email campaigns | Accepted (opt-in in D11; campaigns deferred → Phase 2) |
 
 ## Open questions — resolved in Phase 0 review (2026-06-29)
 1. **Default locale** → **English default** (`/es/...` for Spanish). ADR-018.
