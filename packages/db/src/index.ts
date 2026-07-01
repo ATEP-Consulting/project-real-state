@@ -53,6 +53,18 @@ export {
   type DashboardData,
 } from "./admin-leads";
 export { getPublishedGuides, getGuideBySlug, type GuideSummary, type GuideDetail } from "./content";
+export type { Content } from "./schema/content";
+export {
+  listAdminGuides,
+  getAdminGuide,
+  createGuide,
+  updateGuide,
+  setGuidePublished,
+  deleteGuide,
+  guideUpsertSchema,
+  type GuideUpsert,
+  type AdminGuideRow,
+} from "./admin-content";
 export { contactLeadSchema, createContactLead, type ContactLead } from "./contact";
 export {
   listManualListings,
