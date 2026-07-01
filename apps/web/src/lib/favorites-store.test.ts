@@ -24,6 +24,7 @@ describe("favorites-store", () => {
     const s = { slugs: ["a", "b"], promptSeen: true, captured: false };
     expect(parseFavorites(serializeFavorites(s))).toEqual(s);
     expect(parseFavorites('{"slugs":["a"],"promptSeen":1}').promptSeen).toBe(false);
+    expect(parseFavorites('{"slugs":["a"],"captured":1}').captured).toBe(false);
   });
 
   it("adds to the front, dedupes, and caps at MAX_FAVORITES", () => {

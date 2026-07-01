@@ -44,10 +44,6 @@
 .action:hover {
   border-color: var(--color-forest);
 }
-.saved {
-  color: var(--color-bronze-dark);
-  border-color: var(--color-bronze);
-}
 
 @media (max-width: 620px) {
   .crumb {

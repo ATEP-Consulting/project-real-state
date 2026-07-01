@@ -68,7 +68,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   // Hydrate AFTER mount (SSR + first client render stay empty ⇒ no hydration mismatch).
   useEffect(() => {
-    const initial = parseFavorites(window.localStorage.getItem(FAVORITES_KEY));
+    let raw: string | null = null;
+    try {
+      raw = window.localStorage.getItem(FAVORITES_KEY);
+    } catch {
+      /* private mode / storage disabled — start empty */
+    }
+    const initial = parseFavorites(raw);
     stateRef.current = initial;
     setState(initial);
     setReady(true);

@@ -20,4 +20,9 @@ describe("buildLeadPayload — source + viewedListingIds (D9)", () => {
     expect(p.source).toBeUndefined();
     expect(p.viewedListingIds).toBeUndefined();
   });
+
+  it("omits viewedListingIds when given an empty array", () => {
+    const p = buildLeadPayload({ ...base, viewedListingIds: [] });
+    expect(p.viewedListingIds).toBeUndefined();
+  });
 });

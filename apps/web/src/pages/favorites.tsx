@@ -16,14 +16,17 @@ export default function FavoritesPage() {
   const { slugs, count, ready, prune } = useFavorites();
   // null = loading, [] = none (empty state), else the fetched cards in saved order.
   const [listings, setListings] = useState<ListingCardVM[] | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
     if (slugs.length === 0) {
+      setError(false);
       setListings([]);
       return;
     }
     let alive = true;
+    setError(false);
     setListings(null);
     fetch("/api/listings/by-slugs", {
       method: "POST",
@@ -42,7 +45,7 @@ export default function FavoritesPage() {
         if (d.listings.length !== slugs.length) prune(d.listings.map((l) => l.slug));
       })
       .catch(() => {
-        if (alive) setListings([]);
+        if (alive) setError(true);
       });
     return () => {
       alive = false;
@@ -75,7 +78,12 @@ export default function FavoritesPage() {
 
       <section className={styles.body}>
         <Container>
-          {listings === null ? (
+          {error ? (
+            <div className={styles.empty}>
+              <p className={styles.emptyTitle}>Couldn&rsquo;t load your saved homes</p>
+              <p className={styles.emptyText}>Please refresh the page to try again — your saved homes are safe on this device.</p>
+            </div>
+          ) : listings === null ? (
             <div className={styles.grid}>
               {[0, 1, 2].map((i) => (
                 <Skeleton key={i} className={styles.cardSkeleton} />
