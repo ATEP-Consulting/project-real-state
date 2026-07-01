@@ -18,6 +18,7 @@ export const FOOTER_NAV: readonly { heading: string; items: readonly NavItem[] }
       { label: "Sell", href: "/sell" },
       { label: "Rent", href: "/rent" },
       { label: "Map search", href: "/search" },
+      { label: "Saved homes", href: "/favorites" },
     ],
   },
   {

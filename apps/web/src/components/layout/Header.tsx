@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { PRIMARY_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
 import { useScrolled } from "./useScrolled";
+import { FavoritesNavButton } from "@/components/favorites/FavoritesNavButton";
 import styles from "./Header.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
@@ -76,6 +77,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
           </nav>
 
           <div className={styles.actions}>
+            <FavoritesNavButton />
             <LangToggle />
             <a className={styles.phone} href={TEL}>
               {REALTOR.phone}
@@ -112,6 +114,9 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
               {item.label}
             </Link>
           ))}
+          <Link href="/favorites" className={styles.mobileLink} onClick={() => setOpen(false)}>
+            Saved homes
+          </Link>
           <a className={styles.mobileLink} href={TEL} onClick={() => setOpen(false)}>
             {REALTOR.phone}
           </a>

@@ -1,0 +1,32 @@
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: inherit; /* inherits the header's over-hero white / scrolled-forest state */
+  border-radius: 50%;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.link:hover {
+  color: var(--color-bronze);
+}
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bronze);
+  color: #fff;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 9999px;
+}
