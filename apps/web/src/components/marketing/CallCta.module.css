@@ -1,7 +1,14 @@
 .section {
-  padding-block: clamp(64px, 10vw, 104px);
-  /* Deep forest with a soft top highlight for depth (green-tinted, never neon). */
+  padding-block: clamp(56px, 8vw, 88px);
+  background: var(--color-paper);
+}
+/* Forest panel floating on cream: keeps the premium call treatment but leaves
+   breathing room before the (forest) footer, so the two no longer merge. */
+.panel {
   background: radial-gradient(130% 120% at 50% 0%, #1c3b35 0%, var(--color-forest) 46%, var(--color-forest-900) 100%);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  padding: clamp(48px, 8vw, 92px) clamp(24px, 4vw, 48px);
   color: #fff;
 }
 .inner {

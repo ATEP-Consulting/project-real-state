@@ -35,7 +35,8 @@ export function CallCta({
     <section className={styles.section}>
       <Container>
         <Reveal>
-          <div className={styles.inner}>
+          <div className={styles.panel}>
+            <div className={styles.inner}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={REALTOR.photo}
@@ -60,6 +61,7 @@ export function CallCta({
                 {secondaryLabel}
               </Link>
             )}
+            </div>
           </div>
         </Reveal>
       </Container>
