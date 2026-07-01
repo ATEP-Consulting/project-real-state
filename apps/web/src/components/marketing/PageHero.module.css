@@ -1,0 +1,43 @@
+.hero {
+  position: relative;
+  min-height: clamp(420px, 66vh, 600px);
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  /* On-brand base under the scrim before the photo finishes loading. */
+  background-color: var(--color-forest);
+  color: #fff;
+  margin-top: calc(-1 * var(--header-h));
+  padding-top: var(--header-h);
+}
+.inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding-block: clamp(64px, 12vh, 110px);
+}
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 18px;
+}
+.title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.04;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+}
+.lede {
+  margin: 18px auto 0;
+  max-width: 52ch;
+  font-size: clamp(16px, 2.2vw, 19px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}

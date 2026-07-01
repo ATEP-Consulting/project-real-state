@@ -1,88 +1,117 @@
 import { Seo } from "@/components/seo/Seo";
+import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
-import { SiteLayout } from "@/components/layout/SiteLayout";
+import { StarRating } from "@/components/ui/StarRating";
+import { PageHero } from "@/components/marketing/PageHero";
+import { CallCta } from "@/components/marketing/CallCta";
 import { REALTOR } from "@/data/realtor";
 import { TESTIMONIALS } from "@/data/testimonials";
+import styles from "./about.module.css";
+
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=68&auto=format&fit=crop";
+
+const VALUES = [
+  {
+    title: "Honest numbers",
+    body: "You get the real monthly cost in Florida: insurance, flood, HOA and taxes, before you commit.",
+  },
+  {
+    title: "A local network",
+    body: "Relationships across Miami, Coral Gables and the coast that open doors, including off-market listings.",
+  },
+  {
+    title: "Personal follow-through",
+    body: "You work with me directly, start to finish. I answer my own phone.",
+  },
+];
 
 export default function About() {
   return (
-    <SiteLayout>
+    <SiteLayout transparentHeader>
       <Seo
-        title="About Nilyan Herrera — Licensed Florida Realtor®"
-        description="Meet Nilyan Herrera, a licensed Florida Realtor® helping buyers, sellers, and renters across the state."
+        title="About Nilyan Herrera · Licensed Florida Realtor®"
+        description="Meet Nilyan Herrera, a licensed Florida Realtor® helping buyers, sellers and renters across Miami and the coast with honest numbers and close guidance."
         path="/about"
       />
-      <Container>
-        <div style={{ maxWidth: 760, paddingBlock: "96px 48px" }}>
+      <PageHero
+        image={HERO_IMAGE}
+        eyebrow="About · Licensed Florida Realtor®"
+        title="Nilyan Herrera"
+        lede={REALTOR.bioShort}
+      />
+
+      {/* Bio + portrait + stats */}
+      <section className={styles.bioSection}>
+        <Container>
           <Reveal>
-            <Eyebrow>{REALTOR.title}</Eyebrow>
-            <h1
-              style={{ fontSize: "clamp(34px, 6vw, 56px)", lineHeight: 1.05, margin: "12px 0 0" }}
-            >
-              {REALTOR.name}
-            </h1>
-            {REALTOR.bioLong.map((p) => (
-              <p
-                key={p.slice(0, 24)}
-                style={{
-                  fontSize: 17,
-                  lineHeight: 1.7,
-                  color: "var(--color-ink-soft)",
-                  marginTop: 18,
-                }}
-              >
-                {p}
-              </p>
-            ))}
-            <p style={{ marginTop: 18, color: "var(--color-stone)" }}>
-              {REALTOR.license} · <a href={`mailto:${REALTOR.email}`}>{REALTOR.email}</a> ·{" "}
-              <a href={`tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`}>{REALTOR.phone}</a>
-            </p>
+            <div className={styles.bioGrid}>
+              <div className={styles.photoWrap}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={REALTOR.photo}
+                  alt={REALTOR.name}
+                  className={styles.photo}
+                  loading="lazy"
+                />
+                <div className={styles.stats}>
+                  {REALTOR.stats.map((s) => (
+                    <div key={s.label} className={styles.stat}>
+                      <span className={styles.statValue}>{s.value}</span>
+                      <span className={styles.statLabel}>{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h2 className={styles.bioHead}>Close guidance, honest numbers.</h2>
+                {REALTOR.bioLong.map((p) => (
+                  <p key={p.slice(0, 24)} className={styles.bioText}>
+                    {p}
+                  </p>
+                ))}
+                <p className={styles.license}>
+                  {REALTOR.license} · {REALTOR.memberOf}
+                </p>
+              </div>
+            </div>
           </Reveal>
-        </div>
-      </Container>
-      <section style={{ background: "var(--color-sand-100)", paddingBlock: 72 }}>
+        </Container>
+      </section>
+
+      {/* How I work */}
+      <section className={styles.valuesSection}>
+        <Container>
+          <Reveal>
+            <h2 className={styles.valuesTitle}>How I work</h2>
+          </Reveal>
+          <div className={styles.values}>
+            {VALUES.map((v, i) => (
+              <Reveal key={v.title} delay={i * 0.06}>
+                <div className={styles.value}>
+                  <h3 className={styles.valueTitle}>{v.title}</h3>
+                  <p className={styles.valueBody}>{v.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* Testimonials */}
+      <section className={styles.quotesSection}>
         <Container>
           <Reveal>
             <Eyebrow>What clients say</Eyebrow>
-            <ul
-              style={{
-                listStyle: "none",
-                margin: "24px 0 0",
-                padding: 0,
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                gap: 20,
-              }}
-            >
+            <ul className={styles.quotes}>
               {TESTIMONIALS.map((t) => (
-                <li
-                  key={t.author}
-                  style={{
-                    background: "var(--color-surface)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "var(--radius-md)",
-                    padding: 24,
-                    boxShadow: "var(--shadow-sm)",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: "var(--font-serif), Georgia, serif",
-                      fontSize: 18,
-                      lineHeight: 1.5,
-                      margin: "0 0 16px",
-                    }}
-                  >
-                    “{t.quote}”
-                  </p>
-                  <p style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>
-                    {t.author} ·{" "}
-                    <span style={{ fontWeight: 400, color: "var(--color-stone)" }}>
-                      {t.context}
-                    </span>
+                <li key={t.author} className={styles.quote}>
+                  <StarRating value={t.rating} />
+                  <p className={styles.quoteText}>“{t.quote}”</p>
+                  <p className={styles.quoteAuthor}>
+                    {t.author} · <span className={styles.quoteContext}>{t.context}</span>
                   </p>
                 </li>
               ))}
@@ -90,6 +119,13 @@ export default function About() {
           </Reveal>
         </Container>
       </section>
+
+      <CallCta
+        title="Let's talk about your move."
+        text="Tell me what you're after and I'll take it from there. I answer personally."
+        secondaryLabel="Send a message"
+        secondaryHref="/contact"
+      />
     </SiteLayout>
   );
 }

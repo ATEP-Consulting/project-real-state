@@ -72,13 +72,15 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Quieter path back to the form. */
-.start {
+/* Quieter secondary action (scrolls to a form anchor, or links elsewhere). */
+.secondary {
+  display: inline-block;
   margin-top: 32px;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #fff;
+  text-decoration: none;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: var(--radius-pill);
@@ -89,26 +91,26 @@
     background-color var(--dur-fast) var(--ease-standard),
     transform var(--dur-fast) var(--ease-standard);
 }
-.start:hover {
+.secondary:hover {
   border-color: #fff;
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-1px);
 }
-.start:active {
+.secondary:active {
   transform: translateY(0);
 }
-.start:focus-visible {
+.secondary:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .phone,
-  .start {
+  .secondary {
     transition: none;
   }
   .phone:hover,
-  .start:hover {
+  .secondary:hover {
     transform: none;
   }
 }
