@@ -34,6 +34,7 @@ type FormState = {
   sqft: string;
   yearBuilt: string;
   description: string;
+  descriptionEs: string;
   visibility: string;
   status: string;
   latitude: string;
@@ -57,6 +58,7 @@ function fromListing(l: Listing | undefined): FormState {
     sqft: str(l?.sqft),
     yearBuilt: str(l?.yearBuilt),
     description: str(l?.description),
+    descriptionEs: str(l?.descriptionEs),
     visibility: l?.visibility ?? "private_link",
     status: l?.status ?? "off_market",
     latitude: str(l?.latitude),
@@ -91,6 +93,7 @@ export function ListingForm({ initial, listingId }: { initial?: Listing; listing
       sqft: num(form.sqft),
       yearBuilt: num(form.yearBuilt),
       description: form.description.trim() || null,
+      descriptionEs: form.descriptionEs.trim() || null,
       visibility: form.visibility,
       status: form.status,
       latitude: num(form.latitude),
@@ -197,6 +200,18 @@ export function ListingForm({ initial, listingId }: { initial?: Listing; listing
       <label className={f.field} style={{ marginTop: 14 }}>
         <span className={f.label}>Description</span>
         <textarea className={f.textarea} value={form.description} onChange={set("description")} />
+      </label>
+
+      <label className={f.field} style={{ marginTop: 14 }}>
+        <span className={f.label}>
+          Description (Spanish) <span className={f.hint}>optional — shown to Spanish-language visitors</span>
+        </span>
+        <textarea
+          className={f.textarea}
+          value={form.descriptionEs}
+          onChange={set("descriptionEs")}
+          lang="es"
+        />
       </label>
 
       <div className={`${f.grid} ${f.grid2}`} style={{ marginTop: 14 }}>

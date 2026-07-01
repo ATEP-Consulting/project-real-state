@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { REALTOR } from "@/data/realtor";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./FavoritesNudge.module.css";
 
 /**
@@ -11,10 +12,11 @@ import styles from "./FavoritesNudge.module.css";
  * opens the login-less favorites capture. Dismissible; hidden once captured.
  */
 export function FavoritesNudge() {
+  const { m } = useTranslation();
   const { count, captured, openFavoritesCapture } = useFavorites();
   const [dismissed, setDismissed] = useState(false);
   if (captured || dismissed || count === 0) return null;
-  const noun = count <= 1 ? "this home" : "these homes";
+  const isSingular = count <= 1;
 
   return (
     <section className={styles.section}>
@@ -24,7 +26,7 @@ export function FavoritesNudge() {
             <button
               type="button"
               className={styles.dismiss}
-              aria-label="Dismiss"
+              aria-label={m.favorites.nudgeDismiss}
               onClick={() => setDismissed(true)}
             >
               ×
@@ -32,15 +34,16 @@ export function FavoritesNudge() {
             <div className={styles.inner}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={REALTOR.photo} alt={REALTOR.name} className={styles.portrait} loading="lazy" />
-              <h2 className={styles.title}>Want Nilyan to watch {noun} for you?</h2>
+              <h2 className={styles.title}>
+                {isSingular ? m.favorites.nudgeTitleSingular : m.favorites.nudgeTitlePlural}
+              </h2>
               <p className={styles.text}>
-                Leave your details and she&rsquo;ll personally alert you to price drops and new
-                listings like {noun}. No account, no obligation.
+                {isSingular ? m.favorites.nudgeTextSingular : m.favorites.nudgeTextPlural}
               </p>
               <button type="button" className={styles.cta} onClick={openFavoritesCapture}>
-                Get price alerts
+                {m.favorites.nudgeCta}
               </button>
-              <p className={styles.sub}>She replies personally, usually within the day.</p>
+              <p className={styles.sub}>{m.favorites.nudgeSub}</p>
             </div>
           </div>
         </Reveal>

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { serializeSearchQuery, type SearchParams } from "@/lib/search-params";
 import { clearKeysPatch, pickKeys, type FilterConfig } from "@/lib/filters";
 import { FilterControl } from "./FilterControl";
+import { useTranslation } from "@/lib/i18n";
+import { pickLocalized } from "@/lib/i18n/config";
 import styles from "./MoreFiltersPanel.module.css";
 
 /**
@@ -16,7 +18,7 @@ export function MoreFiltersPanel({
   total,
   onClose,
   onApply,
-  title = "More filters",
+  title,
 }: {
   filters: FilterConfig[];
   params: SearchParams;
@@ -26,6 +28,8 @@ export function MoreFiltersPanel({
   onApply: (patch: SearchParams) => void;
   title?: string;
 }) {
+  const { m, locale } = useTranslation();
+  const panelTitle = title ?? m.search.moreFiltersTitle;
   const [draft, setDraft] = useState<SearchParams>({});
   const [preview, setPreview] = useState<number>(total);
 
@@ -61,19 +65,19 @@ export function MoreFiltersPanel({
   const view: SearchParams = { ...params, ...draft };
 
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label={title}>
-      <button type="button" className={styles.scrim} aria-label="Close filters" onClick={onClose} />
+    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label={panelTitle}>
+      <button type="button" className={styles.scrim} aria-label={m.search.closeFilters} onClick={onClose} />
       <div className={styles.sheet}>
         <header className={styles.head}>
-          <h2 className={styles.title}>{title}</h2>
-          <button type="button" className={styles.x} onClick={onClose} aria-label="Close">
+          <h2 className={styles.title}>{panelTitle}</h2>
+          <button type="button" className={styles.x} onClick={onClose} aria-label={m.search.close}>
             ×
           </button>
         </header>
         <div className={styles.body}>
           {filters.map((f) => (
             <section key={f.key} className={styles.row}>
-              <h3 className={styles.rowLabel}>{f.label}</h3>
+              <h3 className={styles.rowLabel}>{pickLocalized(f.label, f.labelEs, locale)}</h3>
               <FilterControl
                 config={f}
                 value={view}
@@ -88,7 +92,7 @@ export function MoreFiltersPanel({
             className={styles.reset}
             onClick={() => setDraft(clearKeysPatch(filters))}
           >
-            Reset
+            {m.search.reset}
           </button>
           <button
             type="button"
@@ -98,7 +102,7 @@ export function MoreFiltersPanel({
               onClose();
             }}
           >
-            See {preview} {preview === 1 ? "home" : "homes"}
+            {m.search.see} {preview} {preview === 1 ? m.search.seeHome : m.search.seeHomes}
           </button>
         </footer>
       </div>

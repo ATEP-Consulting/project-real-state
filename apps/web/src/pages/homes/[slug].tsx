@@ -16,6 +16,8 @@ import { Seo } from "@/components/seo/Seo";
 import { absoluteUrl } from "@/lib/seo";
 import { toListingCardVM, type ListingCardVM } from "@/lib/listing";
 import { MAP_STYLE_URL } from "@/lib/map-style";
+import { useTranslation } from "@/lib/i18n";
+import { asLocale } from "@/lib/i18n/config";
 import styles from "@/components/listing/ListingDetail.module.css";
 
 // Client-only (touches `window`) — never server-rendered, like D2's search map.
@@ -52,7 +54,8 @@ export const getStaticProps: GetStaticProps<DetailProps> = async (ctx) => {
     if (listing.visibility !== "public" && listing.visibility !== "private_link") {
       return { notFound: true, revalidate: 300 };
     }
-    const vm = toListingDetailVM(listing);
+    const locale = asLocale(ctx.locale);
+    const vm = toListingDetailVM(listing, locale);
     const canonicalPath = `/homes/${slug}`;
     const similarRows = await getSimilarListings({
       slug,
@@ -76,11 +79,21 @@ export const getStaticProps: GetStaticProps<DetailProps> = async (ctx) => {
 };
 
 export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }: DetailProps) {
+  const { m } = useTranslation();
+  const statusLabel = m.listing[`status_${vm.statusKey}` as const];
+  const featureLabels = vm.featureKeys.map((k) => ({
+    key: k,
+    label: m.listing[`feature_${k}` as const],
+  }));
+
   return (
     <SiteLayout>
       <Seo
         title={`${vm.title}, ${vm.cityLine} — Herrera`}
-        description={`${vm.priceLabel} · ${vm.propertyTypeLabel} at ${vm.title}, ${vm.cityLine}.`}
+        description={m.listing.seoDescriptionTemplate
+          .replace("{price}", vm.priceLabel)
+          .replace("{type}", m.propertyTypes[vm.propertyType as keyof typeof m.propertyTypes] ?? vm.propertyTypeLabel)
+          .replace("{address}", `${vm.title}, ${vm.cityLine}`)}
         path={canonicalPath}
         jsonLd={jsonLd}
       />
@@ -93,7 +106,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
           <div className={styles.main}>
             <header className={styles.head}>
               <div className={styles.headMain}>
-                <span className={styles.badge}>{vm.statusLabel}</span>
+                <span className={styles.badge}>{statusLabel}</span>
                 <h1 className={styles.title}>{vm.title}</h1>
                 <p className={styles.cityLine}>
                   <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
@@ -111,22 +124,22 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
               </div>
             </header>
 
-            <IconFacts beds={vm.beds} baths={vm.baths} sqft={vm.sqft} yearBuilt={vm.yearBuilt} />
+            <IconFacts beds={vm.beds} baths={vm.baths} sqft={vm.sqft} yearBuilt={vm.yearBuilt} propertyType={vm.propertyType} />
 
             {vm.description && (
               <section className={styles.section}>
-                <h2 className={styles.h2}>About this home</h2>
+                <h2 className={styles.h2}>{m.listing.sectionAbout}</h2>
                 <p className={styles.body}>{vm.description}</p>
               </section>
             )}
 
-            {vm.features.length > 0 && (
+            {featureLabels.length > 0 && (
               <section className={styles.section}>
-                <h2 className={styles.h2}>Features</h2>
+                <h2 className={styles.h2}>{m.listing.sectionFeatures}</h2>
                 <ul className={styles.features}>
-                  {vm.features.map((f) => (
-                    <li key={f} className={styles.feature}>
-                      {f}
+                  {featureLabels.map(({ key, label }) => (
+                    <li key={key} className={styles.feature}>
+                      {label}
                     </li>
                   ))}
                 </ul>
@@ -138,7 +151,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
 
             {vm.location && (
               <section className={styles.section}>
-                <h2 className={styles.h2}>Location</h2>
+                <h2 className={styles.h2}>{m.listing.sectionLocation}</h2>
                 <LocationMap lng={vm.location.lng} lat={vm.location.lat} styleUrl={MAP_STYLE_URL} />
               </section>
             )}

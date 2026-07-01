@@ -12,11 +12,17 @@ import type { ListingCardVM } from "@/lib/listing";
 import type { ListingMapPoint } from "@/lib/map-points";
 import type { InitialView } from "./SearchMap";
 import type { SearchResult } from "@/server/run-search";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./SearchView.module.css";
 
-const SearchMap = dynamic(() => import("./SearchMap").then((m) => m.SearchMap), {
+function MapLoadingPlaceholder() {
+  const { m } = useTranslation();
+  return <div className={styles.mapLoading}>{m.search.loadingMap}</div>;
+}
+
+const SearchMap = dynamic(() => import("./SearchMap").then((mod) => mod.SearchMap), {
   ssr: false,
-  loading: () => <div className={styles.mapLoading}>Loading map…</div>,
+  loading: () => <MapLoadingPlaceholder />,
 });
 
 export function SearchView({
@@ -34,6 +40,7 @@ export function SearchView({
   filters: SearchFilterConfig[];
 }) {
   const router = useRouter();
+  const { m } = useTranslation();
   const [cards, setCards] = useState<ListingCardVM[]>(initial.cards);
   const [points, setPoints] = useState<ListingMapPoint[]>(initial.points);
   const [total, setTotal] = useState(initial.total);
@@ -150,7 +157,7 @@ export function SearchView({
           onClick={() => setMobileFilters(true)}
           aria-haspopup="dialog"
         >
-          Filters{filteredActive ? ` · ${activeFilterCount(paramsState, filters)}` : ""}
+          {m.search.mobileFilters}{filteredActive ? ` · ${activeFilterCount(paramsState, filters)}` : ""}
         </button>
       </div>
 
@@ -187,7 +194,7 @@ export function SearchView({
           <div className={styles.tools}>
             {poly ? (
               <button type="button" className={styles.tool} onClick={() => onPolyChange(null)}>
-                Clear zone
+                {m.search.clearZone}
               </button>
             ) : (
               <button
@@ -195,7 +202,7 @@ export function SearchView({
                 className={`${styles.tool} ${drawing ? styles.toolActive : ""}`}
                 onClick={() => setDrawing((d) => !d)}
               >
-                {drawing ? "Click points · double-click to finish" : "Draw a zone"}
+                {drawing ? m.search.drawInstructions : m.search.drawZone}
               </button>
             )}
           </div>
@@ -209,7 +216,7 @@ export function SearchView({
             className={mobileView === "list" ? styles.mtActive : ""}
             onClick={() => setMobileView("list")}
           >
-            List
+            {m.search.mobileList}
           </button>
           <button
             type="button"
@@ -218,7 +225,7 @@ export function SearchView({
             className={mobileView === "map" ? styles.mtActive : ""}
             onClick={() => setMobileView("map")}
           >
-            Map
+            {m.search.mobileMap}
           </button>
         </div>
       </div>
@@ -231,7 +238,7 @@ export function SearchView({
         total={total}
         onClose={() => setMobileFilters(false)}
         onApply={applyPatch}
-        title="Filters"
+        title={m.search.filtersTitle}
       />
     </div>
   );

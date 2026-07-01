@@ -1,5 +1,7 @@
 import Head from "next/head";
-import { absoluteUrl, SITE_NAME } from "@/lib/seo";
+import { useRouter } from "next/router";
+import { alternatesFor, localizedUrl, SITE_NAME } from "@/lib/seo";
+import { asLocale } from "@/lib/i18n/config";
 
 type Props = {
   title: string;
@@ -12,9 +14,11 @@ type Props = {
   jsonLd?: object | object[];
 };
 
-/** Reusable document head: title, description, canonical, OpenGraph/Twitter, JSON-LD. */
+/** Reusable document head: title, description, per-locale canonical, hreflang alternates, OG/Twitter, JSON-LD. */
 export function Seo({ title, description, path, image, noindex, jsonLd }: Props) {
-  const canonical = path ? absoluteUrl(path) : undefined;
+  const locale = asLocale(useRouter().locale);
+  const canonical = path ? localizedUrl(path, locale) : undefined;
+  const alternates = path ? alternatesFor(path) : [];
   const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   return (
     <Head>
@@ -22,9 +26,13 @@ export function Seo({ title, description, path, image, noindex, jsonLd }: Props)
       {description && <meta name="description" content={description} />}
       {noindex && <meta name="robots" content="noindex,nofollow" />}
       {canonical && <link rel="canonical" href={canonical} />}
+      {alternates.map((a) => (
+        <link key={a.hrefLang} rel="alternate" hrefLang={a.hrefLang} href={a.href} />
+      ))}
 
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content={locale === "es" ? "es_ES" : "en_US"} />
       <meta property="og:title" content={title} />
       {description && <meta property="og:description" content={description} />}
       {canonical && <meta property="og:url" content={canonical} />}

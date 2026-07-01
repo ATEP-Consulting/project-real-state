@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ListingCard } from "@/components/ui/ListingCard";
 import { FavoritesNudge } from "@/components/favorites/FavoritesNudge";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
+import { useTranslation } from "@/lib/i18n";
 import type { ListingCardVM } from "@/lib/listing";
 import styles from "./Favorites.module.css";
 
@@ -33,6 +34,7 @@ function HeartGlyph() {
 }
 
 export default function FavoritesPage() {
+  const { m } = useTranslation();
   const { slugs, count, ready, prune } = useFavorites();
   // null = loading, [] = none (empty state), else the fetched cards in saved order.
   const [listings, setListings] = useState<ListingCardVM[] | null>(null);
@@ -74,8 +76,10 @@ export default function FavoritesPage() {
 
   const lede =
     ready && count > 0
-      ? `${count} ${count === 1 ? "home" : "homes"} saved on this device — come back any time, no account needed.`
-      : "The Florida homes you save live here, ready when you are. No account — they stay on this device.";
+      ? m.favorites.ledeCount
+          .replace("{count}", String(count))
+          .replace("{noun}", count === 1 ? m.favorites.ledeCountHome : m.favorites.ledeCountHomes)
+      : m.favorites.ledeEmpty;
 
   return (
     <SiteLayout transparentHeader>
@@ -84,12 +88,12 @@ export default function FavoritesPage() {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <Seo
-        title="Saved homes · Nilyan Herrera"
-        description="The Florida homes you've saved. Login-less — saved on this device."
+        title={m.favorites.seoTitle}
+        description={m.favorites.seoDescription}
         path="/favorites"
       />
 
-      <PageHero image={HERO_IMAGE} eyebrow="Your shortlist" title="Saved homes" lede={lede} />
+      <PageHero image={HERO_IMAGE} eyebrow={m.favorites.heroEyebrow} title={m.favorites.heroTitle} lede={lede} />
 
       <section className={styles.body}>
         <Container>
@@ -99,17 +103,15 @@ export default function FavoritesPage() {
                 <span className={styles.emptyIcon} aria-hidden="true">
                   <HeartGlyph />
                 </span>
-                <h2 className={styles.emptyTitle}>We couldn&rsquo;t load your saved homes</h2>
-                <p className={styles.emptyText}>
-                  Your shortlist is safe on this device. Please refresh to try again.
-                </p>
+                <h2 className={styles.emptyTitle}>{m.favorites.errorTitle}</h2>
+                <p className={styles.emptyText}>{m.favorites.errorText}</p>
                 <div className={styles.emptyActions}>
                   <button
                     type="button"
                     className={styles.retry}
                     onClick={() => window.location.reload()}
                   >
-                    Refresh
+                    {m.favorites.errorRefresh}
                   </button>
                 </div>
               </div>
@@ -126,13 +128,10 @@ export default function FavoritesPage() {
                 <span className={styles.emptyIcon} aria-hidden="true">
                   <HeartGlyph />
                 </span>
-                <h2 className={styles.emptyTitle}>Your shortlist is empty</h2>
-                <p className={styles.emptyText}>
-                  Tap the heart on any home to keep it here. Nilyan can then alert you to price drops
-                  and new listings that match.
-                </p>
+                <h2 className={styles.emptyTitle}>{m.favorites.emptyTitle}</h2>
+                <p className={styles.emptyText}>{m.favorites.emptyText}</p>
                 <Link href="/search" className={styles.emptyCta}>
-                  Browse listings
+                  {m.favorites.emptyCta}
                 </Link>
               </div>
             </Reveal>

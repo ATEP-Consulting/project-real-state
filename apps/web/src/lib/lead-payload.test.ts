@@ -26,3 +26,18 @@ describe("buildLeadPayload — source + viewedListingIds (D9)", () => {
     expect(p.viewedListingIds).toBeUndefined();
   });
 });
+
+describe("buildLeadPayload — locale (ADR-020/D13)", () => {
+  it("includes locale:'es' when passed", () => {
+    const p = buildLeadPayload({ ...base, locale: "es" });
+    expect(p.locale).toBe("es");
+  });
+  it("includes locale:'en' when passed", () => {
+    const p = buildLeadPayload({ ...base, locale: "en" });
+    expect(p.locale).toBe("en");
+  });
+  it("omits locale when not passed (defaults to undefined, server uses 'en')", () => {
+    const p = buildLeadPayload(base);
+    expect(p.locale).toBeUndefined();
+  });
+});

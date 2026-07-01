@@ -38,6 +38,7 @@ export const listings = pgTable(
     lotSizeSqft: integer("lot_size_sqft"),
     yearBuilt: integer("year_built"),
     description: text("description"),
+    descriptionEs: text("description_es"),
 
     // searchable features (ADR-012 D3 filters). NOTE: booleans modeled on our mock data; the real
     // MLS feed may name these differently — reconcile field names when the MLS schema is known.

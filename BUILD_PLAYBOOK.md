@@ -215,10 +215,28 @@ local market data, schools, and matching listings, plus schema.org structured da
 URL structure. Plan first, then stop and show me.
 ```
 
-**D13 · EN/ES**
+**D13 · EN/ES internationalization** — two phases, ADR-018
 ```
-Add EN/ES internationalization per ADR-018 across the public site. Plan first, then stop and
-show me.
+Add EN/ES internationalization per ADR-018 across the public site, in TWO phases.
+
+PHASE 1 — language infra + UI translation: Next.js Pages-Router i18n with locales ['en','es'],
+defaultLocale 'en' (English at the root, Spanish under /es/); a header EN/ES toggle (same page,
+other language); all static UI strings via a lightweight typed EN/ES dictionary (no heavy i18n
+dep). Multilingual SEO is a TOP priority: wire reciprocal hreflang + x-default into <Seo> (the D12
+seam), a bilingual sitemap (both language URLs of every page), correct <html lang> per locale, and
+a self-referential canonical per locale.
+
+PHASE 2 — bilingual admin content: the three D11 editors become bilingual so Nilyan fills EN + ES —
+qualification questions (label + options; label_es already exists), guides/blog (title_es/
+excerpt_es/body_es already exist — add meta_title_es/meta_description_es), and off-market listings
+(add description_es). Reuse the existing ES columns + a small migration for the missing ones; the
+public site renders the active locale, falling back to EN.
+
+DEFERRED (not in D13): translating MLS property descriptions — the feed arrives in English; decide
+auto-translate vs structured-only when the Miami feed is live (with D5 / the worker / D12 Phase A,
+ADR-004/017). D13 covers the UI + Nilyan's own content only.
+
+Plan first (two phases), then stop and show me.
 ```
 
 **D14 · Polish pass**
@@ -261,6 +279,9 @@ first, then stop and show me.
   marketing opt-in + consent seam already ship in v1/D11, ADR-020).
 - **D12 Phase A — area/location pages** (`/areas/*`) also wait for the Miami feed (built with the
   MLS worker on real data; not on the mock Orlando seed).
+- **MLS property-description translation** also waits for the Miami feed — decide auto-translate vs
+  structured/field-based ES rendering once real (English) MLS descriptions exist. D13 localized only
+  the UI + Nilyan's own admin-authored content (ADR-018).
 
 ---
 

@@ -30,7 +30,7 @@ leaves the seams. `Proposed` — has an open question pending review (see the ki
 | [015](./ADR-015-seo-and-content.md) | SEO & content | Accepted |
 | [016](./ADR-016-design-system-and-visual-direction.md) | Design system & visual direction | Accepted |
 | [017](./ADR-017-scope-and-phasing.md) | Scope & phasing | Accepted |
-| [018](./ADR-018-internationalization.md) | Internationalization (EN/ES) | Accepted (EN default) |
+| [018](./ADR-018-internationalization.md) | Internationalization (EN/ES) | Accepted (EN default; multilingual SEO + bilingual admin content) |
 | [019](./ADR-019-pages-and-routes.md) | Pages & routes (sitemap) | Accepted |
 | [020](./ADR-020-marketing-consent-and-campaigns.md) | Marketing consent vs transactional consent; email campaigns | Accepted (opt-in in D11; campaigns deferred → Phase 2) |
 

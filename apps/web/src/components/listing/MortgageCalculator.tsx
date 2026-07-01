@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Select } from "@/components/ui/Select";
 import { monthlyMortgage } from "@/lib/listing-detail";
 import { formatPrice } from "@/lib/listing";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./MortgageCalculator.module.css";
 
 export function MortgageCalculator({ price }: { price: number }) {
+  const { m } = useTranslation();
   const [downPct, setDownPct] = useState(20);
   const [term, setTerm] = useState(30);
   const [rate, setRate] = useState(6.5);
@@ -12,10 +14,10 @@ export function MortgageCalculator({ price }: { price: number }) {
   const monthly = Math.round(monthlyMortgage(price - down, rate, term));
   return (
     <section className={styles.box}>
-      <h2 className={styles.h2}>Mortgage calculator</h2>
+      <h2 className={styles.h2}>{m.listing.mortgageTitle}</h2>
       <div className={styles.grid}>
         <label className={styles.field}>
-          <span className={styles.lab}>Down payment ({downPct}%)</span>
+          <span className={styles.lab}>{m.listing.mortgageDownPayment} ({downPct}%)</span>
           <input
             type="range"
             min={0}
@@ -27,15 +29,15 @@ export function MortgageCalculator({ price }: { price: number }) {
           <span className={styles.sub}>{formatPrice(down)}</span>
         </label>
         <label className={styles.field}>
-          <span className={styles.lab}>Term</span>
+          <span className={styles.lab}>{m.listing.mortgageTerm}</span>
           <Select value={term} onChange={(e) => setTerm(Number(e.target.value))}>
-            <option value={30}>30 years</option>
-            <option value={20}>20 years</option>
-            <option value={15}>15 years</option>
+            <option value={30}>{m.listing.mortgageTerm30}</option>
+            <option value={20}>{m.listing.mortgageTerm20}</option>
+            <option value={15}>{m.listing.mortgageTerm15}</option>
           </Select>
         </label>
         <label className={styles.field}>
-          <span className={styles.lab}>Rate (%)</span>
+          <span className={styles.lab}>{m.listing.mortgageRate}</span>
           <input
             type="number"
             min={0}
@@ -47,11 +49,8 @@ export function MortgageCalculator({ price }: { price: number }) {
         </label>
       </div>
       <p className={styles.result}>
-        <span className={styles.amount}>{formatPrice(monthly)}/mo</span>
-        <span className={styles.note}>
-          Estimated principal &amp; interest. Taxes, insurance, and HOA are not included. This is an
-          estimate, not a quote or financial advice.
-        </span>
+        <span className={styles.amount}>{formatPrice(monthly)}{m.listing.mortgagePerMonth}</span>
+        <span className={styles.note}>{m.listing.mortgageDisclaimer}</span>
       </p>
     </section>
   );

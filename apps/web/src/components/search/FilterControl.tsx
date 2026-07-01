@@ -1,5 +1,7 @@
 import { PROPERTY_TYPES, type PropertyType, type SearchParams } from "@/lib/search-params";
 import { minKeyFor, type FilterConfig } from "@/lib/filters";
+import { useTranslation } from "@/lib/i18n";
+import { pickLocalized } from "@/lib/i18n/config";
 import styles from "./FilterControl.module.css";
 
 /**
@@ -16,17 +18,20 @@ export function FilterControl({
   value: SearchParams;
   onChange: (patch: SearchParams) => void;
 }) {
+  const { m, locale } = useTranslation();
+  const label = pickLocalized(config.label, config.labelEs, locale);
+
   if (config.control === "range") {
     return (
       <div className={styles.range}>
         <label className={styles.field}>
-          <span className={styles.fieldLabel}>Min</span>
+          <span className={styles.fieldLabel}>{m.search.priceMin}</span>
           <input
             type="number"
             inputMode="numeric"
             min={0}
             step={25000}
-            placeholder="No min"
+            placeholder={m.search.priceNoMin}
             value={value.minPrice ?? ""}
             onChange={(e) =>
               onChange({ minPrice: e.target.value ? Number(e.target.value) : undefined })
@@ -37,13 +42,13 @@ export function FilterControl({
           –
         </span>
         <label className={styles.field}>
-          <span className={styles.fieldLabel}>Max</span>
+          <span className={styles.fieldLabel}>{m.search.priceMax}</span>
           <input
             type="number"
             inputMode="numeric"
             min={0}
             step={25000}
-            placeholder="No max"
+            placeholder={m.search.priceNoMax}
             value={value.maxPrice ?? ""}
             onChange={(e) =>
               onChange({ maxPrice: e.target.value ? Number(e.target.value) : undefined })
@@ -59,7 +64,7 @@ export function FilterControl({
     if (!key) return null;
     const current = value[key];
     return (
-      <div className={styles.seg} role="group" aria-label={config.label}>
+      <div className={styles.seg} role="group" aria-label={label}>
         {[undefined, ...config.options].map((opt) => {
           const v = opt ? Number(opt.value) : undefined;
           const selected = current === v;
@@ -75,7 +80,7 @@ export function FilterControl({
                 onChange(patch);
               }}
             >
-              {opt ? opt.label : "Any"}
+              {opt ? pickLocalized(opt.label, opt.labelEs, locale) : m.search.any}
             </button>
           );
         })}
@@ -86,7 +91,7 @@ export function FilterControl({
   if (config.control === "enum_select") {
     const selected = new Set<PropertyType>(value.types ?? []);
     return (
-      <div className={styles.checks} role="group" aria-label={config.label}>
+      <div className={styles.checks} role="group" aria-label={label}>
         {config.options.map((opt) => {
           const val = opt.value as PropertyType;
           if (!(PROPERTY_TYPES as readonly string[]).includes(val)) return null;
@@ -103,7 +108,7 @@ export function FilterControl({
                   onChange({ types: next.size ? [...next] : undefined });
                 }}
               />
-              <span>{opt.label}</span>
+              <span>{pickLocalized(opt.label, opt.labelEs, locale)}</span>
             </label>
           );
         })}
@@ -124,7 +129,7 @@ export function FilterControl({
           onChange(patch);
         }}
       />
-      <span>{config.label}</span>
+      <span>{label}</span>
     </label>
   );
 }

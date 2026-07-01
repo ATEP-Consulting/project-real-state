@@ -1,6 +1,8 @@
 // Centralized SEO/structured-data helpers (template-driven; only the data filling
 // these changes when the real Miami feed lands). Used by <Seo> and the sitemap.
 
+import { DEFAULT_LOCALE, LOCALES, type Locale } from "./i18n/config";
+
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrera-swart.vercel.app"
 ).replace(/\/+$/, "");
@@ -67,4 +69,35 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]): object
       item: it.url,
     })),
   };
+}
+
+/** Absolute URL for a site path in a given locale (en = no prefix, es = "/es"). */
+export function localizedUrl(path: string, locale: Locale): string {
+  const clean = path === "/" ? "" : path;
+  if (locale === DEFAULT_LOCALE) return absoluteUrl(path);
+  return `${SITE_URL}/${locale}${clean}`;
+}
+
+export type AlternateLink = { hrefLang: string; href: string };
+
+/** Reciprocal hreflang set + x-default (= default locale) for a site path. */
+export function alternatesFor(path: string): AlternateLink[] {
+  const links: AlternateLink[] = LOCALES.map((l) => ({ hrefLang: l, href: localizedUrl(path, l) }));
+  return [...links, { hrefLang: "x-default", href: localizedUrl(path, DEFAULT_LOCALE) }];
+}
+
+/** Bilingual sitemap: two <url> entries per path, each carrying the xhtml alternates. */
+export function buildSitemapXml(paths: string[]): string {
+  const alt = (path: string) =>
+    LOCALES.map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${localizedUrl(path, l)}"/>`)
+      .concat(`    <xhtml:link rel="alternate" hreflang="x-default" href="${localizedUrl(path, DEFAULT_LOCALE)}"/>`)
+      .join("\n");
+  const entries = paths
+    .flatMap((path) =>
+      LOCALES.map(
+        (l) => `  <url>\n    <loc>${localizedUrl(path, l)}</loc>\n${alt(path)}\n  </url>`,
+      ),
+    )
+    .join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries}\n</urlset>\n`;
 }

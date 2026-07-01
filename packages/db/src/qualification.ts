@@ -1,7 +1,8 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "./client";
-import { createLeadWithConsent, MARKETING_WORDING } from "./leads-create";
+import { createLeadWithConsent } from "./leads-create";
+import { qualificationConsentWording, marketingConsentWording } from "./consent-wording";
 import { attributionSchema, qualificationAnswersSchema } from "./schema/json";
 import {
   qualificationQuestions,
@@ -23,6 +24,8 @@ export const qualificationLeadSchema = z
     viewedListingIds: z.array(z.string()).optional(),
     // ADR-007 + D9 — capture source, allowlisted so the client can only pick a known value.
     source: z.enum(["qualification_flow", "favorites"]).optional(),
+    // ADR-020 / D13 — locale at submission time, used to store locale-correct consent wording.
+    locale: z.enum(["en", "es"]).optional().default("en"),
   })
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or phone (at least one).",
@@ -30,9 +33,6 @@ export const qualificationLeadSchema = z
   });
 
 export type QualificationLead = z.infer<typeof qualificationLeadSchema>;
-
-const CONSENT_WORDING =
-  "I agree to be contacted by Herrera about my real estate needs using the details I provided. Message/data rates may apply.";
 
 /** Create a lead (intent = branch) + per-channel consent from the Buy/Sell/Rent flow (ADR-007/011). */
 export async function createQualificationLead(
@@ -50,8 +50,8 @@ export async function createQualificationLead(
     consentEmail: input.email ? input.consentEmail : false,
     consentPhone: input.phone ? input.consentPhone : false,
     consentMarketing: input.consentMarketing,
-    consentWording: CONSENT_WORDING,
-    marketingWording: MARKETING_WORDING,
+    consentWording: qualificationConsentWording(input.locale),
+    marketingWording: marketingConsentWording(input.locale),
   });
 }
 

@@ -11,6 +11,12 @@ type FormState = {
   metaTitle: string;
   metaDescription: string;
   body: string;
+  // ES fields (ADR-018 — optional, EN is the fallback)
+  titleEs: string;
+  excerptEs: string;
+  bodyEs: string;
+  metaTitleEs: string;
+  metaDescriptionEs: string;
   status: "draft" | "published";
 };
 
@@ -25,6 +31,11 @@ function fromGuide(g: Content | undefined): FormState {
     metaTitle: str(g?.metaTitle),
     metaDescription: str(g?.metaDescription),
     body: str(g?.body),
+    titleEs: str(g?.titleEs),
+    excerptEs: str(g?.excerptEs),
+    bodyEs: str(g?.bodyEs),
+    metaTitleEs: str(g?.metaTitleEs),
+    metaDescriptionEs: str(g?.metaDescriptionEs),
     status: (g?.status as "draft" | "published") ?? "draft",
   };
 }
@@ -48,6 +59,11 @@ export function GuideForm({ initial, guideId }: { initial?: Content; guideId?: s
       metaTitle: form.metaTitle.trim() || null,
       metaDescription: form.metaDescription.trim() || null,
       body: form.body || null,
+      titleEs: form.titleEs.trim() || null,
+      excerptEs: form.excerptEs.trim() || null,
+      bodyEs: form.bodyEs || null,
+      metaTitleEs: form.metaTitleEs.trim() || null,
+      metaDescriptionEs: form.metaDescriptionEs.trim() || null,
       status: form.status,
     };
     try {
@@ -77,6 +93,12 @@ export function GuideForm({ initial, guideId }: { initial?: Content; guideId?: s
         </label>
         <label className={f.field}>
           <span className={f.label}>
+            Title (Spanish) <span className={f.hint}>optional</span>
+          </span>
+          <input className={f.input} value={form.titleEs} onChange={set("titleEs")} />
+        </label>
+        <label className={f.field}>
+          <span className={f.label}>
             Slug <span className={f.hint}>optional — auto from the title if blank</span>
           </span>
           <input className={f.input} value={form.slug} onChange={set("slug")} />
@@ -102,12 +124,20 @@ export function GuideForm({ initial, guideId }: { initial?: Content; guideId?: s
         </label>
       </div>
 
-      <label className={f.field} style={{ marginTop: 14 }}>
-        <span className={f.label}>
-          Excerpt <span className={f.hint}>one-line summary shown on the guides list</span>
-        </span>
-        <input className={f.input} value={form.excerpt} onChange={set("excerpt")} />
-      </label>
+      <div className={`${f.grid} ${f.grid2}`} style={{ marginTop: 14 }}>
+        <label className={f.field}>
+          <span className={f.label}>
+            Excerpt <span className={f.hint}>one-line summary shown on the guides list</span>
+          </span>
+          <input className={f.input} value={form.excerpt} onChange={set("excerpt")} />
+        </label>
+        <label className={f.field}>
+          <span className={f.label}>
+            Excerpt (Spanish) <span className={f.hint}>optional</span>
+          </span>
+          <input className={f.input} value={form.excerptEs} onChange={set("excerptEs")} />
+        </label>
+      </div>
 
       <label className={f.field} style={{ marginTop: 14 }}>
         <span className={f.label}>
@@ -127,6 +157,21 @@ export function GuideForm({ initial, guideId }: { initial?: Content; guideId?: s
         />
       </label>
 
+      <label className={f.field} style={{ marginTop: 14 }}>
+        <span className={f.label}>
+          Body (Spanish, Markdown) <span className={f.hint}>optional</span>
+        </span>
+        <textarea
+          className={f.textarea}
+          style={{ minHeight: 260, fontFamily: "var(--font-mono, ui-monospace, monospace)" }}
+          value={form.bodyEs}
+          onChange={set("bodyEs")}
+          placeholder={
+            "## Título de sección\n\nAlgún texto con **negrita** y una lista:\n\n- Primero\n- Segundo"
+          }
+        />
+      </label>
+
       <div className={`${f.grid} ${f.grid2}`} style={{ marginTop: 14 }}>
         <label className={f.field}>
           <span className={f.label}>
@@ -136,12 +181,28 @@ export function GuideForm({ initial, guideId }: { initial?: Content; guideId?: s
         </label>
         <label className={f.field}>
           <span className={f.label}>
+            Meta title (Spanish) <span className={f.hint}>SEO — optional</span>
+          </span>
+          <input className={f.input} value={form.metaTitleEs} onChange={set("metaTitleEs")} />
+        </label>
+        <label className={f.field}>
+          <span className={f.label}>
             Meta description <span className={f.hint}>SEO — optional</span>
           </span>
           <input
             className={f.input}
             value={form.metaDescription}
             onChange={set("metaDescription")}
+          />
+        </label>
+        <label className={f.field}>
+          <span className={f.label}>
+            Meta description (Spanish) <span className={f.hint}>SEO — optional</span>
+          </span>
+          <input
+            className={f.input}
+            value={form.metaDescriptionEs}
+            onChange={set("metaDescriptionEs")}
           />
         </label>
       </div>

@@ -67,8 +67,15 @@ API route.
 ## Internationalization (EN/ES)
 
 Next i18n routing adds a locale prefix for Spanish (e.g. `/es/search`, `/es/homes/[slug]`); English
-is the default with no prefix (**confirmed in Phase 0 review**; ADR-018). All public pages above are
-localized. (D13, [ADR-018](./adr/ADR-018-internationalization.md))
+is the default with no prefix (**confirmed in Phase 0 review**; ADR-018). **All public pages above
+are localized in both languages** — two indexable URLs each. Multilingual SEO is a **top priority**
+(bilingual Miami market): every page carries **reciprocal `hreflang` + `x-default`**, the
+**sitemap lists both language versions of every page**, each locale has the correct **`<html lang>`**
+and a **self-referential canonical**, and a header **EN/ES toggle** switches to the same page in the
+other language. Static UI strings come from a typed EN/ES dictionary; **Nilyan's admin-authored
+content — qualification questions, guides, and off-market descriptions — is bilingual** and renders
+per locale (falling back to EN). Wired in **D13**. **MLS property descriptions are not translated in
+v1** (deferred post-feed, ADR-017). ([ADR-018](./adr/ADR-018-internationalization.md), ADR-015)
 
 ---
 

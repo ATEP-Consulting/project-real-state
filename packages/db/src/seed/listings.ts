@@ -133,10 +133,29 @@ export function generateListings(rng: Rng): SeedListing[] {
   return out.slice(0, total);
 }
 
+// Static Spanish descriptions for the four off-market/manual demo listings.
+// Indexed by position (0–3) matching [PLACES[4], PLACES[0], PLACES[8], PLACES[2]].
+// Property facts only — no steering (ADR-011 Fair Housing).
+const OFF_MARKET_DESC_ES: readonly string[] = [
+  // 0 — Windermere (priceTier 3, waterfront possible)
+  "Elegante residencia en Windermere con amplios espacios de entretenimiento, cocina renovada con encimeras de cuarzo y acabados de primera calidad. La distribución de concepto abierto maximiza la luz natural, y el lanai cubierto ofrece un espacio exterior privado. Contáctenos para coordinar una visita.",
+  // 1 — Winter Park (priceTier 3, established)
+  "Encantadora propiedad en Winter Park con techos abovedados, pisos de cerámica en toda la planta principal y una suite principal con vestidor. Techos altos y ventanas de eficiencia energética aportan luminosidad y confort durante todo el año. Contáctenos para más información.",
+  // 2 — Lake Mary (priceTier 2, HOA community)
+  "Espaciosa vivienda en Lake Mary ubicada en una comunidad con HOA. Cuenta con electrodomésticos de acero inoxidable, sala de estar de concepto abierto y patio trasero cercado. Construcción reciente con materiales modernos. Contáctenos para agendar una visita.",
+  // 3 — Baldwin Park (priceTier 2, HOA)
+  "Atractiva propiedad en Baldwin Park con porche delantero cubierto, cocina actualizada y amplio garaje para dos vehículos. El diseño funcional ofrece comodidad y versatilidad en cada ambiente. Contáctenos para obtener más detalles.",
+];
+
 export function generateOffMarket(rng: Rng): SeedListing[] {
   const visibilities = ["private_link", "registered", "public"] as const;
   return [PLACES[4]!, PLACES[0]!, PLACES[8]!, PLACES[2]!].map((place, idx) => {
     const l = buildOne(place, 900 + idx, rng, "manual");
-    return { ...l, slug: `om-${l.slug}`, visibility: visibilities[idx % visibilities.length]! };
+    return {
+      ...l,
+      slug: `om-${l.slug}`,
+      visibility: visibilities[idx % visibilities.length]!,
+      descriptionEs: OFF_MARKET_DESC_ES[idx],
+    };
   });
 }

@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { QualificationQuestionConfig } from "@herrera/db";
 import { Button } from "@/components/ui/Button";
-import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
 import { DURATION, EASE } from "@/theme/motion";
+import { useTranslation } from "@/lib/i18n";
 import {
   buildLeadPayload,
   buildSteps,
   canAdvance,
   isAnswered,
+  localizedOptionLabel,
+  localizedQuestionLabel,
   progressPct,
   validateContact,
   type Answers,
@@ -19,14 +21,10 @@ import {
   type LeadSource,
   type Step,
 } from "@/lib/lead-capture";
+import type { Locale } from "@/lib/i18n/config";
 import styles from "./LeadCaptureFlow.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^\d+]/g, "")}`;
-const HEADLINE: Record<Intent, string> = {
-  buy: "Let's find your home",
-  sell: "Let's value your home",
-  rent: "Let's find your rental",
-};
 type Status = "idle" | "submitting" | "done" | "error";
 
 function QuestionControl({
@@ -34,11 +32,17 @@ function QuestionControl({
   value,
   onChange,
   onCommit,
+  boolYes,
+  boolNo,
+  locale,
 }: {
   q: QualificationQuestionConfig;
   value: unknown;
   onChange: (v: unknown) => void;
   onCommit: () => void; // advance (used by auto-advancing controls)
+  boolYes: string;
+  boolNo: string;
+  locale: Locale;
 }) {
   if (q.type === "single_select" || q.type === "multi_select") {
     const multi = q.type === "multi_select";
@@ -62,7 +66,7 @@ function QuestionControl({
                 }
               }}
             >
-              {o.label}
+              {localizedOptionLabel(o, locale)}
             </button>
           );
         })}
@@ -73,8 +77,8 @@ function QuestionControl({
     return (
       <div className={styles.options}>
         {[
-          { v: true, label: "Yes" },
-          { v: false, label: "No" },
+          { v: true, label: boolYes },
+          { v: false, label: boolNo },
         ].map((o) => (
           <button
             key={o.label}
@@ -137,6 +141,7 @@ export function LeadCaptureFlow({
   onSubmitted?: () => void;
   onClose?: () => void;
 }) {
+  const { m, locale } = useTranslation();
   const reduce = useReducedMotion();
   // Animate only after mount: SSR + first client render stay static so the first question is
   // visible (no opacity:0) and the markup matches on both sides (reduced motion is read on the
@@ -165,6 +170,12 @@ export function LeadCaptureFlow({
   const isLast = step.kind === "contact";
   const setAnswer = (key: string, v: unknown) => setAnswers((a) => ({ ...a, [key]: v }));
 
+  const HEADLINE: Record<Intent, string> = {
+    buy: m.leadFlow.headlineBuy,
+    sell: m.leadFlow.headlineSell,
+    rent: m.leadFlow.headlineRent,
+  };
+
   // Move forward unconditionally — used by auto-advancing controls (a value was just chosen),
   // which avoids re-reading the just-set `answers` before React has committed it.
   function advance() {
@@ -174,7 +185,7 @@ export function LeadCaptureFlow({
   // The explicit Next button: gate required questions before advancing.
   function next() {
     if (!canAdvance(step, answers)) {
-      setErr("Please answer to continue.");
+      setErr(m.leadFlow.errAdvance);
       return;
     }
     advance();
@@ -187,7 +198,7 @@ export function LeadCaptureFlow({
   async function submit() {
     const v = validateContact(contact);
     if (v) {
-      setErr(v);
+      setErr(v === "missing_contact" ? m.leadFlow.errMissingContact : m.leadFlow.errMissingConsent);
       return;
     }
     setStatus("submitting");
@@ -197,7 +208,7 @@ export function LeadCaptureFlow({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(
-          buildLeadPayload({ intent, answers, contact, landingPath, source, viewedListingIds }),
+          buildLeadPayload({ intent, answers, contact, landingPath, source, viewedListingIds, locale }),
         ),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -205,7 +216,7 @@ export function LeadCaptureFlow({
       onSubmitted?.();
     } catch {
       setStatus("error");
-      setErr("Something went wrong. Please try again or call us.");
+      setErr(m.leadFlow.errGeneric);
     }
   }
 
@@ -214,18 +225,16 @@ export function LeadCaptureFlow({
       <div className={styles.panel}>
         {onClose && (
           <div className={styles.topbar}>
-            <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+            <button type="button" className={styles.close} onClick={onClose} aria-label={m.leadFlow.closeLabel}>
               ×
             </button>
           </div>
         )}
         <div className={styles.done}>
-          <h2 className={styles.doneTitle}>Thanks — we&rsquo;ll be in touch shortly.</h2>
-          <p className={styles.doneSub}>
-            Nilyan personally follows up on every request. Prefer to talk now?
-          </p>
+          <h2 className={styles.doneTitle}>{m.leadFlow.successTitle}</h2>
+          <p className={styles.doneSub}>{m.leadFlow.successSub}</p>
           <a className={styles.call} href={TEL}>
-            Call · {REALTOR.phone}
+            {m.leadFlow.callPrefix}{REALTOR.phone}
           </a>
         </div>
       </div>
@@ -246,7 +255,7 @@ export function LeadCaptureFlow({
     <div className={styles.panel}>
       {onClose && (
         <div className={styles.topbar}>
-          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+          <button type="button" className={styles.close} onClick={onClose} aria-label={m.leadFlow.closeLabel}>
             ×
           </button>
         </div>
@@ -260,7 +269,7 @@ export function LeadCaptureFlow({
             />
           </div>
           <p className={styles.stepCount}>
-            {HEADLINE[intent]} · step {i + 1} of {steps.length}
+            {HEADLINE[intent]} · {m.leadFlow.stepOf.replace("{n}", String(i + 1)).replace("{total}", String(steps.length))}
           </p>
         </>
       )}
@@ -270,7 +279,7 @@ export function LeadCaptureFlow({
           {step.kind === "question" ? (
             <>
               <h2 className={styles.q}>
-                {step.question.label}
+                {localizedQuestionLabel(step.question, locale)}
                 {step.question.required && <span className={styles.req}> *</span>}
               </h2>
               <QuestionControl
@@ -278,6 +287,9 @@ export function LeadCaptureFlow({
                 value={answers[step.question.key]}
                 onChange={(v) => setAnswer(step.question.key, v)}
                 onCommit={advance}
+                boolYes={m.leadFlow.boolYes}
+                boolNo={m.leadFlow.boolNo}
+                locale={locale}
               />
             </>
           ) : (
@@ -289,30 +301,30 @@ export function LeadCaptureFlow({
               }}
               noValidate
             >
-              <h2 className={styles.q}>{copy ? copy.headline : "How should Nilyan reach you?"}</h2>
+              <h2 className={styles.q}>{copy ? copy.headline : m.leadFlow.contactHeadline}</h2>
               {copy && <p className={styles.lede}>{copy.sub}</p>}
               <input
                 className={styles.input}
-                aria-label="Your name"
-                placeholder="Your name"
+                aria-label={m.leadFlow.namePlaceholder}
+                placeholder={m.leadFlow.namePlaceholder}
                 autoComplete="name"
                 value={contact.name ?? ""}
                 onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
               />
               <input
                 className={styles.input}
-                aria-label="Email address"
+                aria-label={m.leadFlow.emailPlaceholder}
                 type="email"
-                placeholder="Email"
+                placeholder={m.leadFlow.emailPlaceholder}
                 autoComplete="email"
                 value={contact.email ?? ""}
                 onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
               />
               <input
                 className={styles.input}
-                aria-label="Phone number"
+                aria-label={m.leadFlow.phonePlaceholder}
                 type="tel"
-                placeholder="Phone"
+                placeholder={m.leadFlow.phonePlaceholder}
                 autoComplete="tel"
                 value={contact.phone ?? ""}
                 onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
@@ -323,10 +335,7 @@ export function LeadCaptureFlow({
                   checked={contact.consent}
                   onChange={(e) => setContact((c) => ({ ...c, consent: e.target.checked }))}
                 />
-                <span>
-                  I agree to be contacted by Herrera about my real estate needs using the details I
-                  provided.
-                </span>
+                <span>{m.leadFlow.contactConsent}</span>
               </label>
               <label className={styles.consent}>
                 <input
@@ -334,11 +343,9 @@ export function LeadCaptureFlow({
                   checked={contact.marketing ?? false}
                   onChange={(e) => setContact((c) => ({ ...c, marketing: e.target.checked }))}
                 />
-                <span>{MARKETING_CONSENT_LABEL}</span>
+                <span>{m.consent.marketingLabel}</span>
               </label>
-              <p className={styles.fine}>
-                No obligation — phone <em>or</em> email is enough; you don&rsquo;t need both.
-              </p>
+              <p className={styles.fine}>{m.leadFlow.contactFinePrint}</p>
             </form>
           )}
         </motion.div>
@@ -357,7 +364,7 @@ export function LeadCaptureFlow({
           onClick={back}
           disabled={i === 0 || status === "submitting"}
         >
-          ← Back
+          {m.leadFlow.backBtn}
         </button>
         {isLast ? (
           <Button
@@ -366,11 +373,11 @@ export function LeadCaptureFlow({
             disabled={status === "submitting"}
             onClick={() => void submit()}
           >
-            {status === "submitting" ? "Sending…" : "Send to Nilyan"}
+            {status === "submitting" ? m.leadFlow.sending : m.leadFlow.sendBtn}
           </Button>
         ) : (
           <Button type="button" size="lg" onClick={next}>
-            Next →
+            {m.leadFlow.nextBtn}
           </Button>
         )}
       </div>

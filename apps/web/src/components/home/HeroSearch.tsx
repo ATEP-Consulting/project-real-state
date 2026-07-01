@@ -1,16 +1,17 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Select } from "@/components/ui/Select";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./HeroSearch.module.css";
 
-const TYPES = [
-  { value: "", label: "Type" },
-  { value: "single_family", label: "Single-family" },
-  { value: "condo", label: "Condo" },
-  { value: "townhouse", label: "Townhouse" },
-  { value: "villa", label: "Villa" },
-  { value: "land", label: "Land" },
-];
+// Enum values only — labels are resolved via m.propertyTypes at render time
+const TYPE_VALUES = [
+  "single_family",
+  "condo",
+  "townhouse",
+  "villa",
+  "land",
+] as const;
 
 function SearchIcon() {
   return (
@@ -25,6 +26,7 @@ function SearchIcon() {
 
 export function HeroSearch() {
   const router = useRouter();
+  const { m } = useTranslation();
   const [q, setQ] = useState("");
   const [type, setType] = useState("");
 
@@ -48,26 +50,27 @@ export function HeroSearch() {
         <input
           className={styles.input}
           type="search"
-          aria-label="Where do you want to live?"
-          placeholder="Where do you want to live?"
+          aria-label={m.home.heroSearchPlaceholder}
+          placeholder={m.home.heroSearchPlaceholder}
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
         <span className={styles.divider} aria-hidden="true" />
         <Select
           variant="bare"
-          aria-label="Property type"
+          aria-label={m.home.heroSearchTypeAria}
           value={type}
           onChange={(e) => setType(e.target.value)}
         >
-          {TYPES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
+          <option value="">{m.home.heroSearchTypeDefault}</option>
+          {TYPE_VALUES.map((v) => (
+            <option key={v} value={v}>
+              {m.propertyTypes[v]}
             </option>
           ))}
         </Select>
         <button type="submit" className={styles.submit}>
-          Search
+          {m.home.heroSearchButton}
         </button>
       </div>
     </form>

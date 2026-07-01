@@ -78,3 +78,13 @@ lead) — see ADR-005/007/011.
 - **Email marketing campaigns are NOT in the CRM v1 — they are Phase 2 (ADR-020).** The CRM stays
   **manual-workflow, no automated consumer outbound** (as in the original decision above); D11 only
   captures the marketing consent that a future campaign system will rely on.
+
+## Addendum (2026-07-01, D13) — the admin content editors become bilingual
+
+- The three D11 content editors gain **EN + ES** fields so Nilyan (bilingual) authors both: the
+  **qualification-questions** editor (label + options — ADR-007), the **guides/blog** editor
+  (title / excerpt / body / SEO meta — ADR-015), and **off-market listings** (description —
+  ADR-005). The public site renders the **active locale's** version, **falling back to EN**.
+- The admin **UI chrome stays English-only** (a single bilingual user); only the **authored
+  content** is bilingual. Reuses existing ES columns + a small D13 migration for the missing ones
+  (`listings.description_es`, `content.meta_title_es/meta_description_es`). Full decision: **ADR-018**.

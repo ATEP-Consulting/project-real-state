@@ -1,4 +1,4 @@
-// ADR-020 — the marketing opt-in label, shown on every capture form. The checkbox is
-// OPTIONAL, unchecked by default, and separate from the required contact consent.
-export const MARKETING_CONSENT_LABEL =
-  "I'd like to receive news and new listings by email (optional).";
+// ADR-020 — marketing opt-in and contact-consent wording is now localized.
+// Use m.consent.marketingLabel (from useTranslation()) in components.
+// This file is kept as a module boundary in case server-side consent-record
+// helpers are added later; do not import string constants from here.

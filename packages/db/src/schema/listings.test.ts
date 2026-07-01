@@ -24,6 +24,16 @@ describe("listingInsertSchema", () => {
     expect(parsed.geom).toEqual([-81.3792, 28.5383]);
   });
 
+  it("accepts descriptionEs (nullable ES column)", () => {
+    const parsed = listingInsertSchema.parse({ ...base, descriptionEs: "Hermosa casa en Orlando." });
+    expect(parsed.descriptionEs).toBe("Hermosa casa en Orlando.");
+  });
+
+  it("accepts descriptionEs as undefined (nullable)", () => {
+    const parsed = listingInsertSchema.parse(base);
+    expect(parsed.descriptionEs).toBeUndefined();
+  });
+
   it("rejects an invalid source", () => {
     expect(() => listingInsertSchema.parse({ ...base, source: "zillow" })).toThrow();
   });

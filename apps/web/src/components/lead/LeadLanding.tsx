@@ -5,7 +5,8 @@ import { LeadSteps } from "./landing/LeadSteps";
 import { LeadHook } from "./landing/LeadHook";
 import { LeadTrust } from "./landing/LeadTrust";
 import { LeadClosing } from "./landing/LeadClosing";
-import { LANDING_CONTENT } from "@/lib/lead-landing-content";
+import { getLandingContent } from "@/lib/lead-landing-content";
+import { useTranslation } from "@/lib/i18n";
 import type { Intent } from "@/lib/lead-capture";
 import type { QualificationQuestionConfig } from "@herrera/db";
 
@@ -22,7 +23,8 @@ export function LeadLanding({
   intent: Intent;
   questions: QualificationQuestionConfig[];
 }) {
-  const content = LANDING_CONTENT[intent];
+  const { m } = useTranslation();
+  const content = getLandingContent(m, intent);
   return (
     <SiteLayout transparentHeader>
       <Seo title={`${content.title} · Herrera`} description={content.lede} path={`/${intent}`} />

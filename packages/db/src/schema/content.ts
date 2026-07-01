@@ -27,6 +27,8 @@ export const content = pgTable(
     // SEO (ADR-015)
     metaTitle: text("meta_title"),
     metaDescription: text("meta_description"),
+    metaTitleEs: text("meta_title_es"),
+    metaDescriptionEs: text("meta_description_es"),
 
     publishedAt: timestamp("published_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

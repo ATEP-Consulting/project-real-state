@@ -42,6 +42,11 @@ login-less favorites, trust/content, **complete admin/CRM**, EN/ES.
 - **D12 Phase A — area/location pages** (`/areas/*`): deferred until the real MIAMI REALTORS® feed
   (with the MLS worker, ADR-004); local-SEO geography is built once on real Miami data, never on the
   mock Orlando seed — see `docs/superpowers/plans/2026-06-30-d12-seo.md`.
+- **MLS property-description translation** — the MLS feed arrives in **English**; whether to
+  **auto-translate or render structured/field-based Spanish** for MLS listing descriptions is
+  **decided post-feed** (with D5 / the sync worker / D12 Phase A). **D13 localizes the UI + Nilyan's
+  own admin-authored content only** — questions, guides, and off-market descriptions — **not MLS
+  free-text** (ADR-018/004).
 
 ## Consequences
 

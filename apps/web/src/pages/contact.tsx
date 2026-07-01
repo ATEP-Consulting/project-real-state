@@ -4,22 +4,23 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/marketing/PageHero";
-import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./Contact.module.css";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?w=1920&q=68&auto=format&fit=crop";
 
 type Intent = "buy" | "sell" | "rent";
-const INTENTS: { id: Intent; label: string }[] = [
-  { id: "buy", label: "Buy" },
-  { id: "sell", label: "Sell" },
-  { id: "rent", label: "Rent" },
-];
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
 
 export default function ContactPage() {
+  const { m, locale } = useTranslation();
+  const INTENTS: { id: Intent; label: string }[] = [
+    { id: "buy", label: m.home.contactBuy },
+    { id: "sell", label: m.home.contactSell },
+    { id: "rent", label: m.home.contactRent },
+  ];
   const [intent, setIntent] = useState<Intent>("buy");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -49,6 +50,7 @@ export default function ContactPage() {
           consentEmail: consent && Boolean(email.trim()),
           consentPhone: consent && Boolean(phone.trim()),
           consentMarketing: marketing,
+          locale,
         }),
       });
       setStatus(res.ok ? "done" : "error");
@@ -60,15 +62,15 @@ export default function ContactPage() {
   return (
     <SiteLayout transparentHeader>
       <Seo
-        title="Contact Nilyan Herrera · Florida real estate"
-        description="Get in touch with Nilyan Herrera, a licensed Florida Realtor®. Tell her what you're looking to buy, sell or rent. She replies personally within 24 hours."
+        title={m.contactPage.seoTitle}
+        description={m.contactPage.seoDescription}
         path="/contact"
       />
       <PageHero
         image={HERO_IMAGE}
-        eyebrow="Contact"
-        title="Let's talk about your next move"
-        lede="Tell me what you're looking for or what you want to sell. I reply personally within 24 hours, no obligation."
+        eyebrow={m.home.contactEyebrow}
+        title={m.home.contactTitle}
+        lede={m.home.contactText}
       />
 
       <section className={styles.section}>
@@ -76,14 +78,14 @@ export default function ContactPage() {
           <Reveal>
             <div className={styles.grid}>
               <div className={styles.left}>
-                <h2 className={styles.leftTitle}>Reach Nilyan directly</h2>
+                <h2 className={styles.leftTitle}>{m.contactPage.reachHeading}</h2>
                 <ul className={styles.details}>
                   <li className={styles.detail}>
                     <span className={styles.dIcon} aria-hidden="true">
                       ✆
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Phone</span>
+                      <span className={styles.dLabel}>{m.home.contactPhoneLabel}</span>
                       <a className={styles.dValue} href={TEL}>
                         {REALTOR.phone}
                       </a>
@@ -94,7 +96,7 @@ export default function ContactPage() {
                       ✉
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Email</span>
+                      <span className={styles.dLabel}>{m.home.contactEmailLabel}</span>
                       <a className={styles.dValue} href={`mailto:${REALTOR.email}`}>
                         {REALTOR.email}
                       </a>
@@ -105,7 +107,7 @@ export default function ContactPage() {
                       ⌖
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Office</span>
+                      <span className={styles.dLabel}>{m.home.contactOfficeLabel}</span>
                       <span className={styles.dValue}>{REALTOR.office}</span>
                     </span>
                   </li>
@@ -118,7 +120,7 @@ export default function ContactPage() {
                   <span>
                     <span className={styles.agentName}>{REALTOR.name}</span>
                     <span className={styles.agentMeta}>
-                      {REALTOR.title} · {REALTOR.license} · {REALTOR.hours}
+                      {m.realtor.title} · {REALTOR.license} · {m.realtor.hours}
                     </span>
                   </span>
                 </div>
@@ -126,20 +128,15 @@ export default function ContactPage() {
 
               {status === "done" ? (
                 <div className={styles.form}>
-                  <h2 className={styles.formTitle}>Thank you — message sent</h2>
-                  <p className={styles.formHelp}>
-                    I&apos;ve got your details and will be in touch personally within 24 hours.
-                  </p>
+                  <h2 className={styles.formTitle}>{m.home.contactSuccess}</h2>
                 </div>
               ) : (
                 <form className={styles.form} onSubmit={onSubmit}>
-                  <h2 className={styles.formTitle}>Send a message</h2>
-                  <p className={styles.formHelp}>
-                    An email or phone is required, give whichever you prefer.
-                  </p>
+                  <h2 className={styles.formTitle}>{m.home.contactFormTitle}</h2>
+                  <p className={styles.formHelp}>{m.home.contactFormHelp}</p>
 
-                  <span className={styles.fieldLabel}>I want to</span>
-                  <div className={styles.tabs} role="group" aria-label="Intent">
+                  <span className={styles.fieldLabel}>{m.home.contactIWantTo}</span>
+                  <div className={styles.tabs} role="group" aria-label={m.home.contactIWantTo}>
                     {INTENTS.map((t) => (
                       <button
                         key={t.id}
@@ -154,14 +151,14 @@ export default function ContactPage() {
                   </div>
 
                   <label className={styles.fieldLabel} htmlFor="ct-name">
-                    Full name
+                    {m.home.contactNameLabel}
                   </label>
                   <input
                     id="ct-name"
                     className={styles.input}
                     type="text"
                     autoComplete="name"
-                    placeholder="Your name"
+                    placeholder={m.home.contactNamePlaceholder}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -169,28 +166,28 @@ export default function ContactPage() {
                   <div className={styles.two}>
                     <div>
                       <label className={styles.fieldLabel} htmlFor="ct-email">
-                        Email
+                        {m.home.contactEmailFieldLabel}
                       </label>
                       <input
                         id="ct-email"
                         className={styles.input}
                         type="email"
                         autoComplete="email"
-                        placeholder="you@email.com"
+                        placeholder={m.home.contactEmailPlaceholder}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                     <div>
                       <label className={styles.fieldLabel} htmlFor="ct-phone">
-                        Phone
+                        {m.home.contactPhoneFieldLabel}
                       </label>
                       <input
                         id="ct-phone"
                         className={styles.input}
                         type="tel"
                         autoComplete="tel"
-                        placeholder="+1 (305) …"
+                        placeholder={m.home.contactPhonePlaceholder}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                       />
@@ -198,7 +195,7 @@ export default function ContactPage() {
                   </div>
 
                   <label className={styles.fieldLabel} htmlFor="ct-msg">
-                    Message <span className={styles.optional}>(optional)</span>
+                    {m.home.contactMsgLabel} <span className={styles.optional}>{m.home.contactMsgOptional}</span>
                   </label>
                   <textarea
                     id="ct-msg"
@@ -206,7 +203,7 @@ export default function ContactPage() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell me what you're looking for…"
+                    placeholder={m.home.contactMsgPlaceholder}
                   />
 
                   <label className={styles.consent}>
@@ -215,7 +212,7 @@ export default function ContactPage() {
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
                     />
-                    <span>I agree to the privacy policy and to be contacted about my enquiry.</span>
+                    <span>{m.home.contactConsentLabel}</span>
                   </label>
                   <label className={styles.consent}>
                     <input
@@ -223,17 +220,17 @@ export default function ContactPage() {
                       checked={marketing}
                       onChange={(e) => setMarketing(e.target.checked)}
                     />
-                    <span>{MARKETING_CONSENT_LABEL}</span>
+                    <span>{m.consent.marketingLabel}</span>
                   </label>
 
                   {status === "error" && (
                     <p className={styles.errorMsg} role="alert">
-                      Please add an email or phone and accept the consent, then try again.
+                      {m.home.contactError}
                     </p>
                   )}
 
                   <button type="submit" className={styles.submit} disabled={!canSubmit}>
-                    {status === "submitting" ? "Sending…" : "Send message"}
+                    {status === "submitting" ? m.home.contactSubmitting : m.home.contactSubmit}
                   </button>
                 </form>
               )}

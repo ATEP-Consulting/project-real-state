@@ -8,6 +8,7 @@ import { parseSearchParams, serializeSearchQuery, type SearchParams } from "@/li
 import { boundsFromPoints } from "@/lib/map-points";
 import { DEFAULT_VIEW, MAP_STYLE_URL } from "@/lib/map-style";
 import type { InitialView } from "@/components/search/SearchMap";
+import { useTranslation } from "@/lib/i18n";
 
 type Props = {
   initial: SearchResult;
@@ -51,11 +52,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 };
 
 export default function SearchPage(props: Props) {
+  const { m } = useTranslation();
   return (
     <>
       <Seo
-        title="Search Florida homes — Herrera"
-        description="Search homes across Florida on an interactive map."
+        title={m.search.seoTitle}
+        description={m.search.seoDescription}
         path="/search"
       />
       <Header />

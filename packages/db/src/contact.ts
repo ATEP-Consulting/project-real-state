@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { createLeadWithConsent, MARKETING_WORDING } from "./leads-create";
+import { createLeadWithConsent } from "./leads-create";
+import { contactFormConsentWording, marketingConsentWording } from "./consent-wording";
 
 // General contact form — a lead-capture surface (ADR-007/011). Funnels through the
 // shared lead core so per-channel consent + the D8 notification seam apply uniformly.
@@ -13,6 +14,8 @@ export const contactLeadSchema = z
     consentEmail: z.boolean().optional(),
     consentPhone: z.boolean().optional(),
     consentMarketing: z.boolean().optional(),
+    // ADR-020 / D13 — locale at submission time, used to store locale-correct consent wording.
+    locale: z.enum(["en", "es"]).optional().default("en"),
   })
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or a phone (at least one).",
@@ -33,7 +36,7 @@ export async function createContactLead(input: ContactLead): Promise<{ leadId: s
     consentEmail: input.consentEmail,
     consentPhone: input.consentPhone,
     consentMarketing: input.consentMarketing,
-    consentWording: "Contact form — agreed to be contacted about this enquiry.",
-    marketingWording: MARKETING_WORDING,
+    consentWording: contactFormConsentWording(input.locale),
+    marketingWording: marketingConsentWording(input.locale),
   });
 }

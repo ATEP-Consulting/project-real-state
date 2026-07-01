@@ -1,5 +1,6 @@
 import { ListingCard } from "@/components/ui/ListingCard";
 import type { ListingCardVM } from "@/lib/listing";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./SearchResults.module.css";
 
 export function SearchResults({
@@ -19,18 +20,19 @@ export function SearchResults({
   filtered?: boolean;
   wide?: boolean;
 }) {
-  const noun = total === 1 ? "home" : "homes";
+  const { m } = useTranslation();
+  const noun = total === 1 ? m.search.seeHome : m.search.seeHomes;
   return (
     <div className={styles.panel}>
       <div className={styles.head}>
         <p className={styles.count}>
-          {loading ? "Searching…" : `${total} ${noun}${filtered ? "" : " in this area"}`}
+          {loading
+            ? m.search.searching
+            : `${total} ${noun}${filtered ? "" : ` ${m.search.inThisArea}`}`}
         </p>
       </div>
       {cards.length === 0 && !loading ? (
-        <p className={styles.empty}>
-          No homes match. Adjust your filters, pan or zoom out, or clear the drawn zone.
-        </p>
+        <p className={styles.empty}>{m.search.noResults}</p>
       ) : (
         <ul className={`${styles.list} ${wide ? styles.listWide : ""}`}>
           {cards.map((c) => (

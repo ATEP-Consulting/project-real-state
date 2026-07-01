@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { attributionSchema } from "./schema/json";
-import { createLeadWithConsent, MARKETING_WORDING } from "./leads-create";
+import { createLeadWithConsent } from "./leads-create";
+import { inquiryConsentWording, marketingConsentWording } from "./consent-wording";
 
 export const listingInquirySchema = z
   .object({
@@ -15,6 +16,8 @@ export const listingInquirySchema = z
     consentPhone: z.boolean().optional(),
     consentMarketing: z.boolean().optional(),
     attribution: attributionSchema.optional(),
+    // ADR-020 / D13 — locale at submission time, used to store locale-correct consent wording.
+    locale: z.enum(["en", "es"]).optional().default("en"),
   })
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or phone (at least one).",
@@ -22,9 +25,6 @@ export const listingInquirySchema = z
   });
 
 export type ListingInquiry = z.infer<typeof listingInquirySchema>;
-
-const CONSENT_WORDING =
-  "I agree to be contacted by Herrera about this property using the details I provided. Message/data rates may apply.";
 
 /** Create a lead + per-channel consent records from a per-listing inquiry (ADR-007/011). */
 export async function createListingInquiry(input: ListingInquiry): Promise<{ leadId: string }> {
@@ -45,7 +45,7 @@ export async function createListingInquiry(input: ListingInquiry): Promise<{ lea
     consentEmail: input.email ? input.consentEmail : false,
     consentPhone: input.phone ? input.consentPhone : false,
     consentMarketing: input.consentMarketing,
-    consentWording: CONSENT_WORDING,
-    marketingWording: MARKETING_WORDING,
+    consentWording: inquiryConsentWording(input.locale),
+    marketingWording: marketingConsentWording(input.locale),
   });
 }

@@ -1,5 +1,6 @@
 import { EqualHousingLogo } from "@/components/layout/EqualHousingLogo";
 import type { ListingDetailVM } from "@/lib/listing-detail";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./ListingCompliance.module.css";
 
 export function ListingCompliance({
@@ -9,25 +10,25 @@ export function ListingCompliance({
   compliance: ListingDetailVM["compliance"];
   source: "mls" | "demo";
 }) {
+  const { m } = useTranslation();
+  const brokerage = compliance.brokerageName ?? "the listing brokerage";
+  const agent = compliance.agentName ? ` · ${compliance.agentName}` : "";
+  const mls = compliance.originatingMls ?? "the originating MLS";
+  const mlsText = m.listing.complianceMls
+    .replace("{brokerage}", brokerage)
+    .replace("{agent}", agent)
+    .replace("{mls}", mls);
+
   return (
     <section className={styles.box} aria-label="Listing disclosures">
       <div className={styles.eh}>
         <EqualHousingLogo size={24} />
-        <span>Equal Housing Opportunity</span>
+        <span>{m.listing.complianceEqualHousing}</span>
       </div>
       {source === "mls" ? (
-        <p className={styles.disclaimer}>
-          Listing courtesy of {compliance.brokerageName ?? "the listing brokerage"}
-          {compliance.agentName ? ` · ${compliance.agentName}` : ""}. Data provided by{" "}
-          {compliance.originatingMls ?? "the originating MLS"} and deemed reliable but not
-          guaranteed. Information is for consumers&rsquo; personal, non-commercial use.
-        </p>
+        <p className={styles.disclaimer}>{mlsText}</p>
       ) : (
-        <p className={styles.disclaimer}>
-          Presented by Nilyan Herrera, Licensed Florida Real Estate Agent.{" "}
-          <strong>Sample data — demo.</strong> Figures shown are illustrative estimates, not quotes
-          or advice.
-        </p>
+        <p className={styles.disclaimer}>{m.listing.complianceDemo}</p>
       )}
     </section>
   );

@@ -40,3 +40,18 @@ content (which is a Fair-Housing and quality risk, ADR-011). The demo deploy is 
 - **Client-rendered area pages** — rejected; worse SEO than ISR.
 - **AI-generated guides in v1** — rejected; thin-content + steering risk; deferred to v2 with human
   review.
+
+## Addendum (2026-07-01, D13) — multilingual SEO + bilingual guides
+
+- The **`hreflang` reciprocal alternates + `x-default`** seam left in `<Seo>` (D12) and the
+  **bilingual sitemap** (both language URLs of every public page) are **wired up in D13**. Each
+  locale's page carries its own **`<html lang>`** and a **self-referential canonical** (each locale
+  canonical to itself). This is the "keeps both locales crawlable with proper `hreflang`" promise
+  from ADR-018 being delivered — SEO across **both** languages is a top priority (bilingual Miami
+  market).
+- **Guides/blog content is bilingual** (EN + ES fields Nilyan fills): reuse
+  `content.title_es/excerpt_es/body_es`, **add `content.meta_title_es/meta_description_es`**. The
+  public guide renders the active locale's version, **falling back to EN** when a field is empty.
+- **MLS property descriptions are NOT translated in v1** (deferred post-feed — ADR-017/018); D13
+  localizes the UI + Nilyan's own admin-authored content only. `noindex` on the demo means the
+  bilingual SEO is validated structurally now and activated at production cutover (ADR-003).

@@ -105,9 +105,13 @@
 }
 .langOn {
   opacity: 1;
+  text-decoration: none;
+  color: inherit;
 }
 .langMuted {
   opacity: 0.5;
+  text-decoration: none;
+  color: inherit;
 }
 .langDivider {
   width: 1px;

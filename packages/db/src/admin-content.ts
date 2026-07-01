@@ -14,6 +14,12 @@ export const guideUpsertSchema = z.object({
   heroImageUrl: z.string().trim().max(500).nullish(),
   metaTitle: z.string().trim().max(200).nullish(),
   metaDescription: z.string().trim().max(500).nullish(),
+  // ES fields — all optional; EN is the fallback when ES is absent (ADR-018)
+  titleEs: z.string().trim().max(200).nullish(),
+  excerptEs: z.string().trim().max(500).nullish(),
+  bodyEs: z.string().max(20000).nullish(),
+  metaTitleEs: z.string().trim().max(200).nullish(),
+  metaDescriptionEs: z.string().trim().max(500).nullish(),
   status: z.enum(["draft", "published"]).default("draft"),
 });
 export type GuideUpsert = z.infer<typeof guideUpsertSchema>;
@@ -75,6 +81,11 @@ export async function createGuide(input: GuideUpsert): Promise<{ id: string }> {
       heroImageUrl: input.heroImageUrl ?? null,
       metaTitle: input.metaTitle ?? null,
       metaDescription: input.metaDescription ?? null,
+      titleEs: input.titleEs ?? null,
+      excerptEs: input.excerptEs ?? null,
+      bodyEs: input.bodyEs ?? null,
+      metaTitleEs: input.metaTitleEs ?? null,
+      metaDescriptionEs: input.metaDescriptionEs ?? null,
       publishedAt: input.status === "published" ? new Date() : null,
     })
     .returning({ id: content.id });
@@ -98,6 +109,11 @@ export async function updateGuide(id: string, input: GuideUpsert): Promise<void>
       heroImageUrl: input.heroImageUrl ?? null,
       metaTitle: input.metaTitle ?? null,
       metaDescription: input.metaDescription ?? null,
+      titleEs: input.titleEs ?? null,
+      excerptEs: input.excerptEs ?? null,
+      bodyEs: input.bodyEs ?? null,
+      metaTitleEs: input.metaTitleEs ?? null,
+      metaDescriptionEs: input.metaDescriptionEs ?? null,
       publishedAt,
       updatedAt: new Date(),
     })

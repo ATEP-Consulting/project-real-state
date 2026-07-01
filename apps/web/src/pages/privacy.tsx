@@ -1,34 +1,28 @@
 import Link from "next/link";
 import { LegalPage } from "@/components/legal/LegalPage";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Privacy() {
+  const { m } = useTranslation();
+  const t = m.legal.privacy;
+
   return (
     <LegalPage
-      title="Privacy Policy"
+      title={t.pageTitle}
+      seoTitle={t.seoTitle}
       path="/privacy"
-      description="How Herrera collects, uses, and protects the information you share."
+      description={t.seoDesc}
+      banner={m.legal.banner}
     >
-      <h2>What we collect</h2>
+      <h2>{t.h1}</h2>
+      <p>{t.p1}</p>
+      <h2>{t.h2}</h2>
+      <p>{t.p2}</p>
+      <h2>{t.h3}</h2>
+      <p>{t.p3}</p>
+      <h2>{t.h4}</h2>
       <p>
-        When you submit a form on this site (a contact request, an enquiry about a listing, or a
-        buy/sell/rent request) we collect the contact details and answers you provide — typically
-        your name, email and/or phone, and what you&apos;re looking for.
-      </p>
-      <h2>How we use it</h2>
-      <p>
-        We use your information solely to respond to your request and help you buy, sell, or rent a
-        home. We record the consent you give for each channel (email or phone) at the time you
-        submit a form, and we honour any request to stop contacting you.
-      </p>
-      <h2>Sharing</h2>
-      <p>
-        We do not sell your information. We share it only with service providers needed to operate
-        the site and respond to you, and where required by law.
-      </p>
-      <h2>Your choices</h2>
-      <p>
-        You can ask us to access, correct, or delete your information, or to stop contacting you, at
-        any time by getting in touch through our <Link href="/contact">contact page</Link>.
+        {t.p4} <Link href="/contact">{t.p4Link}</Link>.
       </p>
     </LegalPage>
   );

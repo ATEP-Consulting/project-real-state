@@ -48,3 +48,13 @@ A single normalized **`listings`** table with:
   "invisible swap" goal (ADR-006).
 - **JSONB blob for all facts** — rejected for core/queried fields (need typed columns + indexes);
   JSONB is used only where it fits (e.g. lead qualification answers, ADR-007).
+
+## Addendum (2026-07-01, D13) — off-market listing descriptions are bilingual
+
+- **Manual (off-market) listings** are Nilyan-authored, so their free-text **`description` gets a
+  Spanish pair** — a new **`description_es`** column added in the D13 migration. Facts, address, and
+  media are language-neutral and are **not** duplicated per language.
+- The public listing renders the **active locale's** description, **falling back to EN** when
+  `description_es` is empty.
+- **MLS-sourced descriptions are not translated in v1** — that decision is deferred post-feed
+  (ADR-017/018). `description_es` is populated only for `source='manual'` rows Nilyan authors.

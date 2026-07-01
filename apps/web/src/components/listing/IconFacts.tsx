@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n/messages/en";
 import styles from "./IconFacts.module.css";
 
 function BedIcon() {
@@ -53,6 +55,19 @@ function YearIcon() {
     </svg>
   );
 }
+function TypeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+      <path
+        d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function Fact({ icon, value, label }: { icon: ReactNode; value: string; label: string }) {
   return (
@@ -69,26 +84,36 @@ export function IconFacts({
   baths,
   sqft,
   yearBuilt,
+  propertyType,
 }: {
   beds: number | null;
   baths: number | null;
   sqft: number | null;
   yearBuilt: number | null;
+  propertyType?: string;
 }) {
+  const { m } = useTranslation();
+  const typeLabel =
+    propertyType != null
+      ? (m.propertyTypes[propertyType as keyof Messages["propertyTypes"]] ?? propertyType)
+      : null;
   return (
     <div className={styles.strip}>
-      <Fact icon={<BedIcon />} value={beds == null ? "—" : String(beds)} label="Beds" />
-      <Fact icon={<BathIcon />} value={baths == null ? "—" : String(baths)} label="Baths" />
+      <Fact icon={<BedIcon />} value={beds == null ? "—" : String(beds)} label={m.listing.fact_beds} />
+      <Fact icon={<BathIcon />} value={baths == null ? "—" : String(baths)} label={m.listing.fact_baths} />
       <Fact
         icon={<AreaIcon />}
         value={sqft == null ? "—" : sqft.toLocaleString("en-US")}
-        label="Sq ft"
+        label={m.listing.fact_sqft}
       />
       <Fact
         icon={<YearIcon />}
         value={yearBuilt == null ? "—" : String(yearBuilt)}
-        label="Year built"
+        label={m.listing.fact_yearBuilt}
       />
+      {typeLabel != null && (
+        <Fact icon={<TypeIcon />} value={typeLabel} label={m.listing.fact_type} />
+      )}
     </div>
   );
 }

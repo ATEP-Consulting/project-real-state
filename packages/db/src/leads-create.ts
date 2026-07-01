@@ -2,11 +2,9 @@ import { getDb } from "./client";
 import { consentRecords, type NewConsentRecord } from "./schema/consent";
 import { leads } from "./schema/leads";
 import type { Attribution } from "./schema/json";
+import { MARKETING_WORDING_EN } from "./consent-wording";
 
 export type LeadIntent = "buy" | "sell" | "rent";
-
-// ADR-020 — the marketing opt-in wording (email-scoped). One source of truth.
-export const MARKETING_WORDING = "I'd like to receive news and new listings from Herrera by email.";
 
 export type CreateLeadInput = {
   intent: LeadIntent;
@@ -76,7 +74,7 @@ export async function createLeadWithConsent(input: CreateLeadInput): Promise<{ l
       channel: "email",
       purpose: "marketing",
       granted: input.consentMarketing === true,
-      wording: input.marketingWording ?? MARKETING_WORDING,
+      wording: input.marketingWording ?? MARKETING_WORDING_EN,
       source: input.source,
     });
   if (consents.length) await db.insert(consentRecords).values(consents);

@@ -5,6 +5,8 @@ import {
   buildSteps,
   canAdvance,
   isAnswered,
+  localizedOptionLabel,
+  localizedQuestionLabel,
   progressPct,
   validateContact,
 } from "./lead-capture";
@@ -72,13 +74,14 @@ describe("progressPct", () => {
 
 describe("validateContact", () => {
   it("requires at least one channel", () => {
-    expect(validateContact({ consent: true })).toMatch(/email or a phone/);
+    expect(validateContact({ consent: true })).toBe("missing_contact");
   });
   it("requires consent", () => {
-    expect(validateContact({ email: "a@b.com", consent: false })).toMatch(/agree/);
+    expect(validateContact({ email: "a@b.com", consent: false })).toBe("missing_consent");
   });
   it("passes with one channel + consent", () => {
     expect(validateContact({ phone: "3055550148", consent: true })).toBeNull();
+    expect(validateContact({ email: "a@b.com", consent: true })).toBeNull();
   });
 });
 
@@ -110,5 +113,43 @@ describe("buildLeadPayload", () => {
       landingPath: "/buy",
     });
     expect(opted.consentMarketing).toBe(true);
+  });
+});
+
+describe("localizedQuestionLabel", () => {
+  const base: QualificationQuestionConfig = {
+    key: "budget",
+    type: "text",
+    label: "Budget",
+    labelEs: "Presupuesto",
+    options: [],
+    required: true,
+  };
+  it("returns ES label under es locale", () => {
+    expect(localizedQuestionLabel(base, "es")).toBe("Presupuesto");
+  });
+  it("returns EN label under en locale regardless of labelEs", () => {
+    expect(localizedQuestionLabel(base, "en")).toBe("Budget");
+  });
+  it("falls back to EN when labelEs is null under es", () => {
+    expect(localizedQuestionLabel({ ...base, labelEs: null }, "es")).toBe("Budget");
+  });
+  it("falls back to EN when labelEs is blank under es", () => {
+    expect(localizedQuestionLabel({ ...base, labelEs: "  " }, "es")).toBe("Budget");
+  });
+});
+
+describe("localizedOptionLabel", () => {
+  it("returns ES label under es locale", () => {
+    expect(localizedOptionLabel({ label: "Any", labelEs: "Cualquiera" }, "es")).toBe("Cualquiera");
+  });
+  it("returns EN label under en locale", () => {
+    expect(localizedOptionLabel({ label: "Any", labelEs: "Cualquiera" }, "en")).toBe("Any");
+  });
+  it("falls back to EN when labelEs is missing under es", () => {
+    expect(localizedOptionLabel({ label: "Any" }, "es")).toBe("Any");
+  });
+  it("falls back to EN when labelEs is null under es", () => {
+    expect(localizedOptionLabel({ label: "Any", labelEs: null }, "es")).toBe("Any");
   });
 });

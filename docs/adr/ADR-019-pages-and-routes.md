@@ -27,7 +27,10 @@ full table is maintained in **`docs/pages.md`** (the route spec).
   on `/homes/[slug]` and the **Florida-cost CTA** are **capture surfaces**, not pages (ADR-007/013).
 - **Rendering principles** (ADR-001): SEO pages = ISR; `/search` = SSR + CSR with filters/viewport
   in the query string; favorites + admin = client/gated.
-- **i18n:** all public routes localized with a Spanish prefix (default-locale per ADR-018).
+- **i18n:** all public routes localized — **English at the root, Spanish under `/es/`** (default
+  locale per ADR-018) — with **reciprocal `hreflang` + `x-default`** on every page, **both language
+  URLs in the sitemap**, per-locale `<html lang>` and a self-referential canonical, and a header
+  **EN/ES toggle**. Wired in **D13** (the seam sits in `<Seo>`).
 - **API routes** (`/api/*`): lead submission (+consent, notifications, auto-response), geo/search
   queries (PostGIS bbox + polygon), favorites, map-layer data, the daily-digest cron, admin
   mutations. The MLS sync runs in `apps/worker`, not an API route.

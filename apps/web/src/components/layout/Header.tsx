@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import { useRouter } from "next/router";
 import { Container } from "@/components/ui/Container";
 import { PRIMARY_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
 import { useScrolled } from "./useScrolled";
 import { FavoritesNavButton } from "@/components/favorites/FavoritesNavButton";
+<<<<<<< HEAD
 import { BrandMark } from "@/components/brand/BrandMark";
+=======
+import { useTranslation } from "@/lib/i18n";
+import { LOCALES, asLocale } from "@/lib/i18n/config";
+>>>>>>> feat/d13-i18n
 import styles from "./Header.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
@@ -34,19 +40,30 @@ function GlobeIcon() {
   );
 }
 
-// EN active, ES muted (Spanish is a Phase-0 follow-up). Shared by the desktop bar
-// and the mobile menu so the language affordance is present in both.
+// Working EN/ES toggle: switches the current page to the other language,
+// preserving route + query. Active locale marked with aria-current.
 function LangToggle() {
+  const router = useRouter();
+  const current = asLocale(router.locale);
+  const { m } = useTranslation();
   return (
-    <span className={styles.lang} role="group" aria-label="Language">
+    <span className={styles.lang} role="group" aria-label={m.common.language}>
       <GlobeIcon />
-      <span className={styles.langOn} aria-current="true">
-        EN
-      </span>
-      <span className={styles.langDivider} aria-hidden="true" />
-      <span className={styles.langMuted} title="Español — próximamente">
-        ES
-      </span>
+      {LOCALES.map((l, i) => (
+        <Fragment key={l}>
+          {i > 0 && <span className={styles.langDivider} aria-hidden="true" />}
+          <Link
+            href={{ pathname: router.pathname, query: router.query }}
+            as={router.asPath}
+            locale={l}
+            scroll={false}
+            className={l === current ? styles.langOn : styles.langMuted}
+            aria-current={l === current ? "true" : undefined}
+          >
+            {l.toUpperCase()}
+          </Link>
+        </Fragment>
+      ))}
     </span>
   );
 }
@@ -54,9 +71,18 @@ function LangToggle() {
 export function Header({ transparentOverHero = false }: { transparentOverHero?: boolean }) {
   const scrolled = useScrolled(8);
   const [open, setOpen] = useState(false);
+  const { m } = useTranslation();
   // Transparent over the hero at the very top; fades to a solid white bar once scrolled
   // (or when the mobile menu is open, so the panel stays legible).
   const solid = !transparentOverHero || scrolled || open;
+
+  const NAV_LABEL: Record<string, string> = {
+    "/buy": m.nav.buy,
+    "/sell": m.nav.sell,
+    "/rent": m.nav.rent,
+    "/guides": m.nav.guides,
+    "/about": m.nav.about,
+  };
 
   return (
     <header className={`${styles.header} ${solid ? styles.solid : styles.overlay}`}>
@@ -67,10 +93,10 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
             <span className={styles.wordmark}>{REALTOR.name}</span>
           </Link>
 
-          <nav className={styles.nav} aria-label="Primary">
+          <nav className={styles.nav} aria-label={m.common.primaryNavLabel}>
             {PRIMARY_NAV.map((item) => (
               <Link key={item.href} href={item.href} className={styles.navLink}>
-                {item.label}
+                {NAV_LABEL[item.href] ?? item.label}
               </Link>
             ))}
           </nav>
@@ -82,14 +108,14 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
               {REALTOR.phone}
             </a>
             <Link href="/contact" className={styles.contactBtn}>
-              Contact
+              {m.common.contact}
             </Link>
             <button
               type="button"
               className={styles.menuBtn}
               aria-expanded={open}
               aria-controls="mobile-nav"
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? m.common.closeMenu : m.common.openMenu}
               onClick={() => setOpen((v) => !v)}
             >
               <span
@@ -102,7 +128,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
       </Container>
 
       {open && (
-        <nav id="mobile-nav" className={styles.mobileNav} aria-label="Primary">
+        <nav id="mobile-nav" className={styles.mobileNav} aria-label={m.common.primaryNavLabel}>
           {PRIMARY_NAV.map((item) => (
             <Link
               key={item.href}
@@ -110,11 +136,11 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
               className={styles.mobileLink}
               onClick={() => setOpen(false)}
             >
-              {item.label}
+              {NAV_LABEL[item.href] ?? item.label}
             </Link>
           ))}
           <Link href="/favorites" className={styles.mobileLink} onClick={() => setOpen(false)}>
-            Saved homes
+            {m.common.savedHomes}
           </Link>
           <a className={styles.mobileLink} href={TEL} onClick={() => setOpen(false)}>
             {REALTOR.phone}
@@ -123,7 +149,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
             <LangToggle />
           </div>
           <Link href="/contact" className={styles.mobileContact} onClick={() => setOpen(false)}>
-            Contact
+            {m.common.contact}
           </Link>
         </nav>
       )}

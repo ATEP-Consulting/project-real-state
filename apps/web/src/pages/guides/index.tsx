@@ -1,23 +1,28 @@
 import type { GetStaticProps } from "next";
 import Link from "next/link";
-import { getPublishedGuides, type GuideSummary } from "@herrera/db";
+import { getPublishedGuides } from "@herrera/db";
 import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/marketing/PageHero";
 import { CallCta } from "@/components/marketing/CallCta";
+import { useTranslation } from "@/lib/i18n";
+import { asLocale } from "@/lib/i18n/config";
+import { localizeGuideSummary, type LocalizedGuideSummary } from "@/lib/guides";
 import styles from "./Guides.module.css";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=68&auto=format&fit=crop";
 
-type Props = { guides: GuideSummary[] };
+type Props = { guides: LocalizedGuideSummary[] };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  let guides: GuideSummary[] = [];
+export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
+  const locale = asLocale(ctx.locale);
+  let guides: LocalizedGuideSummary[] = [];
   try {
-    guides = await getPublishedGuides();
+    const raw = await getPublishedGuides();
+    guides = raw.map((g) => localizeGuideSummary(g, locale));
   } catch (err) {
     console.warn("[guides] unavailable:", (err as Error).message);
   }
@@ -25,24 +30,25 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 };
 
 export default function GuidesIndex({ guides }: Props) {
+  const { m } = useTranslation();
   return (
     <SiteLayout transparentHeader>
       <Seo
-        title="Guides — buying, selling & owning in Florida — Herrera"
-        description="Plain-English guides to Florida real estate: flood zones and insurance, HOA vs CDD fees, and a first-time buyer's roadmap."
+        title={m.guides.seoTitle}
+        description={m.guides.seoDescription}
         path="/guides"
       />
       <PageHero
         image={HERO_IMAGE}
-        eyebrow="Guides"
-        title="Florida real estate, explained"
-        lede="Straight answers to the questions that shape a Florida purchase. No jargon, no pressure."
+        eyebrow={m.guides.heroEyebrow}
+        title={m.guides.heroTitle}
+        lede={m.guides.heroLede}
       />
 
       <section className={styles.listSection}>
         <Container>
           {guides.length === 0 ? (
-            <p className={styles.empty}>Guides are coming soon.</p>
+            <p className={styles.empty}>{m.guides.empty}</p>
           ) : (
             <ul className={styles.grid}>
               {guides.map((g, i) => (
@@ -63,7 +69,7 @@ export default function GuidesIndex({ guides }: Props) {
                       <div className={styles.cardBody}>
                         <h2 className={styles.cardTitle}>{g.title}</h2>
                         {g.excerpt && <p className={styles.cardExcerpt}>{g.excerpt}</p>}
-                        <span className={styles.cardMore}>Read guide →</span>
+                        <span className={styles.cardMore}>{m.guides.cardReadMore}</span>
                       </div>
                     </Link>
                   </Reveal>
@@ -75,9 +81,9 @@ export default function GuidesIndex({ guides }: Props) {
       </section>
 
       <CallCta
-        title="Still have questions?"
-        text="Nilyan can walk you through any of this, no pressure."
-        secondaryLabel="Send a message"
+        title={m.guides.ctaTitle}
+        text={m.guides.ctaText}
+        secondaryLabel={m.guides.ctaSecondary}
         secondaryHref="/contact"
       />
     </SiteLayout>

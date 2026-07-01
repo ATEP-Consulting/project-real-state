@@ -13,6 +13,7 @@ const base = {
   lotSizeSqft: 8000,
   yearBuilt: 2018,
   description: "A bright home near the park.",
+  descriptionEs: null,
   addressLine1: "123 Oak St",
   addressLine2: null,
   city: "Winter Park",
@@ -43,23 +44,67 @@ describe("toListingDetailVM", () => {
     expect(vm.video).toBeNull();
     expect(vm.location).toEqual({ lng: -81.35, lat: 28.59 });
   });
-  it("builds a key-facts strip", () => {
-    const labels = vm.keyFacts.map((f) => f.label);
-    expect(labels).toEqual(["Price", "Beds", "Baths", "Sqft", "Type", "Year built", "Lot"]);
-    expect(vm.keyFacts.find((f) => f.label === "Beds")?.value).toBe("4");
+
+  it("emits locale-agnostic labelKeys for keyFacts (not English strings)", () => {
+    const keys = vm.keyFacts.map((f) => f.labelKey);
+    expect(keys).toEqual(["price", "beds", "baths", "sqft", "type", "yearBuilt", "lot"]);
+    expect(vm.keyFacts.find((f) => f.labelKey === "beds")?.value).toBe("4");
   });
-  it("derives a features list from booleans", () => {
-    expect(vm.features).toContain("Waterfront");
-    expect(vm.features).not.toContain("Private pool");
+
+  it("emits featureKeys (not English strings)", () => {
+    expect(vm.featureKeys).toContain("waterfront");
+    expect(vm.featureKeys).not.toContain("pool");
+    // hoaFeeMonthly=null → noHoa
+    expect(vm.featureKeys).toContain("noHoa");
   });
+
   it("marks non-MLS rows so the MLS disclaimer is suppressed", () => {
     expect(vm.compliance.isMls).toBe(false);
   });
-  it("exposes status, price-per-sqft, year, and lot for the header/cards", () => {
-    expect(vm.statusLabel).toBe("For sale");
+
+  it("emits statusKey, price-per-sqft, year, and lot for the header/cards", () => {
+    expect(vm.statusKey).toBe("active");
     expect(vm.pricePerSqftLabel).toBe("$313/ft²"); // 750000 / 2400
     expect(vm.yearBuilt).toBe(2018);
     expect(vm.lotSizeSqft).toBe(8000);
+  });
+
+  it("maps off_market status to offMarket key", () => {
+    const vm2 = toListingDetailVM({ ...base, status: "off_market" });
+    expect(vm2.statusKey).toBe("offMarket");
+  });
+
+  it("falls back to active key for unknown status", () => {
+    const vm2 = toListingDetailVM({ ...base, status: "future_unknown" });
+    expect(vm2.statusKey).toBe("active");
+  });
+
+  describe("localized description (Task 19)", () => {
+    const src = { ...base, description: "About this home", descriptionEs: "Sobre esta casa" };
+
+    it("returns ES description under 'es' locale", () => {
+      expect(toListingDetailVM(src, "es").description).toBe("Sobre esta casa");
+    });
+
+    it("returns EN description under 'en' locale", () => {
+      expect(toListingDetailVM(src, "en").description).toBe("About this home");
+    });
+
+    it("falls back to EN when descriptionEs is null under 'es'", () => {
+      expect(toListingDetailVM({ ...src, descriptionEs: null }, "es").description).toBe("About this home");
+    });
+
+    it("falls back to EN when descriptionEs is blank under 'es'", () => {
+      expect(toListingDetailVM({ ...src, descriptionEs: "   " }, "es").description).toBe("About this home");
+    });
+
+    it("returns null when both description and descriptionEs are null/empty", () => {
+      expect(toListingDetailVM({ ...src, description: null, descriptionEs: null }, "en").description).toBeNull();
+    });
+
+    it("defaults to EN locale when no locale arg passed (existing callers)", () => {
+      expect(toListingDetailVM(src).description).toBe("About this home");
+    });
   });
 });
 

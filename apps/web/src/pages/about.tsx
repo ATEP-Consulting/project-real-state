@@ -8,39 +8,38 @@ import { PageHero } from "@/components/marketing/PageHero";
 import { CallCta } from "@/components/marketing/CallCta";
 import { REALTOR } from "@/data/realtor";
 import { TESTIMONIALS } from "@/data/testimonials";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./about.module.css";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=68&auto=format&fit=crop";
 
-const VALUES = [
-  {
-    title: "Honest numbers",
-    body: "You get the real monthly cost in Florida: insurance, flood, HOA and taxes, before you commit.",
-  },
-  {
-    title: "A local network",
-    body: "Relationships across Miami, Coral Gables and the coast that open doors, including off-market listings.",
-  },
-  {
-    title: "Personal follow-through",
-    body: "You work with me directly, start to finish. I answer my own phone.",
-  },
-];
+const TESTIMONIAL_QUOTES = ["t0quote", "t1quote", "t2quote"] as const;
+const TESTIMONIAL_CONTEXTS = ["t0context", "t1context", "t2context"] as const;
 
 export default function About() {
+  const { m } = useTranslation();
+  const statLabels = [m.realtor.statLabel0, m.realtor.statLabel1, m.realtor.statLabel2];
+  const bioLong = [m.realtor.bioLong0, m.realtor.bioLong1];
+
+  const VALUES = [
+    { title: m.about.value0title, body: m.about.value0body },
+    { title: m.about.value1title, body: m.about.value1body },
+    { title: m.about.value2title, body: m.about.value2body },
+  ];
+
   return (
     <SiteLayout transparentHeader>
       <Seo
-        title="About Nilyan Herrera · Licensed Florida Realtor®"
-        description="Meet Nilyan Herrera, a licensed Florida Realtor® helping buyers, sellers and renters across Miami and the coast with honest numbers and close guidance."
+        title={m.about.seoTitle}
+        description={m.about.seoDescription}
         path="/about"
       />
       <PageHero
         image={HERO_IMAGE}
-        eyebrow="About · Licensed Florida Realtor®"
-        title="Nilyan Herrera"
-        lede={REALTOR.bioShort}
+        eyebrow={m.about.heroEyebrow}
+        title={m.about.heroTitle}
+        lede={m.realtor.bioShort}
       />
 
       {/* Bio + portrait + stats */}
@@ -57,23 +56,23 @@ export default function About() {
                   loading="lazy"
                 />
                 <div className={styles.stats}>
-                  {REALTOR.stats.map((s) => (
-                    <div key={s.label} className={styles.stat}>
+                  {REALTOR.stats.map((s, i) => (
+                    <div key={s.value} className={styles.stat}>
                       <span className={styles.statValue}>{s.value}</span>
-                      <span className={styles.statLabel}>{s.label}</span>
+                      <span className={styles.statLabel}>{statLabels[i]}</span>
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <h2 className={styles.bioHead}>Close guidance, honest numbers.</h2>
-                {REALTOR.bioLong.map((p) => (
-                  <p key={p.slice(0, 24)} className={styles.bioText}>
+                <h2 className={styles.bioHead}>{m.about.bioHead}</h2>
+                {bioLong.map((p, i) => (
+                  <p key={i} className={styles.bioText}>
                     {p}
                   </p>
                 ))}
                 <p className={styles.license}>
-                  {REALTOR.license} · {REALTOR.memberOf}
+                  {REALTOR.license} · {m.realtor.memberOf}
                 </p>
               </div>
             </div>
@@ -85,11 +84,11 @@ export default function About() {
       <section className={styles.valuesSection}>
         <Container>
           <Reveal>
-            <h2 className={styles.valuesTitle}>How I work</h2>
+            <h2 className={styles.valuesTitle}>{m.about.valuesTitle}</h2>
           </Reveal>
           <div className={styles.values}>
             {VALUES.map((v, i) => (
-              <Reveal key={v.title} delay={i * 0.06}>
+              <Reveal key={i} delay={i * 0.06}>
                 <div className={styles.value}>
                   <h3 className={styles.valueTitle}>{v.title}</h3>
                   <p className={styles.valueBody}>{v.body}</p>
@@ -104,14 +103,14 @@ export default function About() {
       <section className={styles.quotesSection}>
         <Container>
           <Reveal>
-            <Eyebrow>What clients say</Eyebrow>
+            <Eyebrow>{m.about.testimonialsEyebrow}</Eyebrow>
             <ul className={styles.quotes}>
-              {TESTIMONIALS.map((t) => (
+              {TESTIMONIALS.map((t, i) => (
                 <li key={t.author} className={styles.quote}>
                   <StarRating value={t.rating} />
-                  <p className={styles.quoteText}>“{t.quote}”</p>
+                  <p className={styles.quoteText}>"{m.testimonials[TESTIMONIAL_QUOTES[i]!]}"</p>
                   <p className={styles.quoteAuthor}>
-                    {t.author} · <span className={styles.quoteContext}>{t.context}</span>
+                    {t.author} · <span className={styles.quoteContext}>{m.testimonials[TESTIMONIAL_CONTEXTS[i]!]}</span>
                   </p>
                 </li>
               ))}
@@ -121,9 +120,9 @@ export default function About() {
       </section>
 
       <CallCta
-        title="Let's talk about your move."
-        text="Tell me what you're after and I'll take it from there. I answer personally."
-        secondaryLabel="Send a message"
+        title={m.about.ctaTitle}
+        text={m.about.ctaText}
+        secondaryLabel={m.about.ctaSecondary}
         secondaryHref="/contact"
       />
     </SiteLayout>

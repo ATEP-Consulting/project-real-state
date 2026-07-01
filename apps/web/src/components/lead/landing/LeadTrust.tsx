@@ -4,6 +4,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { REALTOR } from "@/data/realtor";
 import { TESTIMONIALS, type Testimonial } from "@/data/testimonials";
 import type { Intent } from "@/lib/lead-capture";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./LeadTrust.module.css";
 
 /**
@@ -16,8 +17,14 @@ const PICK: Record<Intent, readonly number[]> = {
   rent: [1, 0],
 };
 
+const TESTIMONIAL_QUOTES = ["t0quote", "t1quote", "t2quote"] as const;
+const TESTIMONIAL_CONTEXTS = ["t0context", "t1context", "t2context"] as const;
+
 export function LeadTrust({ intent }: { intent: Intent }) {
-  const quotes = PICK[intent]
+  const { m } = useTranslation();
+  const statLabels = [m.realtor.statLabel0, m.realtor.statLabel1, m.realtor.statLabel2];
+  const indices = PICK[intent];
+  const quotes = indices
     .map((i) => TESTIMONIALS[i])
     .filter((t): t is Testimonial => Boolean(t));
   return (
@@ -29,10 +36,10 @@ export function LeadTrust({ intent }: { intent: Intent }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={REALTOR.photo} alt={REALTOR.name} className={styles.photo} loading="lazy" />
               <div className={styles.stats}>
-                {REALTOR.stats.map((s) => (
-                  <div key={s.label} className={styles.stat}>
+                {REALTOR.stats.map((s, i) => (
+                  <div key={s.value} className={styles.stat}>
                     <span className={styles.statValue}>{s.value}</span>
-                    <span className={styles.statLabel}>{s.label}</span>
+                    <span className={styles.statLabel}>{statLabels[i]}</span>
                   </div>
                 ))}
               </div>
@@ -40,22 +47,27 @@ export function LeadTrust({ intent }: { intent: Intent }) {
 
             <div className={styles.bio}>
               <h2 className={styles.name}>{REALTOR.name}</h2>
-              <p className={styles.role}>{REALTOR.title}</p>
-              <p className={styles.bioText}>{REALTOR.bioLong[0]}</p>
+              <p className={styles.role}>{m.realtor.title}</p>
+              <p className={styles.bioText}>{m.realtor.bioLong0}</p>
               <p className={styles.license}>
-                {REALTOR.license} · {REALTOR.memberOf}
+                {REALTOR.license} · {m.realtor.memberOf}
               </p>
 
               <ul className={styles.testimonials}>
-                {quotes.map((t) => (
-                  <li key={t.author} className={styles.quote}>
-                    <StarRating value={t.rating} />
-                    <p className={styles.quoteText}>“{t.quote}”</p>
-                    <p className={styles.quoteAuthor}>
-                      {t.author} · <span className={styles.quoteContext}>{t.context}</span>
-                    </p>
-                  </li>
-                ))}
+                {quotes.map((t, qi) => {
+                  const srcIdx = indices[qi] ?? 0;
+                  const quoteKey = TESTIMONIAL_QUOTES[srcIdx];
+                  const ctxKey = TESTIMONIAL_CONTEXTS[srcIdx];
+                  return (
+                    <li key={t.author} className={styles.quote}>
+                      <StarRating value={t.rating} />
+                      <p className={styles.quoteText}>"{quoteKey ? m.testimonials[quoteKey] : ""}"</p>
+                      <p className={styles.quoteAuthor}>
+                        {t.author} · <span className={styles.quoteContext}>{ctxKey ? m.testimonials[ctxKey] : ""}</span>
+                      </p>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>

@@ -5,14 +5,19 @@ import { content } from "./schema/content";
 export type GuideSummary = {
   slug: string;
   title: string;
+  titleEs: string | null;
   excerpt: string | null;
+  excerptEs: string | null;
   heroImageUrl: string | null;
   publishedAt: string | null;
 };
 export type GuideDetail = GuideSummary & {
   body: string | null;
+  bodyEs: string | null;
   metaTitle: string | null;
+  metaTitleEs: string | null;
   metaDescription: string | null;
+  metaDescriptionEs: string | null;
 };
 
 /** Published guides, newest first (drives /guides + sitemap). */
@@ -22,7 +27,9 @@ export async function getPublishedGuides(): Promise<GuideSummary[]> {
     .select({
       slug: content.slug,
       title: content.title,
+      titleEs: content.titleEs,
       excerpt: content.excerpt,
+      excerptEs: content.excerptEs,
       heroImageUrl: content.heroImageUrl,
       publishedAt: content.publishedAt,
     })
@@ -32,7 +39,9 @@ export async function getPublishedGuides(): Promise<GuideSummary[]> {
   return rows.map((r) => ({
     slug: r.slug,
     title: r.title,
+    titleEs: r.titleEs ?? null,
     excerpt: r.excerpt,
+    excerptEs: r.excerptEs ?? null,
     heroImageUrl: r.heroImageUrl,
     publishedAt: r.publishedAt ? r.publishedAt.toISOString() : null,
   }));
@@ -51,11 +60,16 @@ export async function getGuideBySlug(slug: string): Promise<GuideDetail | null> 
   return {
     slug: g.slug,
     title: g.title,
+    titleEs: g.titleEs ?? null,
     excerpt: g.excerpt,
+    excerptEs: g.excerptEs ?? null,
     heroImageUrl: g.heroImageUrl,
     publishedAt: g.publishedAt ? g.publishedAt.toISOString() : null,
     body: g.body,
+    bodyEs: g.bodyEs ?? null,
     metaTitle: g.metaTitle,
+    metaTitleEs: g.metaTitleEs ?? null,
     metaDescription: g.metaDescription,
+    metaDescriptionEs: g.metaDescriptionEs ?? null,
   };
 }

@@ -1,22 +1,24 @@
 import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
-import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./ContactSection.module.css";
 
 type Intent = "buy" | "sell" | "rent";
-const INTENTS: { id: Intent; label: string }[] = [
-  { id: "buy", label: "Buy" },
-  { id: "sell", label: "Sell" },
-  { id: "rent", label: "Rent" },
-];
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
 
 export function ContactSection() {
   const [intent, setIntent] = useState<Intent>("buy");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
+  const { m, locale } = useTranslation();
+
+  const INTENTS: { id: Intent; label: string }[] = [
+    { id: "buy", label: m.home.contactBuy },
+    { id: "sell", label: m.home.contactSell },
+    { id: "rent", label: m.home.contactRent },
+  ];
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,7 +32,7 @@ export function ContactSection() {
     }
     const zone = String(fd.get("zone") ?? "").trim();
     const note = String(fd.get("message") ?? "").trim();
-    const message = [zone && `Area of interest: ${zone}.`, note].filter(Boolean).join(" ");
+    const message = [zone && `${m.home.contactAreaPrefix} ${zone}`, note].filter(Boolean).join(" ");
     setStatus("submitting");
     try {
       const res = await fetch("/api/contact", {
@@ -45,6 +47,7 @@ export function ContactSection() {
           consentEmail: consent && Boolean(email),
           consentPhone: consent && Boolean(phone),
           consentMarketing: fd.get("marketing") === "on",
+          locale,
         }),
       });
       setStatus(res.ok ? "done" : "error");
@@ -60,12 +63,9 @@ export function ContactSection() {
           <div className={styles.panel}>
             <div className={styles.grid}>
               <div className={styles.left}>
-                <p className={styles.eyebrow}>Contact</p>
-                <h2 className={styles.title}>Let&apos;s talk about your next home</h2>
-                <p className={styles.text}>
-                  Tell me what you&apos;re looking for or what you want to sell. I reply personally
-                  within 24 hours, no obligation.
-                </p>
+                <p className={styles.eyebrow}>{m.home.contactEyebrow}</p>
+                <h2 className={styles.title}>{m.home.contactTitle}</h2>
+                <p className={styles.text}>{m.home.contactText}</p>
 
                 <ul className={styles.details}>
                   <li className={styles.detail}>
@@ -73,7 +73,7 @@ export function ContactSection() {
                       ✆
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Phone</span>
+                      <span className={styles.dLabel}>{m.home.contactPhoneLabel}</span>
                       <a className={styles.dValue} href={TEL}>
                         {REALTOR.phone}
                       </a>
@@ -84,7 +84,7 @@ export function ContactSection() {
                       ✉
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Email</span>
+                      <span className={styles.dLabel}>{m.home.contactEmailLabel}</span>
                       <a className={styles.dValue} href={`mailto:${REALTOR.email}`}>
                         {REALTOR.email}
                       </a>
@@ -95,7 +95,7 @@ export function ContactSection() {
                       ⌖
                     </span>
                     <span>
-                      <span className={styles.dLabel}>Office</span>
+                      <span className={styles.dLabel}>{m.home.contactOfficeLabel}</span>
                       <span className={styles.dValue}>{REALTOR.office}</span>
                     </span>
                   </li>
@@ -108,17 +108,17 @@ export function ContactSection() {
                   <span>
                     <span className={styles.agentName}>{REALTOR.name}</span>
                     <span className={styles.agentMeta}>
-                      {REALTOR.title} · {REALTOR.license} · {REALTOR.hours}
+                      {m.realtor.title} · {REALTOR.license} · {m.realtor.hours}
                     </span>
                   </span>
                 </div>
               </div>
 
               <form className={styles.form} onSubmit={onSubmit}>
-                <h3 className={styles.formTitle}>Send a message</h3>
-                <p className={styles.formHelp}>All fields required except the message.</p>
+                <h3 className={styles.formTitle}>{m.home.contactFormTitle}</h3>
+                <p className={styles.formHelp}>{m.home.contactFormHelp}</p>
 
-                <span className={styles.fieldLabel}>I want to</span>
+                <span className={styles.fieldLabel}>{m.home.contactIWantTo}</span>
                 <div className={styles.tabs}>
                   {INTENTS.map((t) => (
                     <button
@@ -134,7 +134,7 @@ export function ContactSection() {
                 </div>
 
                 <label className={styles.fieldLabel} htmlFor="c-name">
-                  Full name
+                  {m.home.contactNameLabel}
                 </label>
                 <input
                   id="c-name"
@@ -142,13 +142,13 @@ export function ContactSection() {
                   className={styles.input}
                   type="text"
                   autoComplete="name"
-                  placeholder="Your name"
+                  placeholder={m.home.contactNamePlaceholder}
                 />
 
                 <div className={styles.two}>
                   <div>
                     <label className={styles.fieldLabel} htmlFor="c-email">
-                      Email
+                      {m.home.contactEmailFieldLabel}
                     </label>
                     <input
                       id="c-email"
@@ -156,12 +156,12 @@ export function ContactSection() {
                       className={styles.input}
                       type="email"
                       autoComplete="email"
-                      placeholder="you@email.com"
+                      placeholder={m.home.contactEmailPlaceholder}
                     />
                   </div>
                   <div>
                     <label className={styles.fieldLabel} htmlFor="c-phone">
-                      Phone
+                      {m.home.contactPhoneFieldLabel}
                     </label>
                     <input
                       id="c-phone"
@@ -169,51 +169,52 @@ export function ContactSection() {
                       className={styles.input}
                       type="tel"
                       autoComplete="tel"
-                      placeholder="+1 (305) …"
+                      placeholder={m.home.contactPhonePlaceholder}
                     />
                   </div>
                 </div>
 
                 <label className={styles.fieldLabel} htmlFor="c-zone">
-                  Area of interest
+                  {m.home.contactZoneLabel}
                 </label>
                 <input
                   id="c-zone"
                   name="zone"
                   className={styles.input}
                   type="text"
-                  placeholder="Coral Gables, Miami Beach, Brickell…"
+                  placeholder={m.home.contactZonePlaceholder}
                 />
 
                 <label className={styles.fieldLabel} htmlFor="c-msg">
-                  Message <span className={styles.optional}>(optional)</span>
+                  {m.home.contactMsgLabel}{" "}
+                  <span className={styles.optional}>{m.home.contactMsgOptional}</span>
                 </label>
                 <textarea
                   id="c-msg"
                   name="message"
                   className={styles.textarea}
                   rows={3}
-                  placeholder="Tell me what you're looking for…"
+                  placeholder={m.home.contactMsgPlaceholder}
                 />
 
                 <label className={styles.consent}>
                   <input type="checkbox" name="consent" />
-                  <span>I agree to the privacy policy and to be contacted about my enquiry.</span>
+                  <span>{m.home.contactConsentLabel}</span>
                 </label>
                 <label className={styles.consent}>
                   <input type="checkbox" name="marketing" />
-                  <span>{MARKETING_CONSENT_LABEL}</span>
+                  <span>{m.home.contactMarketingLabel}</span>
                 </label>
 
                 {status === "done" ? (
                   <p className={styles.formStatus} role="status">
-                    Thank you — your message is on its way. I&apos;ll reply within 24 hours.
+                    {m.home.contactSuccess}
                   </p>
                 ) : (
                   <>
                     {status === "error" && (
                       <p className={styles.formError} role="alert">
-                        Please add an email or phone and accept the consent, then try again.
+                        {m.home.contactError}
                       </p>
                     )}
                     <button
@@ -221,7 +222,7 @@ export function ContactSection() {
                       className={styles.submit}
                       disabled={status === "submitting"}
                     >
-                      {status === "submitting" ? "Sending…" : "Send message"}
+                      {status === "submitting" ? m.home.contactSubmitting : m.home.contactSubmit}
                     </button>
                   </>
                 )}

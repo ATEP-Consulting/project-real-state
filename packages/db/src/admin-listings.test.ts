@@ -21,6 +21,18 @@ describe("manualListingSchema", () => {
     }
   });
 
+  it("accepts descriptionEs when provided and preserves its value", () => {
+    const r = manualListingSchema.safeParse({ ...base, descriptionEs: "Hermosa propiedad" });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.descriptionEs).toBe("Hermosa propiedad");
+  });
+
+  it("parses successfully when descriptionEs is omitted (optional)", () => {
+    const r = manualListingSchema.safeParse(base);
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.descriptionEs == null).toBe(true);
+  });
+
   it("rejects a bad visibility / property type / missing price", () => {
     expect(manualListingSchema.safeParse({ ...base, visibility: "nope" }).success).toBe(false);
     expect(manualListingSchema.safeParse({ ...base, propertyType: "castle" }).success).toBe(false);

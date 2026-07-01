@@ -60,3 +60,13 @@ always records its own marketing `consent_records` row — `granted=true` when t
 when left unticked** (auditable, never omitted) — and gates the **Phase 2** email campaigns. The
 **contact rule above stays required and unchanged.** Full decision + hard rules: **ADR-020** (and
 ADR-011).
+
+## Addendum (2026-07-01, D13) — qualification questions are bilingual
+
+- Every question Nilyan authors is **EN + ES**: the question **`label`** (existing `label_es`) and
+  each **option label** (existing option `labelEs`) carry a Spanish value she fills in
+  `/admin/questions`. **No schema change is needed** — the ES columns already exist; D13 wires the
+  editor fields + the public render.
+- The Buy/Sell/Rent flow renders the **active locale's** wording, **falling back to EN** when an ES
+  value is empty. The consent/opt-in wording shown on the form is likewise localized and stored
+  verbatim in the consent record (ADR-011/020). See **ADR-018**.

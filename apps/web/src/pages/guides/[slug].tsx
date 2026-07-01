@@ -1,16 +1,19 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { getGuideBySlug, getPublishedGuides, type GuideDetail } from "@herrera/db";
+import { getGuideBySlug, getPublishedGuides } from "@herrera/db";
 import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/marketing/PageHero";
 import { CallCta } from "@/components/marketing/CallCta";
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { useTranslation } from "@/lib/i18n";
+import { asLocale } from "@/lib/i18n/config";
+import { localizeGuideDetail, type LocalizedGuideDetail } from "@/lib/guides";
 import styles from "./Guide.module.css";
 
-type Props = { guide: GuideDetail };
+type Props = { guide: LocalizedGuideDetail };
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let paths: { params: { slug: string } }[] = [];
@@ -25,9 +28,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
   const slug = String(ctx.params?.slug ?? "");
+  const locale = asLocale(ctx.locale);
   try {
-    const guide = await getGuideBySlug(slug);
-    if (!guide) return { notFound: true, revalidate: 30 };
+    const raw = await getGuideBySlug(slug);
+    if (!raw) return { notFound: true, revalidate: 30 };
+    const guide = localizeGuideDetail(raw, locale);
     return { props: { guide }, revalidate: 300 };
   } catch (err) {
     console.warn("[guides] props unavailable:", (err as Error).message);
@@ -36,6 +41,7 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 };
 
 export default function GuideArticle({ guide }: Props) {
+  const { m } = useTranslation();
   const path = `/guides/${guide.slug}`;
   const description = guide.metaDescription ?? guide.excerpt ?? guide.title;
   return (
@@ -54,15 +60,15 @@ export default function GuideArticle({ guide }: Props) {
             datePublished: guide.publishedAt,
           }),
           breadcrumbJsonLd([
-            { name: "Home", url: absoluteUrl("/") },
-            { name: "Guides", url: absoluteUrl("/guides") },
+            { name: m.guides.breadcrumbHome, url: absoluteUrl("/") },
+            { name: m.nav.guides, url: absoluteUrl("/guides") },
             { name: guide.title, url: absoluteUrl(path) },
           ]),
         ]}
       />
       <PageHero
         image={guide.heroImageUrl ?? undefined}
-        eyebrow="Guide"
+        eyebrow={m.guides.eyebrow}
         title={guide.title}
         lede={guide.excerpt ?? undefined}
       />
@@ -71,7 +77,7 @@ export default function GuideArticle({ guide }: Props) {
         <Container>
           <div className={styles.prose}>
             <Link href="/guides" className={styles.back}>
-              ← All guides
+              {m.guides.allGuidesLink}
             </Link>
             {/* Markdown body — react-markdown ignores raw HTML by default (no rehype-raw),
                 so authored content can't inject markup. */}
@@ -83,9 +89,9 @@ export default function GuideArticle({ guide }: Props) {
       </article>
 
       <CallCta
-        title="Thinking about a move in Florida?"
-        text="Nilyan can walk you through it, no pressure."
-        secondaryLabel="Send a message"
+        title={m.guides.articleCtaTitle}
+        text={m.guides.articleCtaText}
+        secondaryLabel={m.guides.articleCtaSecondary}
         secondaryHref="/contact"
       />
     </SiteLayout>

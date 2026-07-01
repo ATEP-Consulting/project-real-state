@@ -1,4 +1,5 @@
 import type { QualificationQuestionConfig } from "@herrera/db";
+import { pickLocalized, type Locale } from "./i18n/config";
 
 export type Intent = "buy" | "sell" | "rent";
 export type Answers = Record<string, unknown>;
@@ -44,12 +45,12 @@ export type ContactInput = {
   marketing?: boolean; // ADR-020 — optional marketing opt-in (unchecked by default)
 };
 
-/** Client mirror of the D4 contact rule. Returns an error message, or null when valid. */
-export function validateContact(c: ContactInput): string | null {
+/** Client mirror of the D4 contact rule. Returns an error key, or null when valid. */
+export function validateContact(c: ContactInput): "missing_contact" | "missing_consent" | null {
   const email = (c.email ?? "").trim();
   const phone = (c.phone ?? "").trim();
-  if (!email && !phone) return "Please add an email or a phone so Nilyan can reach you.";
-  if (!c.consent) return "Please agree to be contacted.";
+  if (!email && !phone) return "missing_contact";
+  if (!c.consent) return "missing_consent";
   return null;
 }
 
@@ -65,6 +66,7 @@ export type LeadPayload = {
   attribution: { landingPath: string };
   source?: LeadSource;
   viewedListingIds?: string[];
+  locale?: Locale;
 };
 
 export type CaptureCopy = { headline: string; sub: string };
@@ -80,6 +82,19 @@ export type CaptureOpts = {
   onSubmitted?: () => void;
 };
 
+/** Return the question label in the requested locale, silently falling back to EN when blank. */
+export function localizedQuestionLabel(q: QualificationQuestionConfig, locale: Locale): string {
+  return pickLocalized(q.label, q.labelEs, locale);
+}
+
+/** Return the option label in the requested locale, silently falling back to EN when blank. */
+export function localizedOptionLabel(
+  o: { label: string; labelEs?: string | null },
+  locale: Locale,
+): string {
+  return pickLocalized(o.label, o.labelEs, locale);
+}
+
 /** Shape the POST /api/leads body. Consent is granted per channel the user actually provided. */
 export function buildLeadPayload(args: {
   intent: Intent;
@@ -88,6 +103,7 @@ export function buildLeadPayload(args: {
   landingPath: string;
   source?: LeadSource;
   viewedListingIds?: string[];
+  locale?: Locale;
 }): LeadPayload {
   const email = (args.contact.email ?? "").trim();
   const phone = (args.contact.phone ?? "").trim();
@@ -106,5 +122,6 @@ export function buildLeadPayload(args: {
     ...(args.viewedListingIds && args.viewedListingIds.length
       ? { viewedListingIds: args.viewedListingIds }
       : {}),
+    ...(args.locale ? { locale: args.locale } : {}),
   };
 }

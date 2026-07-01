@@ -3,21 +3,23 @@ import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
 import { ListingCard } from "@/components/ui/ListingCard";
+import { useTranslation } from "@/lib/i18n";
 import type { ListingCardVM } from "@/lib/listing";
 import styles from "./FeaturedListings.module.css";
 
 export function FeaturedListings({ listings }: { listings: ListingCardVM[] }) {
+  const { m } = useTranslation();
   return (
     <section className={styles.section}>
       <Container>
         <Reveal>
           <div className={styles.head}>
             <div>
-              <Eyebrow>Featured</Eyebrow>
-              <h2 className={styles.title}>Handpicked Florida homes</h2>
+              <Eyebrow>{m.home.featuredEyebrow}</Eyebrow>
+              <h2 className={styles.title}>{m.home.featuredTitle}</h2>
             </div>
             <Link href="/search" className={styles.viewAll}>
-              View all listings →
+              {m.home.featuredViewAll}
             </Link>
           </div>
         </Reveal>
@@ -34,7 +36,7 @@ export function FeaturedListings({ listings }: { listings: ListingCardVM[] }) {
           </div>
         ) : (
           <Reveal>
-            <p className={styles.empty}>Listings are loading — please check back shortly.</p>
+            <p className={styles.empty}>{m.home.featuredEmpty}</p>
           </Reveal>
         )}
       </Container>

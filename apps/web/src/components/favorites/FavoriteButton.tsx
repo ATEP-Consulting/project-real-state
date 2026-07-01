@@ -1,5 +1,6 @@
 import type { MouseEvent } from "react";
 import { useFavorites } from "./FavoritesProvider";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./FavoriteButton.module.css";
 
 function Heart({ filled }: { filled: boolean }) {
@@ -22,6 +23,7 @@ export function FavoriteButton({
   slug: string;
   variant?: "card" | "bar";
 }) {
+  const { m } = useTranslation();
   const { isFavorite, toggle } = useFavorites();
   const saved = isFavorite(slug);
   const onClick = (e: MouseEvent) => {
@@ -29,7 +31,7 @@ export function FavoriteButton({
     e.stopPropagation();
     toggle(slug);
   };
-  const label = saved ? "Remove from saved homes" : "Save this home";
+  const label = saved ? m.favorites.buttonRemoveLabel : m.favorites.buttonSaveLabel;
 
   if (variant === "bar") {
     return (
@@ -40,7 +42,7 @@ export function FavoriteButton({
         aria-label={label}
         onClick={onClick}
       >
-        <Heart filled={saved} /> {saved ? "Saved" : "Save"}
+        <Heart filled={saved} /> {saved ? m.favorites.buttonSaved : m.favorites.buttonSave}
       </button>
     );
   }

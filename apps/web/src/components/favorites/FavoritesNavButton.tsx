@@ -1,15 +1,20 @@
 import Link from "next/link";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./FavoritesNavButton.module.css";
 
 export function FavoritesNavButton() {
+  const { m } = useTranslation();
   const { count, ready } = useFavorites();
   const showCount = ready && count > 0;
+  const ariaLabel = showCount
+    ? m.favorites.navAriaWithCount.replace("{count}", String(count))
+    : m.favorites.navAriaEmpty;
   return (
     <Link
       href="/favorites"
       className={styles.link}
-      aria-label={showCount ? `Saved homes (${count})` : "Saved homes"}
+      aria-label={ariaLabel}
     >
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
         <path

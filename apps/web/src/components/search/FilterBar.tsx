@@ -4,31 +4,42 @@ import { FILTER_BINDINGS, activeFilterCount, type FilterConfig } from "@/lib/fil
 import { Popover } from "./Popover";
 import { FilterControl } from "./FilterControl";
 import { MoreFiltersPanel } from "./MoreFiltersPanel";
+import { useTranslation } from "@/lib/i18n";
+import { pickLocalized } from "@/lib/i18n/config";
 import styles from "./FilterBar.module.css";
 
 const usd = (n: number) => `$${Math.round(n / 1000)}k`;
 
 /** Pill label reflecting the active value (Idealista-style), or the plain label when unset. */
-function pillLabel(config: FilterConfig, p: SearchParams): string {
+function pillLabel(
+  config: FilterConfig,
+  p: SearchParams,
+  upTo: string,
+  locale: import("@/lib/i18n/config").Locale,
+): string {
+  const label = pickLocalized(config.label, config.labelEs, locale);
   if (config.control === "range") {
     const lo = p.minPrice;
     const hi = p.maxPrice;
-    if (lo == null && hi == null) return config.label;
+    if (lo == null && hi == null) return label;
     if (lo != null && hi != null) return `${usd(lo)}–${usd(hi)}`;
     if (lo != null) return `${usd(lo)}+`;
-    return `Up to ${usd(hi!)}`;
+    return `${upTo} ${usd(hi!)}`;
   }
   if (config.control === "min_select") {
     const v = config.key === "baths" ? p.minBaths : p.minBeds;
-    return v != null ? `${config.label}: ${v}+` : config.label;
+    return v != null ? `${label}: ${v}+` : label;
   }
   if (config.control === "enum_select") {
     const n = p.types?.length ?? 0;
-    if (!n) return config.label;
-    if (n === 1) return config.options.find((o) => o.value === p.types![0])?.label ?? config.label;
-    return `${config.label}: ${n}`;
+    if (!n) return label;
+    if (n === 1) {
+      const opt = config.options.find((o) => o.value === p.types![0]);
+      return opt ? pickLocalized(opt.label, opt.labelEs, locale) : label;
+    }
+    return `${label}: ${n}`;
   }
-  return config.label;
+  return label;
 }
 
 export function FilterBar({
@@ -48,6 +59,7 @@ export function FilterBar({
   layout: "split" | "list";
   onLayoutChange: (l: "split" | "list") => void;
 }) {
+  const { m, locale } = useTranslation();
   const [panelOpen, setPanelOpen] = useState(false);
   const primary = filters.filter((f) => !f.advanced && FILTER_BINDINGS[f.key]);
   const advanced = filters.filter((f) => f.advanced && FILTER_BINDINGS[f.key]);
@@ -60,7 +72,7 @@ export function FilterBar({
         {primary.map((f) => (
           <Popover
             key={f.key}
-            label={pillLabel(f, params)}
+            label={pillLabel(f, params, m.search.upTo, locale)}
             active={FILTER_BINDINGS[f.key]!.isSet(params)}
           >
             {(close) =>
@@ -81,12 +93,12 @@ export function FilterBar({
         ))}
         {advanced.length ? (
           <button type="button" className={styles.more} onClick={() => setPanelOpen(true)}>
-            More filters{advActive ? ` · ${advActive}` : ""}
+            {m.search.moreFilters}{advActive ? ` · ${advActive}` : ""}
           </button>
         ) : null}
         {anyActive ? (
           <button type="button" className={styles.clear} onClick={onClear}>
-            Clear all
+            {m.search.clearAll}
           </button>
         ) : null}
       </div>
@@ -99,7 +111,7 @@ export function FilterBar({
           className={layout === "split" ? styles.layoutOn : ""}
           onClick={() => onLayoutChange("split")}
         >
-          Map
+          {m.search.layoutMap}
         </button>
         <button
           type="button"
@@ -108,7 +120,7 @@ export function FilterBar({
           className={layout === "list" ? styles.layoutOn : ""}
           onClick={() => onLayoutChange("list")}
         >
-          List
+          {m.search.layoutList}
         </button>
       </div>
 
@@ -119,6 +131,7 @@ export function FilterBar({
         total={total}
         onClose={() => setPanelOpen(false)}
         onApply={onApply}
+        title={m.search.moreFiltersTitle}
       />
     </div>
   );
@@ -138,6 +151,7 @@ function RangeEditor({
   onApply: (patch: SearchParams) => void;
   close: () => void;
 }) {
+  const { m } = useTranslation();
   const [draft, setDraft] = useState<SearchParams>({
     minPrice: params.minPrice,
     maxPrice: params.maxPrice,
@@ -158,7 +172,7 @@ function RangeEditor({
             close();
           }}
         >
-          See {total} {total === 1 ? "home" : "homes"}
+          {m.search.see} {total} {total === 1 ? m.search.seeHome : m.search.seeHomes}
         </button>
       </div>
     </div>

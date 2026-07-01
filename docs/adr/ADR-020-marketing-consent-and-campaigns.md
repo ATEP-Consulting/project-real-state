@@ -95,3 +95,13 @@ The **campaign subsystem** (lists, templates, sending, tracking, unsubscribe UI)
 - **Building campaigns now** — **rejected** (reasons a–c above); it's a Phase 2 subsystem on real data.
 - **Deferring even the opt-in to Phase 2** — **rejected;** we'd launch with no lawful recipient list
   and have to retrofit consent onto existing leads (the same anti-pattern ADR-011 rejected).
+
+## Addendum (2026-07-01, D13) — the opt-in wording is localized EN/ES
+
+- The marketing opt-in label — and the per-channel **contact-consent** wording — is **translated
+  EN/ES** and rendered in the visitor's locale.
+- The **`consent_records` row stores the exact wording shown** at submission (already true), so a
+  **Spanish submission records the Spanish wording**. This preserves the auditable, worded proof of
+  the choice **in the language it was offered** — strengthening, not weakening, the consent trail.
+- **No rule changes:** the opt-in stays **optional, unchecked-by-default, and separately worded** in
+  both languages; the two-consent distinction is unchanged. See **ADR-018** (i18n) / ADR-011.

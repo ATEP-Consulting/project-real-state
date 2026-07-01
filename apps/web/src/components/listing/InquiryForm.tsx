@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { StarRating } from "@/components/ui/StarRating";
-import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
+import { useTranslation } from "@/lib/i18n";
 import styles from "./InquiryForm.module.css";
 
 type Status = "idle" | "submitting" | "done" | "error";
@@ -10,13 +10,14 @@ type Status = "idle" | "submitting" | "done" | "error";
 const TEL = `tel:${REALTOR.phone.replace(/[^\d+]/g, "")}`;
 
 function AgentHeader() {
+  const { m } = useTranslation();
   return (
     <div className={styles.agent}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={REALTOR.photo} alt={REALTOR.name} className={styles.avatar} loading="lazy" />
       <div className={styles.agentMeta}>
         <p className={styles.agentName}>{REALTOR.name}</p>
-        <p className={styles.agentRole}>{REALTOR.title} · Your agent</p>
+        <p className={styles.agentRole}>{m.realtor.title} · {m.listing.inquiryAgentRole}</p>
         <p className={styles.reviews}>
           <StarRating value={REALTOR.rating} /> <span>{REALTOR.reviews} reviews</span>
         </p>
@@ -26,6 +27,7 @@ function AgentHeader() {
 }
 
 export function InquiryForm({ slug, title }: { slug: string; title: string }) {
+  const { m, locale } = useTranslation();
   const [status, setStatus] = useState<Status>("idle");
   const [err, setErr] = useState<string | null>(null);
 
@@ -35,11 +37,11 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
     const email = String(fd.get("email") ?? "").trim();
     const phone = String(fd.get("phone") ?? "").trim();
     if (!email && !phone) {
-      setErr("Please add an email or a phone so Nilyan can reach you.");
+      setErr(m.listing.inquiryErrorContactRequired);
       return;
     }
     if (!fd.get("consent")) {
-      setErr("Please agree to be contacted.");
+      setErr(m.listing.inquiryErrorConsentRequired);
       return;
     }
     setStatus("submitting");
@@ -59,13 +61,14 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
           consentPhone: Boolean(phone),
           consentMarketing: fd.get("marketing") === "on",
           attribution: { landingPath: `/homes/${slug}` },
+          locale,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus("done");
     } catch {
       setStatus("error");
-      setErr("Something went wrong. Please try again or call us.");
+      setErr(m.listing.inquiryErrorGeneric);
     }
   }
 
@@ -73,10 +76,10 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
     return (
       <div className={styles.card}>
         <AgentHeader />
-        <h2 className={styles.h2}>Thanks — we&rsquo;ll be in touch shortly.</h2>
-        <p className={styles.sub}>Nilyan personally follows up on every inquiry about {title}.</p>
+        <h2 className={styles.h2}>{m.listing.inquirySuccessTitle}</h2>
+        <p className={styles.sub}>{m.listing.inquirySuccessBody} {title}.</p>
         <a className={styles.call} href={TEL}>
-          Call · {REALTOR.phone}
+          {m.listing.inquiryCallPrefix}{REALTOR.phone}
         </a>
       </div>
     );
@@ -85,37 +88,35 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
   return (
     <form className={styles.card} onSubmit={onSubmit} noValidate>
       <AgentHeader />
-      <h2 className={styles.h2}>Request a visit</h2>
-      <input className={styles.input} name="name" placeholder="Your name" autoComplete="name" />
+      <h2 className={styles.h2}>{m.listing.inquiryTitle}</h2>
+      <input className={styles.input} name="name" placeholder={m.listing.inquiryNamePlaceholder} autoComplete="name" />
       <input
         className={styles.input}
         name="email"
         type="email"
-        placeholder="Email"
+        placeholder={m.listing.inquiryEmailPlaceholder}
         autoComplete="email"
       />
       <input
         className={styles.input}
         name="phone"
         type="tel"
-        placeholder="Phone"
+        placeholder={m.listing.inquiryPhonePlaceholder}
         autoComplete="tel"
       />
       <textarea
         className={styles.textarea}
         name="message"
         rows={3}
-        placeholder="I'd like more information about this home."
+        placeholder={m.listing.inquiryMessagePlaceholder}
       />
       <label className={styles.consent}>
         <input type="checkbox" name="consent" />
-        <span>
-          I agree to be contacted by Herrera about this property using the details I provided.
-        </span>
+        <span>{m.listing.inquiryContactConsent}</span>
       </label>
       <label className={styles.consent}>
         <input type="checkbox" name="marketing" />
-        <span>{MARKETING_CONSENT_LABEL}</span>
+        <span>{m.consent.marketingLabel}</span>
       </label>
       {err && (
         <p className={styles.err} role="alert">
@@ -123,14 +124,12 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         </p>
       )}
       <Button type="submit" size="lg" disabled={status === "submitting"}>
-        {status === "submitting" ? "Sending…" : "Contact Nilyan"}
+        {status === "submitting" ? m.listing.inquirySubmitting : m.listing.inquirySubmit}
       </Button>
       <a className={styles.call} href={TEL}>
-        Call · {REALTOR.phone}
+        {m.listing.inquiryCallPrefix}{REALTOR.phone}
       </a>
-      <p className={styles.fine}>
-        By sending you accept the privacy policy. No obligation — phone <em>or</em> email is enough.
-      </p>
+      <p className={styles.fine}>{m.listing.inquiryFinePrint}</p>
     </form>
   );
 }

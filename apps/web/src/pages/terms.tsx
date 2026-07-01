@@ -1,34 +1,30 @@
 import Link from "next/link";
 import { LegalPage } from "@/components/legal/LegalPage";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Terms() {
+  const { m } = useTranslation();
+  const t = m.legal.terms;
+
   return (
     <LegalPage
-      title="Terms of Use"
+      title={t.pageTitle}
+      seoTitle={t.seoTitle}
       path="/terms"
-      description="The terms that govern your use of the Herrera website."
+      description={t.seoDesc}
+      banner={m.legal.banner}
     >
-      <h2>Using this site</h2>
+      <h2>{t.h1}</h2>
+      <p>{t.p1}</p>
+      <h2>{t.h2}</h2>
+      <p>{t.p2}</p>
+      <h2>{t.h3}</h2>
       <p>
-        This website provides information about real estate in Florida for general informational
-        purposes. By using it you agree to use it lawfully and not to misuse the forms or content.
+        {t.p3pre} <strong>{t.p3strong}</strong> {t.p3post}
       </p>
-      <h2>Listings &amp; data</h2>
+      <h2>{t.h4}</h2>
       <p>
-        Property information is provided for convenience and may not reflect the most current
-        status. Listings should be independently verified. Availability, price, and details can
-        change without notice.
-      </p>
-      <h2>Estimates, not advice</h2>
-      <p>
-        Any cost figures shown — including mortgage, property tax, insurance, HOA, CDD, and total
-        monthly cost — are <strong>estimates</strong> for general guidance only. They are not
-        quotes, financial, legal, or tax advice. Always confirm with the relevant provider before
-        relying on them.
-      </p>
-      <h2>Contact</h2>
-      <p>
-        Questions about these terms? Reach us via the <Link href="/contact">contact page</Link>.
+        {t.p4} <Link href="/contact">{t.p4Link}</Link>.
       </p>
     </LegalPage>
   );
