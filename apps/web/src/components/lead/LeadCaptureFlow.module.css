@@ -215,7 +215,7 @@
   color: var(--color-forest);
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   padding: 11px 22px;
   text-decoration: none;
 }

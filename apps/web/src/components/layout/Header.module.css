@@ -124,9 +124,8 @@
   letter-spacing: 0.04em;
   color: #fff;
   background: var(--color-bronze);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   padding: 9px 20px;
-  box-shadow: var(--shadow-bronze);
   white-space: nowrap;
   transition: background-color var(--dur-base) var(--ease-standard);
 }

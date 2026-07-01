@@ -52,7 +52,6 @@
   border-radius: var(--radius-sm);
   padding: 11px 22px;
   cursor: pointer;
-  box-shadow: var(--shadow-bronze);
   transition: background-color var(--dur-base) var(--ease-standard);
 }
 .submit:hover {

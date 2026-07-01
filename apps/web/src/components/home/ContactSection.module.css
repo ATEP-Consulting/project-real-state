@@ -233,7 +233,6 @@ a.dValue:hover {
   border-radius: var(--radius-sm);
   padding: 14px;
   cursor: pointer;
-  box-shadow: var(--shadow-bronze);
   transition: background-color var(--dur-base) var(--ease-standard);
 }
 .submit:hover {
