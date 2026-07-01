@@ -8,6 +8,7 @@ import styles from "./AdminLayout.module.css";
 const NAV = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/leads", label: "Leads" },
+  { href: "/admin/questions", label: "Questions" },
 ];
 
 export function AdminLayout({ title, children }: { title: string; children: ReactNode }) {
