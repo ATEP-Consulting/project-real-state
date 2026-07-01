@@ -2,6 +2,7 @@ import type { QualificationQuestionConfig } from "@herrera/db";
 
 export type Intent = "buy" | "sell" | "rent";
 export type Answers = Record<string, unknown>;
+export type LeadSource = "qualification_flow" | "favorites";
 
 export type Step =
   { kind: "question"; question: QualificationQuestionConfig } | { kind: "contact" };
@@ -62,6 +63,8 @@ export type LeadPayload = {
   consentPhone: boolean;
   consentMarketing: boolean;
   attribution: { landingPath: string };
+  source?: LeadSource;
+  viewedListingIds?: string[];
 };
 
 /** Shape the POST /api/leads body. Consent is granted per channel the user actually provided. */
@@ -70,6 +73,8 @@ export function buildLeadPayload(args: {
   answers: Answers;
   contact: ContactInput;
   landingPath: string;
+  source?: LeadSource;
+  viewedListingIds?: string[];
 }): LeadPayload {
   const email = (args.contact.email ?? "").trim();
   const phone = (args.contact.phone ?? "").trim();
@@ -84,5 +89,9 @@ export function buildLeadPayload(args: {
     consentPhone: Boolean(phone),
     consentMarketing: Boolean(args.contact.marketing),
     attribution: { landingPath: args.landingPath },
+    ...(args.source ? { source: args.source } : {}),
+    ...(args.viewedListingIds && args.viewedListingIds.length
+      ? { viewedListingIds: args.viewedListingIds }
+      : {}),
   };
 }

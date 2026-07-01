@@ -21,6 +21,8 @@ export const qualificationLeadSchema = z
     consentMarketing: z.boolean().optional(),
     attribution: attributionSchema.optional(),
     viewedListingIds: z.array(z.string()).optional(),
+    // ADR-007 + D9 — capture source, allowlisted so the client can only pick a known value.
+    source: z.enum(["qualification_flow", "favorites"]).optional(),
   })
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or phone (at least one).",
@@ -42,7 +44,7 @@ export async function createQualificationLead(
     email: input.email ?? null,
     phone: input.phone ?? null,
     answers: input.answers,
-    source: "qualification_flow",
+    source: input.source ?? "qualification_flow",
     attribution: input.attribution,
     viewedListingIds: input.viewedListingIds ?? [],
     consentEmail: input.email ? input.consentEmail : false,
