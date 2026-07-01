@@ -54,5 +54,15 @@ export {
 } from "./admin-leads";
 export { getPublishedGuides, getGuideBySlug, type GuideSummary, type GuideDetail } from "./content";
 export { contactLeadSchema, createContactLead, type ContactLead } from "./contact";
+export {
+  listManualListings,
+  getManualListing,
+  createManualListing,
+  updateManualListing,
+  deleteManualListing,
+  manualListingSchema,
+  type ManualListing,
+  type AdminListingRow,
+} from "./admin-listings";
 export type { Listing } from "./schema/listings";
 export type { SearchFilter } from "./schema/search-filters";
