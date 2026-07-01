@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
 import { REALTOR } from "@/data/realtor";
 import styles from "./ContactSection.module.css";
@@ -56,10 +55,11 @@ export function ContactSection() {
     <section className={styles.section}>
       <Container>
         <Reveal>
-          <div className={styles.grid}>
-            <div className={styles.left}>
-              <Eyebrow>Contact</Eyebrow>
-              <h2 className={styles.title}>Let&apos;s talk about your next home</h2>
+          <div className={styles.panel}>
+            <div className={styles.grid}>
+              <div className={styles.left}>
+                <p className={styles.eyebrow}>Contact</p>
+                <h2 className={styles.title}>Let&apos;s talk about your next home</h2>
               <p className={styles.text}>
                 Tell me what you&apos;re looking for or what you want to sell. I reply personally
                 within 24 hours, no obligation.
@@ -220,6 +220,7 @@ export function ContactSection() {
                 </>
               )}
             </form>
+            </div>
           </div>
         </Reveal>
       </Container>
