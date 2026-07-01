@@ -67,6 +67,19 @@ export type LeadPayload = {
   viewedListingIds?: string[];
 };
 
+export type CaptureCopy = { headline: string; sub: string };
+
+// Options for opening the capture overlay. Without them it's the classic Buy/Sell/Rent
+// typeform; with `contactOnly` it skips the questions and goes straight to contact (D9 favorites).
+export type CaptureOpts = {
+  initialAnswers?: Answers;
+  source?: LeadSource;
+  viewedListingIds?: string[];
+  contactOnly?: boolean;
+  copy?: CaptureCopy;
+  onSubmitted?: () => void;
+};
+
 /** Shape the POST /api/leads body. Consent is granted per channel the user actually provided. */
 export function buildLeadPayload(args: {
   intent: Intent;

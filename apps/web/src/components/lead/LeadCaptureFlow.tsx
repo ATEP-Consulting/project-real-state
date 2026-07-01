@@ -13,8 +13,10 @@ import {
   progressPct,
   validateContact,
   type Answers,
+  type CaptureCopy,
   type ContactInput,
   type Intent,
+  type LeadSource,
   type Step,
 } from "@/lib/lead-capture";
 import styles from "./LeadCaptureFlow.module.css";
@@ -119,12 +121,20 @@ export function LeadCaptureFlow({
   questions,
   initialAnswers = {},
   landingPath,
+  source,
+  viewedListingIds,
+  copy,
+  onSubmitted,
   onClose,
 }: {
   intent: Intent;
   questions: QualificationQuestionConfig[];
   initialAnswers?: Answers;
   landingPath: string;
+  source?: LeadSource;
+  viewedListingIds?: string[];
+  copy?: CaptureCopy;
+  onSubmitted?: () => void;
   onClose?: () => void;
 }) {
   const reduce = useReducedMotion();
@@ -151,6 +161,7 @@ export function LeadCaptureFlow({
   const [err, setErr] = useState<string | null>(null);
 
   const step = steps[i]!;
+  const contactOnly = steps.length === 1 && step.kind === "contact";
   const isLast = step.kind === "contact";
   const setAnswer = (key: string, v: unknown) => setAnswers((a) => ({ ...a, [key]: v }));
 
@@ -185,10 +196,13 @@ export function LeadCaptureFlow({
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(buildLeadPayload({ intent, answers, contact, landingPath })),
+        body: JSON.stringify(
+          buildLeadPayload({ intent, answers, contact, landingPath, source, viewedListingIds }),
+        ),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus("done");
+      onSubmitted?.();
     } catch {
       setStatus("error");
       setErr("Something went wrong. Please try again or call us.");
@@ -237,12 +251,19 @@ export function LeadCaptureFlow({
           </button>
         </div>
       )}
-      <div className={styles.progressTrack} aria-hidden="true">
-        <div className={styles.progressBar} style={{ width: `${progressPct(i, steps.length)}%` }} />
-      </div>
-      <p className={styles.stepCount}>
-        {HEADLINE[intent]} · step {i + 1} of {steps.length}
-      </p>
+      {!contactOnly && (
+        <>
+          <div className={styles.progressTrack} aria-hidden="true">
+            <div
+              className={styles.progressBar}
+              style={{ width: `${progressPct(i, steps.length)}%` }}
+            />
+          </div>
+          <p className={styles.stepCount}>
+            {HEADLINE[intent]} · step {i + 1} of {steps.length}
+          </p>
+        </>
+      )}
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={i} className={styles.stepBody} {...anim}>
@@ -268,7 +289,8 @@ export function LeadCaptureFlow({
               }}
               noValidate
             >
-              <h2 className={styles.q}>How should Nilyan reach you?</h2>
+              <h2 className={styles.q}>{copy ? copy.headline : "How should Nilyan reach you?"}</h2>
+              {copy && <p className={styles.lede}>{copy.sub}</p>}
               <input
                 className={styles.input}
                 aria-label="Your name"

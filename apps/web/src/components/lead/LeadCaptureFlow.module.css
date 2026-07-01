@@ -154,6 +154,12 @@
   accent-color: var(--color-bronze);
   flex-shrink: 0;
 }
+.lede {
+  margin: 6px 0 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-stone);
+}
 .fine {
   margin: 0;
   font-family: var(--font-sans), system-ui, sans-serif;

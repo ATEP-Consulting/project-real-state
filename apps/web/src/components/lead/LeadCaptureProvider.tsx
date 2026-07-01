@@ -13,10 +13,10 @@ import type { QualificationQuestionConfig } from "@herrera/db";
 import { DURATION, EASE } from "@/theme/motion";
 import { LeadCaptureFlow } from "./LeadCaptureFlow";
 import { FlowSkeleton } from "./FlowSkeleton";
-import type { Answers, Intent } from "@/lib/lead-capture";
+import type { Answers, CaptureOpts, Intent } from "@/lib/lead-capture";
 import styles from "./LeadCaptureProvider.module.css";
 
-type Ctx = { openCapture: (intent: Intent, opts?: { initialAnswers?: Answers }) => void };
+type Ctx = { openCapture: (intent: Intent, opts?: CaptureOpts) => void };
 const LeadCaptureContext = createContext<Ctx | null>(null);
 
 export function useLeadCapture(): Ctx {
@@ -34,21 +34,24 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const [intent, setIntent] = useState<Intent | null>(null);
   const [initialAnswers, setInitialAnswers] = useState<Answers>({});
+  const [captureOpts, setCaptureOpts] = useState<CaptureOpts>({});
   const [loaded, setLoaded] = useState<Loaded>({ state: "loading" });
 
   const sheetRef = useRef<HTMLDivElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
 
-  const openCapture = useCallback<Ctx["openCapture"]>((i, opts) => {
+  const openCapture = useCallback<Ctx["openCapture"]>((i, opts = {}) => {
     setIntent(i);
-    setInitialAnswers(opts?.initialAnswers ?? {});
-    setLoaded({ state: "loading" });
+    setInitialAnswers(opts.initialAnswers ?? {});
+    setCaptureOpts(opts);
+    // Contact-only skips the /api/questions round-trip entirely — go straight to ready.
+    setLoaded(opts.contactOnly ? { state: "ready", questions: [] } : { state: "loading" });
   }, []);
   const close = useCallback(() => setIntent(null), []);
 
   // Fetch the question set for the chosen intent when the overlay opens.
   useEffect(() => {
-    if (!intent) return;
+    if (!intent || captureOpts.contactOnly) return;
     let alive = true;
     fetch(`/api/questions?intent=${intent}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -61,7 +64,7 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
     return () => {
       alive = false;
     };
-  }, [intent]);
+  }, [intent, captureOpts.contactOnly]);
 
   // Esc to close + lock body scroll while open.
   useEffect(() => {
@@ -183,7 +186,11 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
                   intent={intent}
                   questions={loaded.questions}
                   initialAnswers={initialAnswers}
-                  landingPath={`/${intent}`}
+                  landingPath={captureOpts.source === "favorites" ? "/favorites" : `/${intent}`}
+                  source={captureOpts.source}
+                  viewedListingIds={captureOpts.viewedListingIds}
+                  copy={captureOpts.copy}
+                  onSubmitted={captureOpts.onSubmitted}
                   onClose={close}
                 />
               )}
