@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { FOOTER_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
+import { BrandMark } from "@/components/brand/BrandMark";
 import { EqualHousingLogo } from "./EqualHousingLogo";
 import styles from "./Footer.module.css";
 
@@ -14,10 +15,11 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <span className={styles.brandRow}>
-              <span className={styles.monogram} aria-hidden="true">
-                {REALTOR.monogram}
+              <BrandMark size={34} variant="onDark" className={styles.mark} />
+              <span className={styles.nameCol}>
+                <span className={styles.wordmark}>HERRERA</span>
+                <span className={styles.kicker}>{REALTOR.tagline}</span>
               </span>
-              <span className={styles.wordmark}>HERRERA</span>
             </span>
             <p className={styles.tagline}>{REALTOR.bioShort}</p>
             <a className={styles.phone} href={TEL}>

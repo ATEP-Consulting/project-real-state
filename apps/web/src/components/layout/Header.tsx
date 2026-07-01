@@ -5,6 +5,7 @@ import { PRIMARY_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
 import { useScrolled } from "./useScrolled";
 import { FavoritesNavButton } from "@/components/favorites/FavoritesNavButton";
+import { BrandMark } from "@/components/brand/BrandMark";
 import styles from "./Header.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
@@ -62,9 +63,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
       <Container>
         <div className={styles.bar}>
           <Link href="/" className={styles.brand} aria-label={`${REALTOR.name} — home`}>
-            <span className={styles.monogram} aria-hidden="true">
-              {REALTOR.monogram}
-            </span>
+            <BrandMark size={36} className={styles.mark} />
             <span className={styles.wordmark}>{REALTOR.name}</span>
           </Link>
 

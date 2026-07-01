@@ -15,20 +15,16 @@
 .brandRow {
   display: inline-flex;
   align-items: center;
+  gap: 12px;
 }
-.monogram {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  margin-right: 12px;
-  border: 1px solid var(--color-bronze);
-  border-radius: 50%;
-  color: var(--color-bronze-light);
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 13px;
-  letter-spacing: 0.04em;
+.mark {
+  display: block;
+  flex: none;
+}
+.nameCol {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
 }
 .wordmark {
   font-family: var(--font-serif), Georgia, serif;
@@ -36,6 +32,15 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   color: #fff;
+}
+.kicker {
+  margin-top: 6px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-bronze-light);
 }
 .tagline {
   margin: 16px 0 0;

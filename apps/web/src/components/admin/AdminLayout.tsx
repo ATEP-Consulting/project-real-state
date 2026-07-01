@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import type { ReactNode } from "react";
+import { BrandMark } from "@/components/brand/BrandMark";
 import styles from "./AdminLayout.module.css";
 
 const NAV = [
@@ -23,7 +24,7 @@ export function AdminLayout({ title, children }: { title: string; children: Reac
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div className={styles.brand}>
-            <span className={styles.monogram}>NH</span>
+            <BrandMark size={30} variant="onLight" className={styles.mark} />
             <span className={styles.word}>HERRERA</span>
             <span className={styles.tag}>admin</span>
           </div>
