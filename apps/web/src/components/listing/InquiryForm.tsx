@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { StarRating } from "@/components/ui/StarRating";
+import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
 import styles from "./InquiryForm.module.css";
 
@@ -56,6 +57,7 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
           message: String(fd.get("message") ?? "").trim() || undefined,
           consentEmail: Boolean(email),
           consentPhone: Boolean(phone),
+          consentMarketing: fd.get("marketing") === "on",
           attribution: { landingPath: `/homes/${slug}` },
         }),
       });
@@ -110,6 +112,10 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         <span>
           I agree to be contacted by Herrera about this property using the details I provided.
         </span>
+      </label>
+      <label className={styles.consent}>
+        <input type="checkbox" name="marketing" />
+        <span>{MARKETING_CONSENT_LABEL}</span>
       </label>
       {err && (
         <p className={styles.err} role="alert">

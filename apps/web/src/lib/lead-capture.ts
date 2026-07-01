@@ -35,7 +35,13 @@ export function progressPct(stepIndex: number, totalSteps: number): number {
   return Math.round((stepIndex / totalSteps) * 100);
 }
 
-export type ContactInput = { name?: string; email?: string; phone?: string; consent: boolean };
+export type ContactInput = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  consent: boolean;
+  marketing?: boolean; // ADR-020 — optional marketing opt-in (unchecked by default)
+};
 
 /** Client mirror of the D4 contact rule. Returns an error message, or null when valid. */
 export function validateContact(c: ContactInput): string | null {
@@ -54,6 +60,7 @@ export type LeadPayload = {
   phone?: string;
   consentEmail: boolean;
   consentPhone: boolean;
+  consentMarketing: boolean;
   attribution: { landingPath: string };
 };
 
@@ -75,6 +82,7 @@ export function buildLeadPayload(args: {
     phone: phone || undefined,
     consentEmail: Boolean(email),
     consentPhone: Boolean(phone),
+    consentMarketing: Boolean(args.contact.marketing),
     attribution: { landingPath: args.landingPath },
   };
 }

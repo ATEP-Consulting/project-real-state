@@ -3,6 +3,7 @@ import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
 import styles from "./Contact.module.css";
 
@@ -21,6 +22,7 @@ export default function ContactPage() {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [consent, setConsent] = useState(false);
+  const [marketing, setMarketing] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
 
   const hasContact = Boolean(email.trim() || phone.trim());
@@ -42,6 +44,7 @@ export default function ContactPage() {
           message: message.trim() || undefined,
           consentEmail: consent && Boolean(email.trim()),
           consentPhone: consent && Boolean(phone.trim()),
+          consentMarketing: marketing,
         }),
       });
       setStatus(res.ok ? "done" : "error");
@@ -178,6 +181,14 @@ export default function ContactPage() {
                   onChange={(e) => setConsent(e.target.checked)}
                 />
                 <span>I agree to be contacted about my enquiry.</span>
+              </label>
+              <label className={styles.consent}>
+                <input
+                  type="checkbox"
+                  checked={marketing}
+                  onChange={(e) => setMarketing(e.target.checked)}
+                />
+                <span>{MARKETING_CONSENT_LABEL}</span>
               </label>
 
               {status === "error" && (

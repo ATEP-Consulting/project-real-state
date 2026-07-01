@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { QualificationQuestionConfig } from "@herrera/db";
 import { Button } from "@/components/ui/Button";
+import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
 import { DURATION, EASE } from "@/theme/motion";
 import {
@@ -304,6 +305,14 @@ export function LeadCaptureFlow({
                   I agree to be contacted by Herrera about my real estate needs using the details I
                   provided.
                 </span>
+              </label>
+              <label className={styles.consent}>
+                <input
+                  type="checkbox"
+                  checked={contact.marketing ?? false}
+                  onChange={(e) => setContact((c) => ({ ...c, marketing: e.target.checked }))}
+                />
+                <span>{MARKETING_CONSENT_LABEL}</span>
               </label>
               <p className={styles.fine}>
                 No obligation — phone <em>or</em> email is enough; you don&rsquo;t need both.

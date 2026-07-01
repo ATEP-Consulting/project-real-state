@@ -98,7 +98,17 @@ describe("buildLeadPayload", () => {
       phone: undefined,
       consentEmail: true,
       consentPhone: false,
+      consentMarketing: false,
       attribution: { landingPath: "/sell" },
     });
+  });
+  it("carries the optional marketing opt-in when ticked (defaults false)", () => {
+    const opted = buildLeadPayload({
+      intent: "buy",
+      answers: {},
+      contact: { email: "a@b.com", consent: true, marketing: true },
+      landingPath: "/buy",
+    });
+    expect(opted.consentMarketing).toBe(true);
   });
 });

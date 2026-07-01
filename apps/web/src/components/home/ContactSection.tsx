@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
+import { MARKETING_CONSENT_LABEL } from "@/lib/consent";
 import { REALTOR } from "@/data/realtor";
 import styles from "./ContactSection.module.css";
 
@@ -44,6 +45,7 @@ export function ContactSection() {
           message: message || undefined,
           consentEmail: consent && Boolean(email),
           consentPhone: consent && Boolean(phone),
+          consentMarketing: fd.get("marketing") === "on",
         }),
       });
       setStatus(res.ok ? "done" : "error");
@@ -197,6 +199,10 @@ export function ContactSection() {
               <label className={styles.consent}>
                 <input type="checkbox" name="consent" />
                 <span>I agree to the privacy policy and to be contacted about my enquiry.</span>
+              </label>
+              <label className={styles.consent}>
+                <input type="checkbox" name="marketing" />
+                <span>{MARKETING_CONSENT_LABEL}</span>
               </label>
 
               {status === "done" ? (
