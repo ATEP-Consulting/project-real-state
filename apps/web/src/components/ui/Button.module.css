@@ -27,7 +27,6 @@
 .primary {
   background: var(--color-bronze);
   color: #fff;
-  box-shadow: var(--shadow-bronze);
 }
 .primary:hover {
   background: var(--color-bronze-dark);

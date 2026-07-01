@@ -5,6 +5,8 @@ import { getGuideBySlug, getPublishedGuides, type GuideDetail } from "@herrera/d
 import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
+import { PageHero } from "@/components/marketing/PageHero";
+import { CallCta } from "@/components/marketing/CallCta";
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import styles from "./Guide.module.css";
 
@@ -37,7 +39,7 @@ export default function GuideArticle({ guide }: Props) {
   const path = `/guides/${guide.slug}`;
   const description = guide.metaDescription ?? guide.excerpt ?? guide.title;
   return (
-    <SiteLayout>
+    <SiteLayout transparentHeader>
       <Seo
         title={guide.metaTitle ?? `${guide.title} — Herrera`}
         description={description}
@@ -58,30 +60,34 @@ export default function GuideArticle({ guide }: Props) {
           ]),
         ]}
       />
+      <PageHero
+        image={guide.heroImageUrl ?? undefined}
+        eyebrow="Guide"
+        title={guide.title}
+        lede={guide.excerpt ?? undefined}
+      />
+
       <article className={styles.article}>
         <Container>
-          <Link href="/guides" className={styles.back}>
-            ← All guides
-          </Link>
-          <h1 className={styles.h1}>{guide.title}</h1>
-          {guide.excerpt && <p className={styles.lede}>{guide.excerpt}</p>}
-          {guide.heroImageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className={styles.hero} src={guide.heroImageUrl} alt="" />
-          )}
-          {/* Markdown body — react-markdown renders to React elements and ignores raw HTML by
-              default (no rehype-raw), so authored content can't inject markup. */}
-          <div className={styles.body}>
-            <ReactMarkdown>{guide.body ?? ""}</ReactMarkdown>
-          </div>
-          <div className={styles.cta}>
-            <p className={styles.ctaText}>Thinking about a move in Florida?</p>
-            <Link href="/contact" className={styles.ctaBtn}>
-              Talk to Nilyan
+          <div className={styles.prose}>
+            <Link href="/guides" className={styles.back}>
+              ← All guides
             </Link>
+            {/* Markdown body — react-markdown ignores raw HTML by default (no rehype-raw),
+                so authored content can't inject markup. */}
+            <div className={styles.body}>
+              <ReactMarkdown>{guide.body ?? ""}</ReactMarkdown>
+            </div>
           </div>
         </Container>
       </article>
+
+      <CallCta
+        title="Thinking about a move in Florida?"
+        text="Nilyan can walk you through it, no pressure."
+        secondaryLabel="Send a message"
+        secondaryHref="/contact"
+      />
     </SiteLayout>
   );
 }

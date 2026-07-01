@@ -1,29 +1,15 @@
-.head {
-  max-width: 640px;
-  margin: clamp(32px, 6vw, 72px) 0 clamp(24px, 4vw, 40px);
-}
-.h1 {
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(30px, 5vw, 46px);
-  color: var(--color-forest);
-  margin: 8px 0 12px;
-}
-.lede {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--color-ink-soft);
-  margin: 0;
+.listSection {
+  padding-block: clamp(48px, 8vw, 80px);
+  background: var(--color-paper);
 }
 .empty {
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--color-stone);
-  padding: 24px 0 80px;
+  padding: 8px 0;
 }
 .grid {
   list-style: none;
-  margin: 0 0 clamp(48px, 8vw, 96px);
+  margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -38,19 +24,31 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   text-decoration: none;
-  transition: box-shadow 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard);
 }
 .card:hover {
-  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.08));
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+.cardImgWrap {
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
 }
 .cardImg {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform var(--dur-reveal) var(--ease-standard);
+}
+.card:hover .cardImg {
+  transform: scale(1.05);
 }
 .cardBody {
-  padding: 18px 20px 22px;
+  padding: 20px 22px 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -58,23 +56,37 @@
 }
 .cardTitle {
   font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
-  font-size: 21px;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.15;
   color: var(--color-forest);
   margin: 0;
 }
 .cardExcerpt {
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.55;
-  color: var(--color-stone);
+  color: var(--color-ink-soft);
   margin: 0;
 }
 .cardMore {
   margin-top: auto;
-  padding-top: 8px;
+  padding-top: 10px;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-bronze-dark);
+  color: var(--color-bronze);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardImg {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
+  .card:hover .cardImg {
+    transform: none;
+  }
 }

@@ -1,25 +1,52 @@
 .section {
-  padding-block: 80px;
-  background: var(--color-sand-100);
+  padding-block: clamp(56px, 8vw, 88px);
+  background: var(--color-paper);
+}
+
+/* Forest panel: makes the contact block stand out from the cream sections
+   above and floats on the page (cream breathing room before the footer). */
+.panel {
+  background: radial-gradient(
+    130% 120% at 50% 0%,
+    #1c3b35 0%,
+    var(--color-forest) 46%,
+    var(--color-forest-900) 100%
+  );
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  padding: clamp(28px, 4vw, 56px);
+  color: #fff;
 }
 .grid {
   display: grid;
   grid-template-columns: 1fr 1.05fr;
-  gap: 56px;
+  gap: clamp(32px, 4vw, 56px);
   align-items: start;
 }
 
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-bronze-light);
+  margin: 0 0 12px;
+}
 .title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.08;
-  margin: 8px 0 0;
+  color: #fff;
+  margin: 0;
 }
 .text {
   margin: 16px 0 28px;
   max-width: 400px;
   font-size: 16px;
   line-height: 1.65;
-  color: var(--color-stone);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .details {
@@ -43,9 +70,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-bronze);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-bronze-light);
   font-size: 16px;
 }
 .dLabel {
@@ -53,13 +80,17 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--color-stone-soft);
+  color: rgba(255, 255, 255, 0.55);
 }
 .dValue {
   display: block;
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-ink);
+  color: #fff;
+  text-decoration: none;
+}
+a.dValue:hover {
+  color: var(--color-bronze-light);
 }
 
 .agentCard {
@@ -67,7 +98,7 @@
   align-items: center;
   gap: 12px;
   padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 .monogram {
   display: inline-flex;
@@ -76,7 +107,8 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--color-forest);
+  background: transparent;
+  border: 1.5px solid var(--color-bronze);
   color: var(--color-bronze-light);
   font-family: var(--font-serif), Georgia, serif;
   font-size: 15px;
@@ -85,23 +117,26 @@
   display: block;
   font-weight: 600;
   font-size: 14.5px;
-  color: var(--color-ink);
+  color: #fff;
 }
 .agentMeta {
   display: block;
   font-size: 12.5px;
-  color: var(--color-stone);
+  color: rgba(255, 255, 255, 0.62);
 }
 
+/* Form: white card, pops on the forest panel. */
 .form {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: clamp(24px, 3vw, 36px);
 }
 .formTitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
   font-size: 24px;
+  color: var(--color-forest);
   margin: 0;
 }
 .formHelp {
@@ -203,7 +238,6 @@
   border-radius: var(--radius-sm);
   padding: 14px;
   cursor: pointer;
-  box-shadow: var(--shadow-bronze);
   transition: background-color var(--dur-base) var(--ease-standard);
 }
 .submit:hover {
@@ -227,6 +261,14 @@
   color: #9a3324;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .input,
+  .textarea,
+  .submit {
+    transition: none;
+  }
+}
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;

@@ -1,0 +1,174 @@
+/* Bio + portrait + stats */
+.bioSection {
+  padding-block: clamp(56px, 8vw, 88px);
+  background: var(--color-paper);
+}
+.bioGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+.photoWrap {
+  position: relative;
+}
+.photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  display: block;
+}
+.stats {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  background: var(--color-forest);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-card);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.statValue {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 24px;
+  color: #fff;
+}
+.statLabel {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.bioHead {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(26px, 3.5vw, 40px);
+  line-height: 1.1;
+  color: var(--color-forest);
+  margin: 0 0 18px;
+  max-width: 22ch;
+}
+.bioText {
+  margin: 0 0 14px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-ink-soft);
+}
+.license {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--color-stone);
+}
+
+/* How I work */
+.valuesSection {
+  padding-block: clamp(56px, 8vw, 80px);
+  background: var(--color-sand-100);
+}
+.valuesTitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(26px, 3.5vw, 38px);
+  line-height: 1.1;
+  color: var(--color-forest);
+  margin: 0 0 clamp(28px, 4vw, 44px);
+}
+.values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+}
+.value {
+  border-top: 1px solid var(--color-border-strong);
+  padding-top: 20px;
+}
+.valueTitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.15;
+  color: var(--color-forest);
+  margin: 0 0 8px;
+}
+.valueBody {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
+  margin: 0;
+  max-width: 34ch;
+}
+
+/* Testimonials */
+.quotesSection {
+  padding-block: clamp(56px, 8vw, 80px);
+  background: var(--color-paper);
+}
+.quotes {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.quote {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.quoteText {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  margin: 12px 0 14px;
+}
+.quoteAuthor {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+}
+.quoteContext {
+  font-weight: 400;
+  color: var(--color-stone);
+}
+
+@media (max-width: 1000px) {
+  .quotes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 900px) {
+  .bioGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+@media (max-width: 760px) {
+  .values {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .value {
+    padding-block: 20px;
+  }
+}
+@media (max-width: 620px) {
+  .quotes {
+    grid-template-columns: 1fr;
+  }
+}
