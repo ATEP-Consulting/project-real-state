@@ -1,81 +1,40 @@
 .article {
-  padding: clamp(24px, 5vw, 56px) 0 clamp(48px, 8vw, 96px);
+  padding-block: clamp(48px, 8vw, 80px);
+  background: var(--color-paper);
+}
+.prose {
+  max-width: 720px;
+  margin: 0 auto;
 }
 .back {
   display: inline-block;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
+  font-weight: 600;
   color: var(--color-stone);
   text-decoration: none;
-  margin-bottom: 16px;
+  margin-bottom: 28px;
+  transition: color var(--dur-fast) var(--ease-standard);
 }
 .back:hover {
-  color: var(--color-forest);
-}
-.h1 {
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(30px, 5vw, 48px);
-  line-height: 1.1;
-  color: var(--color-forest);
-  margin: 0 0 12px;
-  max-width: 760px;
-}
-.lede {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--color-ink-soft);
-  margin: 0 0 24px;
-  max-width: 720px;
-}
-.hero {
-  width: 100%;
-  max-height: 420px;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  display: block;
-  margin-bottom: 32px;
-}
-.body {
-  max-width: 680px;
+  color: var(--color-bronze);
 }
 .body p {
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 17.5px;
+  line-height: 1.75;
   color: var(--color-ink);
-  margin: 0 0 18px;
+  margin: 0 0 20px;
 }
-.cta {
-  max-width: 680px;
-  margin-top: 36px;
-  padding: 24px 28px;
-  background: var(--color-forest);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+/* Lead paragraph, a touch larger and softer. */
+.body p:first-of-type {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--color-ink-soft);
 }
-.ctaText {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 20px;
-  color: #fff;
-  margin: 0;
-}
-.ctaBtn {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-forest);
-  background: #fff;
-  border-radius: var(--radius-pill);
-  padding: 10px 20px;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.ctaBtn:hover {
-  background: var(--color-sand-100);
+
+@media (prefers-reduced-motion: reduce) {
+  .back {
+    transition: none;
+  }
 }

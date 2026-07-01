@@ -32,6 +32,23 @@ function GlobeIcon() {
   );
 }
 
+// EN active, ES muted (Spanish is a Phase-0 follow-up). Shared by the desktop bar
+// and the mobile menu so the language affordance is present in both.
+function LangToggle() {
+  return (
+    <span className={styles.lang} role="group" aria-label="Language">
+      <GlobeIcon />
+      <span className={styles.langOn} aria-current="true">
+        EN
+      </span>
+      <span className={styles.langDivider} aria-hidden="true" />
+      <span className={styles.langMuted} title="Español — próximamente">
+        ES
+      </span>
+    </span>
+  );
+}
+
 export function Header({ transparentOverHero = false }: { transparentOverHero?: boolean }) {
   const scrolled = useScrolled(8);
   const [open, setOpen] = useState(false);
@@ -59,16 +76,7 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
           </nav>
 
           <div className={styles.actions}>
-            <span className={styles.lang} role="group" aria-label="Language">
-              <GlobeIcon />
-              <span className={styles.langOn} aria-current="true">
-                EN
-              </span>
-              <span className={styles.langDivider} aria-hidden="true" />
-              <span className={styles.langMuted} title="Español — próximamente">
-                ES
-              </span>
-            </span>
+            <LangToggle />
             <a className={styles.phone} href={TEL}>
               {REALTOR.phone}
             </a>
@@ -107,6 +115,9 @@ export function Header({ transparentOverHero = false }: { transparentOverHero?: 
           <a className={styles.mobileLink} href={TEL} onClick={() => setOpen(false)}>
             {REALTOR.phone}
           </a>
+          <div className={styles.mobileLang}>
+            <LangToggle />
+          </div>
           <Link href="/contact" className={styles.mobileContact} onClick={() => setOpen(false)}>
             Contact
           </Link>
