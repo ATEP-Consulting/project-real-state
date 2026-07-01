@@ -40,12 +40,43 @@
 .body {
   max-width: 680px;
 }
-.body p {
+.body p,
+.body li {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.7;
   color: var(--color-ink);
+  margin: 0 0 12px;
+}
+.body h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--color-forest);
+  margin: 32px 0 12px;
+}
+.body h3 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-forest);
+  margin: 24px 0 8px;
+}
+.body ul,
+.body ol {
   margin: 0 0 18px;
+  padding-left: 22px;
+}
+.body li {
+  margin: 0 0 6px;
+}
+.body strong {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.body a {
+  color: var(--color-bronze-dark);
+  font-weight: 600;
 }
 .cta {
   max-width: 680px;

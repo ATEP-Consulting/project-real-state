@@ -1,5 +1,6 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import { getGuideBySlug, getPublishedGuides, type GuideDetail } from "@herrera/db";
 import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -35,7 +36,6 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 export default function GuideArticle({ guide }: Props) {
   const path = `/guides/${guide.slug}`;
   const description = guide.metaDescription ?? guide.excerpt ?? guide.title;
-  const paragraphs = (guide.body ?? "").split(/\n\n+/).filter(Boolean);
   return (
     <SiteLayout>
       <Seo
@@ -69,10 +69,10 @@ export default function GuideArticle({ guide }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img className={styles.hero} src={guide.heroImageUrl} alt="" />
           )}
+          {/* Markdown body — react-markdown renders to React elements and ignores raw HTML by
+              default (no rehype-raw), so authored content can't inject markup. */}
           <div className={styles.body}>
-            {paragraphs.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+            <ReactMarkdown>{guide.body ?? ""}</ReactMarkdown>
           </div>
           <div className={styles.cta}>
             <p className={styles.ctaText}>Thinking about a move in Florida?</p>
