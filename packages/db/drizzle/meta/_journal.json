@@ -15,6 +15,13 @@
       "when": 1782811827710,
       "tag": "0001_slow_expediter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782896136861,
+      "tag": "0002_closed_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }

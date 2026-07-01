@@ -5,6 +5,9 @@ import type { Attribution } from "./schema/json";
 
 export type LeadIntent = "buy" | "sell" | "rent";
 
+// ADR-020 — the marketing opt-in wording (email-scoped). One source of truth.
+export const MARKETING_WORDING = "I'd like to receive news and new listings from Herrera by email.";
+
 export type CreateLeadInput = {
   intent: LeadIntent;
   name?: string | null;
@@ -17,6 +20,10 @@ export type CreateLeadInput = {
   consentEmail?: boolean;
   consentPhone?: boolean;
   consentWording: string;
+  // ADR-020 — optional marketing opt-in (email-scoped). When an email is present we ALWAYS
+  // record a marketing row: granted = true if opted in, false otherwise (auditable, never omitted).
+  consentMarketing?: boolean;
+  marketingWording?: string;
 };
 
 /**
@@ -42,10 +49,12 @@ export async function createLeadWithConsent(input: CreateLeadInput): Promise<{ l
   const leadId = inserted[0]!.id;
 
   const consents: NewConsentRecord[] = [];
+  // Transactional / contact consent (required per channel provided).
   if (input.email && input.consentEmail)
     consents.push({
       leadId,
       channel: "email",
+      purpose: "transactional",
       granted: true,
       wording: input.consentWording,
       source: input.source,
@@ -54,8 +63,20 @@ export async function createLeadWithConsent(input: CreateLeadInput): Promise<{ l
     consents.push({
       leadId,
       channel: "phone",
+      purpose: "transactional",
       granted: true,
       wording: input.consentWording,
+      source: input.source,
+    });
+  // Marketing opt-in (ADR-020) — email-scoped; always recorded when an email is present,
+  // granted = true only if the (optional, unchecked-by-default) box was ticked.
+  if (input.email)
+    consents.push({
+      leadId,
+      channel: "email",
+      purpose: "marketing",
+      granted: input.consentMarketing === true,
+      wording: input.marketingWording ?? MARKETING_WORDING,
       source: input.source,
     });
   if (consents.length) await db.insert(consentRecords).values(consents);

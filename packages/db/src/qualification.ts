@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "./client";
-import { createLeadWithConsent } from "./leads-create";
+import { createLeadWithConsent, MARKETING_WORDING } from "./leads-create";
 import { attributionSchema, qualificationAnswersSchema } from "./schema/json";
 import {
   qualificationQuestions,
@@ -18,6 +18,7 @@ export const qualificationLeadSchema = z
     phone: z.string().trim().min(7).max(40).optional(),
     consentEmail: z.boolean().optional(),
     consentPhone: z.boolean().optional(),
+    consentMarketing: z.boolean().optional(),
     attribution: attributionSchema.optional(),
     viewedListingIds: z.array(z.string()).optional(),
   })
@@ -46,7 +47,9 @@ export async function createQualificationLead(
     viewedListingIds: input.viewedListingIds ?? [],
     consentEmail: input.email ? input.consentEmail : false,
     consentPhone: input.phone ? input.consentPhone : false,
+    consentMarketing: input.consentMarketing,
     consentWording: CONSENT_WORDING,
+    marketingWording: MARKETING_WORDING,
   });
 }
 

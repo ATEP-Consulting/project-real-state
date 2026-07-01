@@ -1,0 +1,2 @@
+CREATE TYPE "public"."consent_purpose" AS ENUM('transactional', 'marketing');--> statement-breakpoint
+ALTER TABLE "consent_records" ADD COLUMN "purpose" "consent_purpose" DEFAULT 'transactional' NOT NULL;

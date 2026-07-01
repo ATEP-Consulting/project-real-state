@@ -1,6 +1,6 @@
 import { boolean, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { contactChannel } from "./enums";
+import { consentPurpose, contactChannel } from "./enums";
 import { leads } from "./leads";
 
 // ADR-011 — immutable per-channel consent record (what was agreed, when, the wording shown, source)
@@ -12,6 +12,8 @@ export const consentRecords = pgTable(
       .notNull()
       .references(() => leads.id, { onDelete: "cascade" }),
     channel: contactChannel("channel").notNull(),
+    // ADR-020 — transactional (default; existing rows) vs marketing opt-in
+    purpose: consentPurpose("purpose").notNull().default("transactional"),
     granted: boolean("granted").notNull(),
     wording: text("wording").notNull(),
     source: text("source"),

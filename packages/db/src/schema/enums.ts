@@ -35,6 +35,10 @@ export const leadStatus = pgEnum("lead_status", [
 // ADR-011 — per-channel consent + suppression share one channel enum
 export const contactChannel = pgEnum("contact_channel", ["email", "phone", "sms", "whatsapp"]);
 
+// ADR-011/020 — consent purpose: transactional (reply to this enquiry, required) vs
+// marketing (optional opt-in gating Phase 2 campaigns). Existing rows are transactional.
+export const consentPurpose = pgEnum("consent_purpose", ["transactional", "marketing"]);
+
 // ADR-008 — CRM activities
 export const activityType = pgEnum("activity_type", [
   "call",

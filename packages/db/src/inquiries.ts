@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attributionSchema } from "./schema/json";
-import { createLeadWithConsent } from "./leads-create";
+import { createLeadWithConsent, MARKETING_WORDING } from "./leads-create";
 
 export const listingInquirySchema = z
   .object({
@@ -13,6 +13,7 @@ export const listingInquirySchema = z
     preferredDate: z.string().trim().max(40).optional(),
     consentEmail: z.boolean().optional(),
     consentPhone: z.boolean().optional(),
+    consentMarketing: z.boolean().optional(),
     attribution: attributionSchema.optional(),
   })
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
@@ -43,6 +44,8 @@ export async function createListingInquiry(input: ListingInquiry): Promise<{ lea
     viewedListingIds: [input.listingSlug],
     consentEmail: input.email ? input.consentEmail : false,
     consentPhone: input.phone ? input.consentPhone : false,
+    consentMarketing: input.consentMarketing,
     consentWording: CONSENT_WORDING,
+    marketingWording: MARKETING_WORDING,
   });
 }
