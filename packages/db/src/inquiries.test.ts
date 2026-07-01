@@ -12,12 +12,24 @@ describe("listingInquirySchema", () => {
     if (r.success) expect(r.data.requestType).toBe("info"); // default
   });
   it("accepts an inquiry with just a phone", () => {
-    expect(listingInquirySchema.safeParse({ listingSlug: "x", phone: "3055550148" }).success).toBe(
-      true,
-    );
+    expect(
+      listingInquirySchema.safeParse({
+        listingSlug: "x",
+        phone: "3055550148",
+        consentPhone: true,
+      }).success,
+    ).toBe(true);
   });
   it("rejects an inquiry with neither email nor phone", () => {
     expect(listingInquirySchema.safeParse({ listingSlug: "x", message: "hi" }).success).toBe(false);
+  });
+  it("rejects an inquiry that provides a channel but no consent", () => {
+    expect(listingInquirySchema.safeParse({ listingSlug: "x", email: "a@b.com" }).success).toBe(
+      false,
+    );
+    expect(listingInquirySchema.safeParse({ listingSlug: "x", phone: "3055550148" }).success).toBe(
+      false,
+    );
   });
   it("rejects a missing listingSlug and a bad email", () => {
     expect(listingInquirySchema.safeParse({ email: "a@b.com" }).success).toBe(false);

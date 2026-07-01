@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "./client";
-import { createLeadWithConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
 import { qualificationConsentWording, marketingConsentWording } from "./consent-wording";
 import { attributionSchema, qualificationAnswersSchema } from "./schema/json";
 import {
@@ -30,6 +30,10 @@ export const qualificationLeadSchema = z
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or phone (at least one).",
     path: ["email"],
+  })
+  .refine(hasTransactionalConsent, {
+    message: "Consent to be contacted is required.",
+    path: ["consentEmail"],
   });
 
 export type QualificationLead = z.infer<typeof qualificationLeadSchema>;
