@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Spectral, Hanken_Grotesk } from "next/font/google";
 import { DemoBanner } from "@/components/DemoBanner";
 import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
+import { FavoritesProvider } from "@/components/favorites/FavoritesProvider";
 import "@/styles/globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -33,11 +34,13 @@ export default function App({ Component, pageProps }: AppProps) {
         </Head>
       )}
       <LeadCaptureProvider>
-        {/* EXPERIMENT: PageTransition temporarily disabled to isolate the client-nav
-            FOUC (whole-page unstyled ~500ms on navigation). If the flash disappears in
-            production with this off, framer-motion's AnimatePresence wrapper was
-            desyncing Next's route-CSS swap. Re-enable by restoring <PageTransition>. */}
-        <Component {...pageProps} />
+        <FavoritesProvider>
+          {/* EXPERIMENT: PageTransition temporarily disabled to isolate the client-nav
+              FOUC (whole-page unstyled ~500ms on navigation). If the flash disappears in
+              production with this off, framer-motion's AnimatePresence wrapper was
+              desyncing Next's route-CSS swap. Re-enable by restoring <PageTransition>. */}
+          <Component {...pageProps} />
+        </FavoritesProvider>
       </LeadCaptureProvider>
       {isDemo && <DemoBanner />}
     </div>
