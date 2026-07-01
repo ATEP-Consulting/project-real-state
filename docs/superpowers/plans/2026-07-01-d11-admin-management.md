@@ -21,7 +21,7 @@
 - **Marketing:** `packages/db/src/schema/enums.ts` (+`consentPurpose`), `packages/db/src/schema/consent.ts` (+`purpose` col), generated migration in `packages/db/drizzle/`; `packages/db/src/leads-create.ts` (+marketing row); `packages/db/src/inquiries.ts` + `qualification.ts` + `contact.ts` (+`consentMarketing`); forms `apps/web/src/components/listing/InquiryForm.tsx`, `apps/web/src/components/lead/LeadCaptureFlow.tsx`, `apps/web/src/components/home/ContactSection.tsx`, `apps/web/src/pages/contact.tsx` + a shared `MARKETING_CONSENT_LABEL` const.
 - **Questions:** `packages/db/src/admin-questions.ts` (+test), API `apps/web/src/pages/api/admin/questions/index.ts` + `[id].ts` + `reorder.ts`, page `apps/web/src/pages/admin/questions/index.tsx` (+`.module.css`).
 - **Off-market:** `packages/db/src/admin-listings.ts` (+test), API `apps/web/src/pages/api/admin/listings/index.ts` + `[id].ts`, pages `apps/web/src/pages/admin/listings/index.tsx` + `new.tsx` + `[id].tsx` (+`.module.css`).
-- **Guides:** `packages/db/src/admin-content.ts` (+test), API `apps/web/src/pages/api/admin/content/index.ts` + `[id].ts`, pages `apps/web/src/pages/admin/content/index.tsx` + `new.tsx` + `[id].tsx` (+`.module.css`).
+- **Guides:** `packages/db/src/admin-content.ts` (+test), API `apps/web/src/pages/api/admin/content/index.ts` + `[id].ts`, pages `apps/web/src/pages/admin/content/index.tsx` + `new.tsx` + `[id].tsx` (+`.module.css`); guide **body is Markdown**, rendered on `apps/web/src/pages/guides/[slug].tsx` via **`react-markdown`** (safe-by-default — raw HTML NOT enabled, so no injection).
 - **Shared:** `apps/web/src/components/admin/AdminLayout.tsx` (nav +3 links), `apps/web/src/components/admin/AdminForm.module.css` (shared inputs/buttons/table), `apps/web/src/lib/slug.ts` (reuse `slugify` from D12).
 
 ---
@@ -242,9 +242,10 @@ describe("guideUpsertSchema", () => {
 
 - [ ] **Step 1 (API):** `index.ts` POST → `createGuide`; `[id].ts` PATCH → `updateGuide`, DELETE → `deleteGuide`; a `?action=publish|unpublish` POST → `setGuidePublished`. All `withAdminApi`.
 - [ ] **Step 2 (list page):** `/admin/content` — SSR `listAdminGuides`; table (title, slug, **status** chip draft/published, updated) + edit links + "New guide" + publish/unpublish toggle + delete + a "View" link to `/guides/[slug]` for published.
-- [ ] **Step 3 (forms):** `new.tsx` + `[id].tsx` share a form (title, slug (optional; hint auto from title), excerpt, hero image URL, meta title/description, **body** `<textarea>`, status) → POST/PATCH, redirect to `/admin/content`.
-- [ ] **Step 4:** `pnpm --filter @herrera/web typecheck`; lint.
-- [ ] **Step 5: commit** — `feat(web): /admin/content guides editor (CRUD, publish/unpublish) (D11)`.
+- [ ] **Step 3 (forms):** `new.tsx` + `[id].tsx` share a form (title, slug (optional; hint auto from title), excerpt, hero image URL, meta title/description, **body = Markdown `<textarea>`** with a hint *"Markdown: `## heading`, `**bold**`, `- list`"*, status) → POST/PATCH, redirect to `/admin/content`. Body stays a plain markdown string in `content.body` (the D12 seeded guides are already valid markdown prose).
+- [ ] **Step 4 (render markdown on the public guide):** `pnpm --filter @herrera/web add react-markdown`. In `apps/web/src/pages/guides/[slug].tsx` replace the current `body.split(/\n\n+/) → <p>` block with `<ReactMarkdown>{guide.body ?? ""}</ReactMarkdown>` inside the `.body` container. **Do NOT** add `rehype-raw` / `allowDangerousHtml` — react-markdown ignores raw HTML by default, so authored content can't inject markup (sanitized by construction; no `dangerouslySetInnerHTML`). Adjust `.body` CSS so react-markdown's `h2/ul/ol/li/strong/a/p` render on-brand (the existing `.body p` rule stays; add `h2/ul/li` rules).
+- [ ] **Step 5:** `pnpm --filter @herrera/web typecheck`; lint; quick headless check that a seeded guide with `## `/`**` renders formatted (also re-checked in Task 9).
+- [ ] **Step 6: commit** — `feat(web): /admin/content guides editor (Markdown body, CRUD, publish/unpublish) (D11)`.
 
 ---
 
@@ -255,6 +256,15 @@ describe("guideUpsertSchema", () => {
 - [ ] **Step 1:** full gates — `format:check`, `lint`, `typecheck`, web-typecheck, `test`.
 - [ ] **Step 2:** headless (Chrome, gate `demo:secret123` + admin login): **Questions** — add a question, reorder it, deactivate it, confirm the public Buy flow (`GET /api/questions?intent=buy`) reflects active/order; delete it. **Off-market** — create a `private_link` manual listing, confirm it renders at `/homes/[slug]` but is **absent from `/search`** and the sitemap; flip to `public`; delete. **Guides** — create a draft (absent from `/guides`), publish (appears + in sitemap), unpublish, delete. **Marketing** — submit `/contact` with the box **unticked** then **ticked**; confirm two leads each got a `purpose='marketing'` consent row with `granted=false` then `granted=true` (query the DB or a small check), and the required contact consent still recorded. No page overflow @1440/@390 on the new admin pages. Re-seed afterwards to clean demo state.
 - [ ] **Step 3:** update memory (D11 done on the branch, deferrals intact). STOP — do NOT merge/deploy; await Pablo's review.
+
+## Deferred / documented follow-ups
+- **Visual WYSIWYG editor for guides/blog** — a planned future enhancement for non-technical ease
+  (rich toolbar, inline formatting). **Deferred out of D11** to keep it scoped and to choose the editor
+  library + HTML-sanitization strategy carefully on its own. **Markdown is the interim** authoring
+  format; a future WYSIWYG can **emit markdown**, so the `content.body` format and this editor are not
+  thrown away — the WYSIWYG builds on top. (Also recorded in the memory/status doc.)
+- Analytics, area/neighborhood content editing (D12 Phase A), email campaigns (Phase 2, ADR-020), and
+  the MLS worker (Phase 3) remain out of scope (per Global Constraints).
 
 ## Self-Review
 - **Coverage:** questions editor (T3–T4) ✓; off-market CRUD + 3-state visibility (T5–T6) ✓; guides editor (T7–T8) ✓; marketing opt-in on 4 forms + `purpose` migration + backfill-via-default + core routing (T1–T2) ✓; deferrals recorded (Global Constraints) ✓.
