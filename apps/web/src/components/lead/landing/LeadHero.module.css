@@ -1,0 +1,71 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  /* Sit under the transparent sticky header so the image runs to the very top. */
+  margin-top: calc(-1 * var(--header-h));
+  padding-top: var(--header-h);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+  align-items: center;
+  width: 100%;
+  padding-block: clamp(96px, 12vh, 140px) clamp(48px, 8vh, 96px);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1.05fr 1fr;
+    gap: 56px;
+  }
+}
+
+.intro {
+  max-width: 560px;
+}
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 18px;
+}
+.title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 1.04;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+}
+.lede {
+  margin: 18px 0 0;
+  max-width: 46ch;
+  font-size: clamp(16px, 2.2vw, 19px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.formCard {
+  width: 100%;
+  max-width: 520px;
+  justify-self: end;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+}
+@media (max-width: 899px) {
+  .formCard {
+    justify-self: stretch;
+    margin-inline: auto;
+  }
+}
