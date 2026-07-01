@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Link from "next/link";
+import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import styles from "./ListingTopBar.module.css";
 
-export function ListingTopBar({ title }: { title: string }) {
-  const [saved, setSaved] = useState(false);
+export function ListingTopBar({ title, slug }: { title: string; slug: string }) {
   const [copied, setCopied] = useState(false);
 
   async function onShare() {
@@ -31,15 +31,7 @@ export function ListingTopBar({ title }: { title: string }) {
         <button type="button" className={styles.action} onClick={onShare}>
           {copied ? "Link copied" : "Share"}
         </button>
-        {/* Login-less favorites land in D9; here Save is presentational. */}
-        <button
-          type="button"
-          className={`${styles.action} ${saved ? styles.saved : ""}`}
-          aria-pressed={saved}
-          onClick={() => setSaved((s) => !s)}
-        >
-          <span aria-hidden>{saved ? "♥" : "♡"}</span> {saved ? "Saved" : "Save"}
-        </button>
+        <FavoriteButton slug={slug} variant="bar" />
       </div>
     </div>
   );

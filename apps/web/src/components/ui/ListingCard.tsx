@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { MouseEvent } from "react";
 import type { ListingCardVM } from "@/lib/listing";
+import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import styles from "./ListingCard.module.css";
 
 function PinIcon() {
@@ -14,23 +14,8 @@ function PinIcon() {
   );
 }
 
-function HeartIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path
-        d="M12 20.7 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 1 1 19.4 13L12 20.7Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
-
 export function ListingCard({ listing }: { listing: ListingCardVM }) {
   const meta = [listing.bedsLabel, listing.bathsLabel, listing.sqftLabel].filter(Boolean);
-  // Login-less favorites are wired in D9; here the heart is presentational only.
-  const onFav = (e: MouseEvent) => e.preventDefault();
   return (
     <Link href={listing.href} className={styles.card}>
       <div className={styles.media}>
@@ -42,9 +27,7 @@ export function ListingCard({ listing }: { listing: ListingCardVM }) {
           <div className={styles.placeholder} aria-hidden="true" />
         )}
         {listing.isNew && <span className={styles.badge}>NEW</span>}
-        <button type="button" className={styles.fav} aria-label="Save listing" onClick={onFav}>
-          <HeartIcon />
-        </button>
+        <FavoriteButton slug={listing.slug} />
       </div>
       <div className={styles.body}>
         <p className={styles.price}>{listing.priceLabel}</p>

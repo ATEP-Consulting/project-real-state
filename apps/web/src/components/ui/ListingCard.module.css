@@ -58,30 +58,6 @@
   padding: 4px 9px;
   border-radius: var(--radius-xs);
 }
-.fav {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--color-ink-soft);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(11, 24, 22, 0.18);
-  transition:
-    color var(--dur-fast) var(--ease-standard),
-    background-color var(--dur-fast) var(--ease-standard);
-}
-.fav:hover {
-  color: var(--color-bronze);
-  background: #fff;
-}
-
 .body {
   padding: 16px 18px 18px;
 }

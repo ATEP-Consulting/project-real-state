@@ -1,0 +1,71 @@
+/* card variant — the circular heart overlaid top-right on a listing photo
+   (moved here from ListingCard.module.css .fav, plus a saved state). */
+.card {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(11, 24, 22, 0.18);
+  transition:
+    color var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
+}
+.card:hover {
+  color: var(--color-bronze);
+  background: #fff;
+}
+.cardSaved {
+  color: var(--color-bronze);
+  background: #fff;
+}
+.card:active {
+  transform: scale(0.9);
+}
+
+/* bar variant — the "Save / Saved" pill in the listing detail top bar. Mirrors the
+   existing .action look; saved state goes bronze. */
+.bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
+}
+.bar:hover {
+  color: var(--color-bronze);
+  border-color: var(--color-bronze);
+}
+.barSaved {
+  color: var(--color-bronze);
+  border-color: var(--color-bronze);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .bar {
+    transition: none;
+  }
+  .card:active {
+    transform: none;
+  }
+}

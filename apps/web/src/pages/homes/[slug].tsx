@@ -86,7 +86,7 @@ export default function ListingDetailPage({ vm, similar, jsonLd, canonicalPath }
       />
 
       <Container>
-        <ListingTopBar title={vm.title} />
+        <ListingTopBar title={vm.title} slug={vm.slug} />
         <Gallery gallery={vm.gallery} video={vm.video} virtualTourUrl={vm.virtualTourUrl} />
 
         <div className={styles.layout}>
