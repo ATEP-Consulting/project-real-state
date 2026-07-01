@@ -6,12 +6,9 @@ import { PRIMARY_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
 import { useScrolled } from "./useScrolled";
 import { FavoritesNavButton } from "@/components/favorites/FavoritesNavButton";
-<<<<<<< HEAD
 import { BrandMark } from "@/components/brand/BrandMark";
-=======
 import { useTranslation } from "@/lib/i18n";
 import { LOCALES, asLocale } from "@/lib/i18n/config";
->>>>>>> feat/d13-i18n
 import styles from "./Header.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^+\d]/g, "")}`;
