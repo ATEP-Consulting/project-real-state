@@ -6,7 +6,7 @@ import type { FormEvent } from "react";
 import { getServerSession } from "next-auth/next";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Logo } from "@/components/brand/Logo";
 import { authOptions } from "@/server/auth/options";
 import styles from "./login.module.css";
 
@@ -36,7 +36,7 @@ export default function AdminLogin() {
         <title>Herrera — admin sign in</title>
       </Head>
       <form className={styles.card} onSubmit={onSubmit}>
-        <Eyebrow>Herrera · Admin</Eyebrow>
+        <Logo tagline className={styles.brand} />
         <h1 style={{ fontSize: 28, margin: "8px 0 4px" }}>Sign in</h1>
         <label className={styles.field}>
           <span className={styles.label}>Email</span>

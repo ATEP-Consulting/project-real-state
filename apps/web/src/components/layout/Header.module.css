@@ -31,21 +31,12 @@
 .brand {
   display: inline-flex;
   align-items: center;
+  gap: 12px;
   color: inherit;
 }
-.monogram {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-right: 12px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  color: inherit;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 14px;
-  letter-spacing: 0.04em;
+.mark {
+  display: block;
+  flex: none;
 }
 .wordmark {
   font-family: var(--font-serif), Georgia, serif;

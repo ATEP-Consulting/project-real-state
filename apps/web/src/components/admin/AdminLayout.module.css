@@ -25,17 +25,9 @@
   align-items: center;
   gap: 8px;
 }
-.monogram {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-bronze);
-  color: var(--color-bronze);
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 13px;
+.mark {
+  display: block;
+  flex: none;
 }
 .word {
   font-family: var(--font-serif), Georgia, serif;

@@ -3,6 +3,7 @@ export const REALTOR = {
   name: "Nilyan Herrera",
   title: "Licensed Florida Realtor®",
   monogram: "NH",
+  tagline: "Real Estate · Miami",
   email: "hola@nilyanherrera.com",
   phone: "+1 (305) 555 0148",
   office: "2000 Ponce de Leon Blvd, Coral Gables, FL",
