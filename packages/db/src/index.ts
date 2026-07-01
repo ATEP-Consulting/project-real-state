@@ -11,6 +11,18 @@ export {
   type QualificationLead,
   type QualificationQuestionConfig,
 } from "./qualification";
+export type { QualificationQuestion } from "./schema/qualification-questions";
+export {
+  getAdminQuestions,
+  createQuestion,
+  updateQuestion,
+  deleteQuestion,
+  setQuestionActive,
+  reorderQuestions,
+  questionUpsertSchema,
+  nextSortOrder,
+  type QuestionUpsert,
+} from "./admin-questions";
 export { createLeadWithConsent, type CreateLeadInput, type LeadIntent } from "./leads-create";
 export {
   listLeads,
