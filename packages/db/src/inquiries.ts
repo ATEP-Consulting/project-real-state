@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attributionSchema } from "./schema/json";
-import { createLeadWithConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
 import { inquiryConsentWording, marketingConsentWording } from "./consent-wording";
 
 export const listingInquirySchema = z
@@ -22,6 +22,10 @@ export const listingInquirySchema = z
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or phone (at least one).",
     path: ["email"],
+  })
+  .refine(hasTransactionalConsent, {
+    message: "Consent to be contacted is required.",
+    path: ["consentEmail"],
   });
 
 export type ListingInquiry = z.infer<typeof listingInquirySchema>;

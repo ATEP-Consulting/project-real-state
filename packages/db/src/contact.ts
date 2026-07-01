@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createLeadWithConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
 import { contactFormConsentWording, marketingConsentWording } from "./consent-wording";
 
 // General contact form — a lead-capture surface (ADR-007/011). Funnels through the
@@ -20,6 +20,10 @@ export const contactLeadSchema = z
   .refine((d) => Boolean(d.email) || Boolean(d.phone), {
     message: "Provide an email or a phone (at least one).",
     path: ["email"],
+  })
+  .refine(hasTransactionalConsent, {
+    message: "Consent to be contacted is required.",
+    path: ["consentEmail"],
   });
 
 export type ContactLead = z.infer<typeof contactLeadSchema>;

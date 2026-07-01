@@ -8,7 +8,30 @@ describe("contactLeadSchema", () => {
     expect(contactLeadSchema.safeParse({ ...base }).success).toBe(false);
     expect(contactLeadSchema.safeParse({ ...base, email: "a@b.com" }).success).toBe(true);
     expect(
-      contactLeadSchema.safeParse({ intent: "sell", phone: "4075551234", message: "x" }).success,
+      contactLeadSchema.safeParse({
+        intent: "sell",
+        phone: "4075551234",
+        message: "x",
+        consentPhone: true,
+      }).success,
+    ).toBe(true);
+  });
+
+  it("requires consent for the provided channel", () => {
+    // Channel present but no consent → rejected.
+    expect(contactLeadSchema.safeParse({ intent: "buy", email: "a@b.com" }).success).toBe(false);
+    expect(contactLeadSchema.safeParse({ intent: "buy", phone: "4075551234" }).success).toBe(false);
+    // Consent must match a provided channel: consent on a channel that wasn't given → rejected.
+    expect(
+      contactLeadSchema.safeParse({ intent: "buy", email: "a@b.com", consentPhone: true }).success,
+    ).toBe(false);
+    // Provided channel + its consent → accepted.
+    expect(
+      contactLeadSchema.safeParse({ intent: "buy", email: "a@b.com", consentEmail: true }).success,
+    ).toBe(true);
+    expect(
+      contactLeadSchema.safeParse({ intent: "buy", phone: "4075551234", consentPhone: true })
+        .success,
     ).toBe(true);
   });
 

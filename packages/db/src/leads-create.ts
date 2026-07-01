@@ -6,6 +6,21 @@ import { MARKETING_WORDING_EN } from "./consent-wording";
 
 export type LeadIntent = "buy" | "sell" | "rent";
 
+/**
+ * A public capture must carry transactional consent for at least one channel the submitter
+ * actually provided (ADR-007/011). Used as the Zod refine on every capture schema so a
+ * consent-less POST is rejected at the boundary — defense in depth behind the disabled
+ * submit button, never the only gate.
+ */
+export function hasTransactionalConsent(d: {
+  email?: string | null;
+  phone?: string | null;
+  consentEmail?: boolean;
+  consentPhone?: boolean;
+}): boolean {
+  return Boolean((d.email && d.consentEmail) || (d.phone && d.consentPhone));
+}
+
 export type CreateLeadInput = {
   intent: LeadIntent;
   name?: string | null;
