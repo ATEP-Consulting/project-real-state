@@ -24,7 +24,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   } catch (e) {
     console.warn("[admin/questions] unavailable:", (e as Error).message);
   }
-  return { props: { intent, questions } };
+  // Strip Date fields (createdAt/updatedAt) to plain values — getServerSideProps props
+  // must be JSON-serializable. The page only reads label/key/type/options/flags.
+  return {
+    props: { intent, questions: JSON.parse(JSON.stringify(questions)) as QualificationQuestion[] },
+  };
 };
 
 type Opt = { value: string; label: string; labelEs?: string };
