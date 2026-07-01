@@ -31,7 +31,9 @@ export type LandingContent = {
   closingText: string;
 };
 
-const IMG = (id: string) => `https://images.unsplash.com/${id}?w=1920&q=70`;
+// auto=format lets Unsplash serve webp/avif (much smaller than the default jpeg);
+// the hero photo is preloaded in LeadHero so it starts downloading immediately.
+const IMG = (id: string) => `https://images.unsplash.com/${id}?w=1920&q=68&auto=format&fit=crop`;
 
 export const LANDING_CONTENT: Record<Intent, LandingContent> = {
   buy: {

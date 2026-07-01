@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { Container } from "@/components/ui/Container";
 import { LeadCaptureFlow } from "../LeadCaptureFlow";
 import type { Intent } from "@/lib/lead-capture";
@@ -20,24 +21,31 @@ export function LeadHero({
   content: LandingContent;
 }) {
   return (
-    <section
-      className={styles.hero}
-      style={{
-        backgroundImage: `linear-gradient(rgba(11,24,22,.55), rgba(11,24,22,.62)), url(${content.image})`,
-      }}
-    >
-      <Container>
-        <div className={styles.grid}>
-          <div className={styles.intro}>
-            <p className={styles.eyebrow}>{content.eyebrow}</p>
-            <h1 className={styles.title}>{content.title}</h1>
-            <p className={styles.lede}>{content.lede}</p>
+    <>
+      {/* Discover the hero photo immediately (a background-image is otherwise found late,
+          after CSS parsing) so it is the priority download and lands fast. */}
+      <Head>
+        <link rel="preload" as="image" href={content.image} />
+      </Head>
+      <section
+        className={styles.hero}
+        style={{
+          backgroundImage: `linear-gradient(rgba(11,24,22,.55), rgba(11,24,22,.62)), url(${content.image})`,
+        }}
+      >
+        <Container>
+          <div className={styles.grid}>
+            <div className={styles.intro}>
+              <p className={styles.eyebrow}>{content.eyebrow}</p>
+              <h1 className={styles.title}>{content.title}</h1>
+              <p className={styles.lede}>{content.lede}</p>
+            </div>
+            <div className={styles.formCard} id="lead-form">
+              <LeadCaptureFlow intent={intent} questions={questions} landingPath={`/${intent}`} />
+            </div>
           </div>
-          <div className={styles.formCard} id="lead-form">
-            <LeadCaptureFlow intent={intent} questions={questions} landingPath={`/${intent}`} />
-          </div>
-        </div>
-      </Container>
-    </section>
+        </Container>
+      </section>
+    </>
   );
 }

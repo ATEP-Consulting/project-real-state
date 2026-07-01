@@ -6,6 +6,8 @@
   align-items: center;
   background-size: cover;
   background-position: center;
+  /* On-brand base shown under the scrim before the photo finishes loading (no blank flash). */
+  background-color: var(--color-forest);
   color: #fff;
   /* Sit under the transparent sticky header so the image runs to the very top. */
   margin-top: calc(-1 * var(--header-h));
