@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { REALTOR } from "@/data/realtor";
+import { validateContact } from "@/lib/lead-capture";
 import { useTranslation } from "@/lib/i18n";
 import styles from "./ContactSection.module.css";
 
@@ -13,6 +14,11 @@ export function ContactSection() {
   const [intent, setIntent] = useState<Intent>("buy");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const { m, locale } = useTranslation();
+  // Gate the submit button: at least one contact channel + the consent box (name stays optional).
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
+  const canSubmit = validateContact({ email, phone, consent }) === null && status !== "submitting";
 
   const INTENTS: { id: Intent; label: string }[] = [
     { id: "buy", label: m.home.contactBuy },
@@ -22,14 +28,10 @@ export function ContactSection() {
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!canSubmit) return; // button is disabled until this holds — defense in depth
     const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") ?? "").trim();
-    const phone = String(fd.get("phone") ?? "").trim();
-    const consent = fd.get("consent") === "on";
-    if ((!email && !phone) || !consent) {
-      setStatus("error");
-      return;
-    }
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
     const zone = String(fd.get("zone") ?? "").trim();
     const note = String(fd.get("message") ?? "").trim();
     const message = [zone && `${m.home.contactAreaPrefix} ${zone}`, note].filter(Boolean).join(" ");
@@ -41,11 +43,11 @@ export function ContactSection() {
         body: JSON.stringify({
           intent,
           name: String(fd.get("name") ?? "").trim() || undefined,
-          email: email || undefined,
-          phone: phone || undefined,
+          email: trimmedEmail || undefined,
+          phone: trimmedPhone || undefined,
           message: message || undefined,
-          consentEmail: consent && Boolean(email),
-          consentPhone: consent && Boolean(phone),
+          consentEmail: consent && Boolean(trimmedEmail),
+          consentPhone: consent && Boolean(trimmedPhone),
           consentMarketing: fd.get("marketing") === "on",
           locale,
         }),
@@ -157,6 +159,8 @@ export function ContactSection() {
                       type="email"
                       autoComplete="email"
                       placeholder={m.home.contactEmailPlaceholder}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div>
@@ -170,6 +174,8 @@ export function ContactSection() {
                       type="tel"
                       autoComplete="tel"
                       placeholder={m.home.contactPhonePlaceholder}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                     />
                   </div>
                 </div>
@@ -198,7 +204,12 @@ export function ContactSection() {
                 />
 
                 <label className={styles.consent}>
-                  <input type="checkbox" name="consent" />
+                  <input
+                    type="checkbox"
+                    name="consent"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                  />
                   <span>{m.home.contactConsentLabel}</span>
                 </label>
                 <label className={styles.consent}>
@@ -217,11 +228,7 @@ export function ContactSection() {
                         {m.home.contactError}
                       </p>
                     )}
-                    <button
-                      type="submit"
-                      className={styles.submit}
-                      disabled={status === "submitting"}
-                    >
+                    <button type="submit" className={styles.submit} disabled={!canSubmit}>
                       {status === "submitting" ? m.home.contactSubmitting : m.home.contactSubmit}
                     </button>
                   </>

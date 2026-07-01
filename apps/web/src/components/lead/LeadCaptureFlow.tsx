@@ -370,7 +370,7 @@ export function LeadCaptureFlow({
           <Button
             type="button"
             size="lg"
-            disabled={status === "submitting"}
+            disabled={status === "submitting" || validateContact(contact) !== null}
             onClick={() => void submit()}
           >
             {status === "submitting" ? m.leadFlow.sending : m.leadFlow.sendBtn}

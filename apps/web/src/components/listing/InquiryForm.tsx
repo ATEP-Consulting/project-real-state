@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { StarRating } from "@/components/ui/StarRating";
 import { REALTOR } from "@/data/realtor";
+import { validateContact } from "@/lib/lead-capture";
 import { useTranslation } from "@/lib/i18n";
 import styles from "./InquiryForm.module.css";
 
@@ -30,22 +31,20 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
   const { m, locale } = useTranslation();
   const [status, setStatus] = useState<Status>("idle");
   const [err, setErr] = useState<string | null>(null);
+  // Gate the submit button: at least one contact channel + the consent box (name stays optional).
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
+  const canSubmit = validateContact({ email, phone, consent }) === null && status !== "submitting";
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") ?? "").trim();
-    const phone = String(fd.get("phone") ?? "").trim();
-    if (!email && !phone) {
-      setErr(m.listing.inquiryErrorContactRequired);
-      return;
-    }
-    if (!fd.get("consent")) {
-      setErr(m.listing.inquiryErrorConsentRequired);
-      return;
-    }
+    if (!canSubmit) return; // button is disabled until this holds — defense in depth
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
     setStatus("submitting");
     setErr(null);
+    const fd = new FormData(e.currentTarget);
     try {
       const res = await fetch("/api/leads", {
         method: "POST",
@@ -54,11 +53,11 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
           listingSlug: slug,
           requestType: "tour",
           name: String(fd.get("name") ?? "").trim() || undefined,
-          email: email || undefined,
-          phone: phone || undefined,
+          email: trimmedEmail || undefined,
+          phone: trimmedPhone || undefined,
           message: String(fd.get("message") ?? "").trim() || undefined,
-          consentEmail: Boolean(email),
-          consentPhone: Boolean(phone),
+          consentEmail: Boolean(trimmedEmail),
+          consentPhone: Boolean(trimmedPhone),
           consentMarketing: fd.get("marketing") === "on",
           attribution: { landingPath: `/homes/${slug}` },
           locale,
@@ -96,6 +95,8 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         type="email"
         placeholder={m.listing.inquiryEmailPlaceholder}
         autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         className={styles.input}
@@ -103,6 +104,8 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         type="tel"
         placeholder={m.listing.inquiryPhonePlaceholder}
         autoComplete="tel"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
       />
       <textarea
         className={styles.textarea}
@@ -111,7 +114,12 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         placeholder={m.listing.inquiryMessagePlaceholder}
       />
       <label className={styles.consent}>
-        <input type="checkbox" name="consent" />
+        <input
+          type="checkbox"
+          name="consent"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+        />
         <span>{m.listing.inquiryContactConsent}</span>
       </label>
       <label className={styles.consent}>
@@ -123,7 +131,7 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
           {err}
         </p>
       )}
-      <Button type="submit" size="lg" disabled={status === "submitting"}>
+      <Button type="submit" size="lg" disabled={!canSubmit}>
         {status === "submitting" ? m.listing.inquirySubmitting : m.listing.inquirySubmit}
       </Button>
       <a className={styles.call} href={TEL}>
