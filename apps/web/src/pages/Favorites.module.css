@@ -1,20 +1,9 @@
-.head {
-  padding: 120px 0 8px; /* clears the fixed header */
-}
-.title {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(30px, 5vw, 44px);
-  line-height: 1.05;
-  margin: 10px 0 0;
-}
-.sub {
-  margin: 10px 0 0;
-  font-size: 15px;
-  color: var(--color-stone);
-}
+/* Cream body below the scrimmed PageHero; the forest capture panel floats on it. */
 .body {
-  padding: 20px 0 96px;
+  padding: clamp(44px, 6vw, 76px) 0 clamp(20px, 3vw, 36px);
+  background: var(--color-paper);
 }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -24,24 +13,85 @@
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-md);
 }
+
+/* Empty + error share one calm, centered composition. */
 .empty {
+  max-width: 460px;
+  margin: 0 auto;
   text-align: center;
-  padding: 56px 0 72px;
+  padding: clamp(28px, 5vw, 56px) 0 clamp(44px, 7vw, 80px);
+}
+.emptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-bronze);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 22px;
 }
 .emptyTitle {
   font-family: var(--font-serif), Georgia, serif;
-  font-size: 22px;
+  font-weight: 400;
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.1;
   margin: 0;
+  color: var(--color-ink);
 }
 .emptyText {
-  margin: 8px 0 0;
+  margin: 12px auto 0;
+  max-width: 42ch;
   font-size: 15px;
+  line-height: 1.6;
   color: var(--color-stone);
 }
 .emptyCta {
   display: inline-block;
-  margin-top: 18px;
-  color: var(--color-bronze);
-  font-weight: 600;
+  margin-top: 24px;
+  background: var(--color-bronze);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 12px 24px;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
+}
+.emptyCta:hover {
+  background: var(--color-bronze-dark);
+  transform: translateY(-1px);
+}
+.emptyActions {
+  margin-top: 22px;
+}
+.retry {
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 11px 22px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-forest);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+.retry:hover {
+  border-color: var(--color-forest);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emptyCta {
+    transition: none;
+  }
+  .emptyCta:hover {
+    transform: none;
+  }
 }

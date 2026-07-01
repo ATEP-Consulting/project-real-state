@@ -3,14 +3,34 @@ import Head from "next/head";
 import Link from "next/link";
 import { Seo } from "@/components/seo/Seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHero } from "@/components/marketing/PageHero";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/motion/Reveal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ListingCard } from "@/components/ui/ListingCard";
 import { FavoritesNudge } from "@/components/favorites/FavoritesNudge";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
 import type { ListingCardVM } from "@/lib/listing";
 import styles from "./Favorites.module.css";
+
+// Same editorial hero language as /about · /contact · /guides — a scrimmed photo
+// under the transparent header. Forest fallback if the photo is slow/unavailable.
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=68&auto=format&fit=crop";
+
+// Same outlined heart as the save control, reused for the empty state.
+function HeartGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+      <path
+        d="M12 20.7 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 1 1 19.4 13L12 20.7Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+    </svg>
+  );
+}
 
 export default function FavoritesPage() {
   const { slugs, count, ready, prune } = useFavorites();
@@ -52,8 +72,13 @@ export default function FavoritesPage() {
     };
   }, [ready, slugs, prune]);
 
+  const lede =
+    ready && count > 0
+      ? `${count} ${count === 1 ? "home" : "homes"} saved on this device — come back any time, no account needed.`
+      : "The Florida homes you save live here, ready when you are. No account — they stay on this device.";
+
   return (
-    <SiteLayout>
+    <SiteLayout transparentHeader>
       <Head>
         {/* A personal shortlist — keep it out of the index regardless of demo mode. */}
         <meta name="robots" content="noindex,nofollow" />
@@ -63,49 +88,68 @@ export default function FavoritesPage() {
         description="The Florida homes you've saved. Login-less — saved on this device."
         path="/favorites"
       />
-      <section className={styles.head}>
-        <Container>
-          <Eyebrow>Your shortlist</Eyebrow>
-          <h1 className={styles.title}>Saved homes</h1>
-          <p className={styles.sub}>
-            Saved on this device{count > 0 ? ` · ${count} ${count === 1 ? "home" : "homes"}` : ""}. No
-            account needed.
-          </p>
-        </Container>
-      </section>
 
-      <FavoritesNudge />
+      <PageHero image={HERO_IMAGE} eyebrow="Your shortlist" title="Saved homes" lede={lede} />
 
       <section className={styles.body}>
         <Container>
           {error ? (
-            <div className={styles.empty}>
-              <p className={styles.emptyTitle}>Couldn&rsquo;t load your saved homes</p>
-              <p className={styles.emptyText}>Please refresh the page to try again — your saved homes are safe on this device.</p>
-            </div>
+            <Reveal>
+              <div className={styles.empty}>
+                <span className={styles.emptyIcon} aria-hidden="true">
+                  <HeartGlyph />
+                </span>
+                <h2 className={styles.emptyTitle}>We couldn&rsquo;t load your saved homes</h2>
+                <p className={styles.emptyText}>
+                  Your shortlist is safe on this device. Please refresh to try again.
+                </p>
+                <div className={styles.emptyActions}>
+                  <button
+                    type="button"
+                    className={styles.retry}
+                    onClick={() => window.location.reload()}
+                  >
+                    Refresh
+                  </button>
+                </div>
+              </div>
+            </Reveal>
           ) : listings === null ? (
-            <div className={styles.grid}>
+            <div className={styles.grid} aria-hidden="true">
               {[0, 1, 2].map((i) => (
                 <Skeleton key={i} className={styles.cardSkeleton} />
               ))}
             </div>
           ) : listings.length === 0 ? (
-            <div className={styles.empty}>
-              <p className={styles.emptyTitle}>No saved homes yet</p>
-              <p className={styles.emptyText}>Tap the heart on any listing to save it here.</p>
-              <Link href="/search" className={styles.emptyCta}>
-                Browse listings →
-              </Link>
-            </div>
+            <Reveal>
+              <div className={styles.empty}>
+                <span className={styles.emptyIcon} aria-hidden="true">
+                  <HeartGlyph />
+                </span>
+                <h2 className={styles.emptyTitle}>Your shortlist is empty</h2>
+                <p className={styles.emptyText}>
+                  Tap the heart on any home to keep it here. Nilyan can then alert you to price drops
+                  and new listings that match.
+                </p>
+                <Link href="/search" className={styles.emptyCta}>
+                  Browse listings
+                </Link>
+              </div>
+            </Reveal>
           ) : (
             <div className={styles.grid}>
-              {listings.map((l) => (
-                <ListingCard key={l.slug} listing={l} />
+              {listings.map((l, i) => (
+                // Staggered cascade — same easing/rhythm as the home Featured strip.
+                <Reveal key={l.slug} delay={Math.min(i, 5) * 0.06}>
+                  <ListingCard listing={l} />
+                </Reveal>
               ))}
             </div>
           )}
         </Container>
       </section>
+
+      <FavoritesNudge />
     </SiteLayout>
   );
 }
