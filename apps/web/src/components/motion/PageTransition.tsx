@@ -17,13 +17,21 @@ export function PageTransition({ children }: { children: ReactNode }) {
   // early fragment return would change the DOM structure between server and client and
   // throw a hydration mismatch on every page. Keeping the same wrapper (with
   // `initial={false}` suppressing the SSR entrance) makes both sides render identically.
+  //
+  // Enter-only, deliberately NO `mode="wait"` and NO `exit`: with `mode="wait"` the
+  // outgoing page had to fade fully to opacity 0 *before* the incoming page mounted,
+  // leaving a blank paper trough between every route. Locally that gap is ~0ms (chunks
+  // load instantly) so it's invisible; in production the network fill (esp. the heavy
+  // /search view + its ssr:false map) stretched the blank screen and read as a FOUC-like
+  // flash. Dropping the exit lets the new page fade/slide in the instant it mounts, over
+  // the outgoing one — same premium entrance, no blank gap. `initial={false}` still keeps
+  // the very first load static (animate on navigation, not on hard load).
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence initial={false}>
       <motion.div
         key={routeKey}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
         transition={{ duration: reduce ? 0 : DURATION.base, ease: EASE }}
       >
         {children}
