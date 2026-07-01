@@ -61,8 +61,7 @@ export const LANDING_CONTENT: Record<Intent, LandingContent> = {
       cta: { label: "See the cost breakdown on any listing", href: "/search" },
     },
     closingTitle: "Ready when you are.",
-    closingText:
-      "Start above, or call and talk it through. Nilyan personally follows up on every request.",
+    closingText: "Prefer to talk it through? Nilyan answers personally.",
   },
 
   sell: {
@@ -88,7 +87,7 @@ export const LANDING_CONTENT: Record<Intent, LandingContent> = {
       visual: "stats",
     },
     closingTitle: "Curious what it's worth?",
-    closingText: "Start the free valuation above, or call Nilyan directly. No obligation, ever.",
+    closingText: "Want a no-obligation read on your home? Nilyan answers personally.",
   },
 
   rent: {
@@ -115,7 +114,6 @@ export const LANDING_CONTENT: Record<Intent, LandingContent> = {
       cta: { label: "Explore rentals on the map", href: "/search" },
     },
     closingTitle: "Let's find your next place.",
-    closingText:
-      "Start above, or call and tell Nilyan what you're after. She follows up personally.",
+    closingText: "Prefer to talk? Nilyan answers personally.",
   },
 };

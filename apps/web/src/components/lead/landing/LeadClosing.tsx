@@ -1,13 +1,16 @@
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
-import { Button } from "@/components/ui/Button";
 import { REALTOR } from "@/data/realtor";
 import type { LandingContent } from "@/lib/lead-landing-content";
 import styles from "./LeadClosing.module.css";
 
 const TEL = `tel:${REALTOR.phone.replace(/[^\d+]/g, "")}`;
 
-/** Closing reassurance + a jump back to the hero form, for anyone who scrolled past it. */
+/**
+ * The closing moment: a deep forest band that makes calling Nilyan the star.
+ * Her portrait humanizes it; the phone number is the elegant focal CTA;
+ * "Start now" stays as a quieter path back to the hero form.
+ */
 export function LeadClosing({ content }: { content: LandingContent }) {
   function scrollToForm() {
     const el = document.getElementById("lead-form");
@@ -21,16 +24,24 @@ export function LeadClosing({ content }: { content: LandingContent }) {
       <Container>
         <Reveal>
           <div className={styles.inner}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={REALTOR.photo}
+              alt={REALTOR.name}
+              className={styles.portrait}
+              loading="lazy"
+            />
             <h2 className={styles.title}>{content.closingTitle}</h2>
             <p className={styles.text}>{content.closingText}</p>
-            <div className={styles.actions}>
-              <Button type="button" size="lg" onClick={scrollToForm}>
-                Start now
-              </Button>
-              <a className={styles.call} href={TEL}>
-                Call {REALTOR.phone}
-              </a>
-            </div>
+
+            <a className={styles.phone} href={TEL}>
+              {REALTOR.phone}
+            </a>
+            <p className={styles.phoneSub}>Call or text.</p>
+
+            <button type="button" className={styles.start} onClick={scrollToForm}>
+              Or start online
+            </button>
           </div>
         </Reveal>
       </Container>
