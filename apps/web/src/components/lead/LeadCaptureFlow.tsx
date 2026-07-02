@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { QualificationQuestionConfig } from "@herrera/db";
 import { Button } from "@/components/ui/Button";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { REALTOR } from "@/data/realtor";
 import { DURATION, EASE } from "@/theme/motion";
 import { useTranslation } from "@/lib/i18n";
@@ -208,7 +209,15 @@ export function LeadCaptureFlow({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(
-          buildLeadPayload({ intent, answers, contact, landingPath, source, viewedListingIds, locale }),
+          buildLeadPayload({
+            intent,
+            answers,
+            contact,
+            landingPath,
+            source,
+            viewedListingIds,
+            locale,
+          }),
         ),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -225,7 +234,12 @@ export function LeadCaptureFlow({
       <div className={styles.panel}>
         {onClose && (
           <div className={styles.topbar}>
-            <button type="button" className={styles.close} onClick={onClose} aria-label={m.leadFlow.closeLabel}>
+            <button
+              type="button"
+              className={styles.close}
+              onClick={onClose}
+              aria-label={m.leadFlow.closeLabel}
+            >
               ×
             </button>
           </div>
@@ -234,7 +248,8 @@ export function LeadCaptureFlow({
           <h2 className={styles.doneTitle}>{m.leadFlow.successTitle}</h2>
           <p className={styles.doneSub}>{m.leadFlow.successSub}</p>
           <a className={styles.call} href={TEL}>
-            {m.leadFlow.callPrefix}{REALTOR.phone}
+            {m.leadFlow.callPrefix}
+            {REALTOR.phone}
           </a>
         </div>
       </div>
@@ -255,7 +270,12 @@ export function LeadCaptureFlow({
     <div className={styles.panel}>
       {onClose && (
         <div className={styles.topbar}>
-          <button type="button" className={styles.close} onClick={onClose} aria-label={m.leadFlow.closeLabel}>
+          <button
+            type="button"
+            className={styles.close}
+            onClick={onClose}
+            aria-label={m.leadFlow.closeLabel}
+          >
             ×
           </button>
         </div>
@@ -269,7 +289,10 @@ export function LeadCaptureFlow({
             />
           </div>
           <p className={styles.stepCount}>
-            {HEADLINE[intent]} · {m.leadFlow.stepOf.replace("{n}", String(i + 1)).replace("{total}", String(steps.length))}
+            {HEADLINE[intent]} ·{" "}
+            {m.leadFlow.stepOf
+              .replace("{n}", String(i + 1))
+              .replace("{total}", String(steps.length))}
           </p>
         </>
       )}
@@ -320,14 +343,13 @@ export function LeadCaptureFlow({
                 value={contact.email ?? ""}
                 onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
               />
-              <input
-                className={styles.input}
+              <PhoneInput
+                tone="paper"
+                className={styles.phoneField}
                 aria-label={m.leadFlow.phonePlaceholder}
-                type="tel"
                 placeholder={m.leadFlow.phonePlaceholder}
-                autoComplete="tel"
                 value={contact.phone ?? ""}
-                onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                onChange={(phone) => setContact((c) => ({ ...c, phone }))}
               />
               <label className={styles.consent}>
                 <input

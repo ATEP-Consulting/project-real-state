@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Reveal } from "@/components/motion/Reveal";
 import { REALTOR } from "@/data/realtor";
 import { validateContact } from "@/lib/lead-capture";
@@ -184,15 +185,12 @@ export function ContactSection() {
                     <label className={styles.fieldLabel} htmlFor="c-phone">
                       {m.home.contactPhoneFieldLabel}
                     </label>
-                    <input
+                    <PhoneInput
                       id="c-phone"
-                      name="phone"
-                      className={styles.input}
-                      type="tel"
-                      autoComplete="tel"
+                      tone="surface"
                       placeholder={m.home.contactPhonePlaceholder}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={setPhone}
                     />
                   </div>
                 </div>

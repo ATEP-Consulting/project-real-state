@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { StarRating } from "@/components/ui/StarRating";
 import { REALTOR } from "@/data/realtor";
 import { validateContact } from "@/lib/lead-capture";
@@ -18,7 +19,9 @@ function AgentHeader() {
       <img src={REALTOR.photo} alt={REALTOR.name} className={styles.avatar} loading="lazy" />
       <div className={styles.agentMeta}>
         <p className={styles.agentName}>{REALTOR.name}</p>
-        <p className={styles.agentRole}>{m.realtor.title} · {m.listing.inquiryAgentRole}</p>
+        <p className={styles.agentRole}>
+          {m.realtor.title} · {m.listing.inquiryAgentRole}
+        </p>
         <p className={styles.reviews}>
           <StarRating value={REALTOR.rating} /> <span>{REALTOR.reviews} reviews</span>
         </p>
@@ -76,9 +79,12 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
       <div className={styles.card}>
         <AgentHeader />
         <h2 className={styles.h2}>{m.listing.inquirySuccessTitle}</h2>
-        <p className={styles.sub}>{m.listing.inquirySuccessBody} {title}.</p>
+        <p className={styles.sub}>
+          {m.listing.inquirySuccessBody} {title}.
+        </p>
         <a className={styles.call} href={TEL}>
-          {m.listing.inquiryCallPrefix}{REALTOR.phone}
+          {m.listing.inquiryCallPrefix}
+          {REALTOR.phone}
         </a>
       </div>
     );
@@ -88,7 +94,12 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
     <form className={styles.card} onSubmit={onSubmit} noValidate>
       <AgentHeader />
       <h2 className={styles.h2}>{m.listing.inquiryTitle}</h2>
-      <input className={styles.input} name="name" placeholder={m.listing.inquiryNamePlaceholder} autoComplete="name" />
+      <input
+        className={styles.input}
+        name="name"
+        placeholder={m.listing.inquiryNamePlaceholder}
+        autoComplete="name"
+      />
       <input
         className={styles.input}
         name="email"
@@ -98,14 +109,12 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <input
-        className={styles.input}
-        name="phone"
-        type="tel"
+      <PhoneInput
+        tone="paper"
+        aria-label={m.listing.inquiryPhonePlaceholder}
         placeholder={m.listing.inquiryPhonePlaceholder}
-        autoComplete="tel"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={setPhone}
       />
       <textarea
         className={styles.textarea}
@@ -135,7 +144,8 @@ export function InquiryForm({ slug, title }: { slug: string; title: string }) {
         {status === "submitting" ? m.listing.inquirySubmitting : m.listing.inquirySubmit}
       </Button>
       <a className={styles.call} href={TEL}>
-        {m.listing.inquiryCallPrefix}{REALTOR.phone}
+        {m.listing.inquiryCallPrefix}
+        {REALTOR.phone}
       </a>
       <p className={styles.fine}>{m.listing.inquiryFinePrint}</p>
     </form>

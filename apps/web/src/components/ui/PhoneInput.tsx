@@ -148,7 +148,6 @@ export function PhoneInput({
       window.removeEventListener("resize", reposition);
       document.removeEventListener("pointerdown", onPointerDown, true);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   // Keep the active option visible while arrowing through the list.

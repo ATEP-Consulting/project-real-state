@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/marketing/PageHero";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { REALTOR } from "@/data/realtor";
 import { useTranslation } from "@/lib/i18n";
 import styles from "./Contact.module.css";
@@ -199,14 +200,12 @@ export default function ContactPage() {
                       <label className={styles.fieldLabel} htmlFor="ct-phone">
                         {m.home.contactPhoneFieldLabel}
                       </label>
-                      <input
+                      <PhoneInput
                         id="ct-phone"
-                        className={styles.input}
-                        type="tel"
-                        autoComplete="tel"
+                        tone="surface"
                         placeholder={m.home.contactPhonePlaceholder}
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={setPhone}
                       />
                     </div>
                   </div>
