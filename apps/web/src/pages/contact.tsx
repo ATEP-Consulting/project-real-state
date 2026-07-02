@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/marketing/PageHero";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { REALTOR } from "@/data/realtor";
 import { useTranslation } from "@/lib/i18n";
 import styles from "./Contact.module.css";
@@ -111,6 +112,22 @@ export default function ContactPage() {
                       <span className={styles.dValue}>{REALTOR.office}</span>
                     </span>
                   </li>
+                  <li className={styles.detail}>
+                    <span className={styles.dIcon} aria-hidden="true">
+                      <InstagramIcon size={16} />
+                    </span>
+                    <span>
+                      <span className={styles.dLabel}>{m.home.contactInstagramLabel}</span>
+                      <a
+                        className={styles.dValue}
+                        href={REALTOR.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {REALTOR.instagramHandle}
+                      </a>
+                    </span>
+                  </li>
                 </ul>
 
                 <div className={styles.agentCard}>
@@ -195,7 +212,8 @@ export default function ContactPage() {
                   </div>
 
                   <label className={styles.fieldLabel} htmlFor="ct-msg">
-                    {m.home.contactMsgLabel} <span className={styles.optional}>{m.home.contactMsgOptional}</span>
+                    {m.home.contactMsgLabel}{" "}
+                    <span className={styles.optional}>{m.home.contactMsgOptional}</span>
                   </label>
                   <textarea
                     id="ct-msg"

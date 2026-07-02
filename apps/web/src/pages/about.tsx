@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { StarRating } from "@/components/ui/StarRating";
 import { PageHero } from "@/components/marketing/PageHero";
 import { CallCta } from "@/components/marketing/CallCta";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { REALTOR } from "@/data/realtor";
 import { TESTIMONIALS } from "@/data/testimonials";
 import { useTranslation } from "@/lib/i18n";
@@ -30,11 +31,7 @@ export default function About() {
 
   return (
     <SiteLayout transparentHeader>
-      <Seo
-        title={m.about.seoTitle}
-        description={m.about.seoDescription}
-        path="/about"
-      />
+      <Seo title={m.about.seoTitle} description={m.about.seoDescription} path="/about" />
       <PageHero
         image={HERO_IMAGE}
         eyebrow={m.about.heroEyebrow}
@@ -74,6 +71,15 @@ export default function About() {
                 <p className={styles.license}>
                   {REALTOR.license} · {m.realtor.memberOf}
                 </p>
+                <a
+                  className={styles.instagram}
+                  href={REALTOR.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <InstagramIcon size={17} />
+                  <span>{m.about.followInstagram}</span>
+                </a>
               </div>
             </div>
           </Reveal>
@@ -110,7 +116,10 @@ export default function About() {
                   <StarRating value={t.rating} />
                   <p className={styles.quoteText}>"{m.testimonials[TESTIMONIAL_QUOTES[i]!]}"</p>
                   <p className={styles.quoteAuthor}>
-                    {t.author} · <span className={styles.quoteContext}>{m.testimonials[TESTIMONIAL_CONTEXTS[i]!]}</span>
+                    {t.author} ·{" "}
+                    <span className={styles.quoteContext}>
+                      {m.testimonials[TESTIMONIAL_CONTEXTS[i]!]}
+                    </span>
                   </p>
                 </li>
               ))}

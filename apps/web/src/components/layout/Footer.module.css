@@ -55,6 +55,19 @@
   font-weight: 600;
   color: #fff;
 }
+.social {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-bronze-light);
+  transition: color var(--dur-base) var(--ease-standard);
+}
+.social:hover {
+  color: #fff;
+}
 
 .cols {
   display: grid;
