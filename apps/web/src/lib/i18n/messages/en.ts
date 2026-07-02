@@ -119,6 +119,14 @@ export const en = {
   },
 
   // ── Realtor data prose ──────────────────────────────────────────────────────
+  // ── Phone input (country dial-code selector) ───────────────────────────────
+  phoneInput: {
+    countryAria: "Country code",
+    searchAria: "Search country",
+    searchPlaceholder: "Search country or code…",
+    noResults: "No matches",
+  },
+
   realtor: {
     title: "Licensed Florida Realtor®",
     bioShort: "Premium real estate guidance in Florida — buy, sell and rent with confidence.",

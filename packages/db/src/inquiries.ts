@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attributionSchema } from "./schema/json";
-import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent, phoneSchema } from "./leads-create";
 import { inquiryConsentWording, marketingConsentWording } from "./consent-wording";
 
 export const listingInquirySchema = z
@@ -9,7 +9,7 @@ export const listingInquirySchema = z
     requestType: z.enum(["info", "tour"]).default("info"),
     name: z.string().trim().min(1).max(120).optional(),
     email: z.string().email().optional(),
-    phone: z.string().trim().min(7).max(40).optional(),
+    phone: phoneSchema.optional(),
     message: z.string().trim().max(2000).optional(),
     preferredDate: z.string().trim().max(40).optional(),
     consentEmail: z.boolean().optional(),

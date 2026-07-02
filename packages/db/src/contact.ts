@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent, phoneSchema } from "./leads-create";
 import { contactFormConsentWording, marketingConsentWording } from "./consent-wording";
 
 // General contact form — a lead-capture surface (ADR-007/011). Funnels through the
@@ -9,7 +9,7 @@ export const contactLeadSchema = z
     intent: z.enum(["buy", "sell", "rent"]),
     name: z.string().trim().max(120).optional(),
     email: z.string().trim().email().optional(),
-    phone: z.string().trim().min(7).max(40).optional(),
+    phone: phoneSchema.optional(),
     message: z.string().trim().max(2000).optional(),
     consentEmail: z.boolean().optional(),
     consentPhone: z.boolean().optional(),

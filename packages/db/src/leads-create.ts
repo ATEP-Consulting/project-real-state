@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { getDb } from "./client";
 import { consentRecords, type NewConsentRecord } from "./schema/consent";
 import { leads } from "./schema/leads";
@@ -5,6 +6,19 @@ import type { Attribution } from "./schema/json";
 import { MARKETING_WORDING_EN } from "./consent-wording";
 
 export type LeadIntent = "buy" | "sell" | "rent";
+
+/**
+ * The one phone rule for every capture schema. Accepts the client's normalized
+ * "+<dial><digits>" AND the legacy bare-digit shape (stale cached pages must
+ * never lose a lead to a 400) — only rejects strings that can't be a phone at
+ * all (letters etc.). Deliberately loose; no per-country validation (ADR-007).
+ */
+export const phoneSchema = z
+  .string()
+  .trim()
+  .min(7)
+  .max(40)
+  .regex(/^\+?[\d\s().-]+$/, "Not a valid phone number.");
 
 /**
  * A public capture must carry transactional consent for at least one channel the submitter

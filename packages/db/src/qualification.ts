@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "./client";
-import { createLeadWithConsent, hasTransactionalConsent } from "./leads-create";
+import { createLeadWithConsent, hasTransactionalConsent, phoneSchema } from "./leads-create";
 import { qualificationConsentWording, marketingConsentWording } from "./consent-wording";
 import { attributionSchema, qualificationAnswersSchema } from "./schema/json";
 import {
@@ -16,7 +16,7 @@ export const qualificationLeadSchema = z
     answers: qualificationAnswersSchema.default({}),
     name: z.string().trim().min(1).max(120).optional(),
     email: z.string().email().optional(),
-    phone: z.string().trim().min(7).max(40).optional(),
+    phone: phoneSchema.optional(),
     consentEmail: z.boolean().optional(),
     consentPhone: z.boolean().optional(),
     consentMarketing: z.boolean().optional(),
