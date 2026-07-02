@@ -2,7 +2,23 @@ import { describe, expect, it } from "vitest";
 import { listingInquirySchema } from "./inquiries";
 import { qualificationLeadSchema } from "./qualification";
 import { contactLeadSchema } from "./contact";
-import { hasTransactionalConsent } from "./leads-create";
+import { hasTransactionalConsent, phoneSchema } from "./leads-create";
+
+describe("phoneSchema", () => {
+  it("accepts the client's normalized E.164 shape", () => {
+    expect(phoneSchema.safeParse("+13055550148").success).toBe(true);
+    expect(phoneSchema.safeParse("+34612345678").success).toBe(true);
+  });
+  it("accepts the legacy bare/formatted shapes (stale cached pages keep working)", () => {
+    expect(phoneSchema.safeParse("3055550148").success).toBe(true);
+    expect(phoneSchema.safeParse("(305) 555-0148").success).toBe(true);
+  });
+  it("rejects strings that cannot be a phone", () => {
+    expect(phoneSchema.safeParse("call me maybe").success).toBe(false);
+    expect(phoneSchema.safeParse("a@b.com").success).toBe(false);
+    expect(phoneSchema.safeParse("12345").success).toBe(false); // too short
+  });
+});
 
 describe("hasTransactionalConsent", () => {
   it("is true only when a provided channel carries its consent", () => {
