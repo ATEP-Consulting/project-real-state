@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { FOOTER_NAV } from "@/lib/nav";
 import { REALTOR } from "@/data/realtor";
 import { BrandMark } from "@/components/brand/BrandMark";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { EqualHousingLogo } from "./EqualHousingLogo";
 import { useTranslation } from "@/lib/i18n";
 import styles from "./Footer.module.css";
@@ -49,14 +50,21 @@ export function Footer() {
             <a className={styles.phone} href={TEL}>
               {REALTOR.phone}
             </a>
+            <a
+              className={styles.social}
+              href={REALTOR.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramIcon size={17} />
+              <span>{REALTOR.instagramHandle}</span>
+            </a>
           </div>
 
           <nav className={styles.cols} aria-label={m.common.footerNavLabel}>
             {FOOTER_NAV.map((col) => (
               <div key={col.heading} className={styles.col}>
-                <h2 className={styles.colHeading}>
-                  {HEADING_LABEL[col.heading] ?? col.heading}
-                </h2>
+                <h2 className={styles.colHeading}>{HEADING_LABEL[col.heading] ?? col.heading}</h2>
                 <ul className={styles.colList}>
                   {col.items.map((item) => (
                     <li key={`${col.heading}-${item.label}`}>

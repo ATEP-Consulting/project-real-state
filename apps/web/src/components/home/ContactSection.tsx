@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Container } from "@/components/ui/Container";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { Reveal } from "@/components/motion/Reveal";
 import { REALTOR } from "@/data/realtor";
 import { validateContact } from "@/lib/lead-capture";
@@ -99,6 +100,22 @@ export function ContactSection() {
                     <span>
                       <span className={styles.dLabel}>{m.home.contactOfficeLabel}</span>
                       <span className={styles.dValue}>{REALTOR.office}</span>
+                    </span>
+                  </li>
+                  <li className={styles.detail}>
+                    <span className={styles.dIcon} aria-hidden="true">
+                      <InstagramIcon size={16} />
+                    </span>
+                    <span>
+                      <span className={styles.dLabel}>{m.home.contactInstagramLabel}</span>
+                      <a
+                        className={styles.dValue}
+                        href={REALTOR.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {REALTOR.instagramHandle}
+                      </a>
                     </span>
                   </li>
                 </ul>

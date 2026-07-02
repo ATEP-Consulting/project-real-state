@@ -69,6 +69,19 @@
   font-size: 13px;
   color: var(--color-stone);
 }
+.instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-bronze-dark);
+  transition: color var(--dur-base) var(--ease-standard);
+}
+.instagram:hover {
+  color: var(--color-forest);
+}
 
 /* How I work */
 .valuesSection {

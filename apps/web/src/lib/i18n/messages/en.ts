@@ -91,6 +91,7 @@ export const en = {
     contactPhoneLabel: "Phone",
     contactEmailLabel: "Email",
     contactOfficeLabel: "Office",
+    contactInstagramLabel: "Instagram",
     contactFormTitle: "Send a message",
     contactFormHelp: "All fields required except the message.",
     contactIWantTo: "I want to",
@@ -108,24 +109,19 @@ export const en = {
     contactMsgLabel: "Message",
     contactMsgOptional: "(optional)",
     contactMsgPlaceholder: "Tell me what you're looking for…",
-    contactConsentLabel:
-      "I agree to the privacy policy and to be contacted about my enquiry.",
-    contactMarketingLabel:
-      "I'd like to receive news and new listings by email (optional).",
+    contactConsentLabel: "I agree to the privacy policy and to be contacted about my enquiry.",
+    contactMarketingLabel: "I'd like to receive news and new listings by email (optional).",
     contactSubmit: "Send message",
     contactSubmitting: "Sending…",
-    contactSuccess:
-      "Thank you — your message is on its way. I'll reply within 24 hours.",
-    contactError:
-      "Please add an email or phone and accept the consent, then try again.",
+    contactSuccess: "Thank you — your message is on its way. I'll reply within 24 hours.",
+    contactError: "Please add an email or phone and accept the consent, then try again.",
     contactAreaPrefix: "Area of interest:",
   },
 
   // ── Realtor data prose ──────────────────────────────────────────────────────
   realtor: {
     title: "Licensed Florida Realtor®",
-    bioShort:
-      "Premium real estate guidance in Florida — buy, sell and rent with confidence.",
+    bioShort: "Premium real estate guidance in Florida — buy, sell and rent with confidence.",
     bioLong0:
       "Licensed Realtor® in Florida specializing in residential property across Miami-Dade, Broward, and the Gulf coast. I guide buyers and sellers with a close, honest approach and a local network that opens doors.",
     bioLong1:
@@ -191,8 +187,7 @@ export const en = {
     // SearchResults — count / states
     searching: "Searching…",
     inThisArea: "in this area",
-    noResults:
-      "No homes match. Adjust your filters, pan or zoom out, or clear the drawn zone.",
+    noResults: "No homes match. Adjust your filters, pan or zoom out, or clear the drawn zone.",
 
     // SearchView — map tool buttons
     drawZone: "Draw a zone",
@@ -283,7 +278,8 @@ export const en = {
 
     // SellCta
     sellCtaTitle: "Selling something similar?",
-    sellCtaBody: "Find out what your home in {city} could be worth with a free, no-obligation valuation.",
+    sellCtaBody:
+      "Find out what your home in {city} could be worth with a free, no-obligation valuation.",
     sellCtaLink: "Value my home →",
 
     // SimilarListings
@@ -315,8 +311,7 @@ export const en = {
     phonePlaceholder: "Phone",
     contactConsent:
       "I agree to be contacted by Herrera about my real estate needs using the details I provided.",
-    contactFinePrint:
-      "No obligation — phone or email is enough; you don't need both.",
+    contactFinePrint: "No obligation — phone or email is enough; you don't need both.",
     sendBtn: "Send to Nilyan",
     sending: "Sending…",
     nextBtn: "Next →",
@@ -363,6 +358,7 @@ export const en = {
     ctaTitle: "Let's talk about your move.",
     ctaText: "Tell me what you're after and I'll take it from there. I answer personally.",
     ctaSecondary: "Send a message",
+    followInstagram: "Follow me on Instagram",
   },
 
   // ── Contact page ─────────────────────────────────────────────────────────────
@@ -387,14 +383,16 @@ export const en = {
     ledeCount: "{count} {noun} saved on this device — come back any time, no account needed.",
     ledeCountHome: "home",
     ledeCountHomes: "homes",
-    ledeEmpty: "The Florida homes you save live here, ready when you are. No account — they stay on this device.",
+    ledeEmpty:
+      "The Florida homes you save live here, ready when you are. No account — they stay on this device.",
     // Error state
     errorTitle: "We couldn’t load your saved homes",
     errorText: "Your shortlist is safe on this device. Please refresh to try again.",
     errorRefresh: "Refresh",
     // Empty state
     emptyTitle: "Your shortlist is empty",
-    emptyText: "Tap the heart on any home to keep it here. Nilyan can then alert you to price drops and new listings that match.",
+    emptyText:
+      "Tap the heart on any home to keep it here. Nilyan can then alert you to price drops and new listings that match.",
     emptyCta: "Browse listings",
     // FavoritesNavButton aria-labels
     navAriaWithCount: "Saved homes ({count})",
@@ -408,8 +406,10 @@ export const en = {
     nudgeDismiss: "Dismiss",
     nudgeTitleSingular: "Want Nilyan to watch this home for you?",
     nudgeTitlePlural: "Want Nilyan to watch these homes for you?",
-    nudgeTextSingular: "Leave your details and she’ll personally alert you to price drops and new listings like this home. No account, no obligation.",
-    nudgeTextPlural: "Leave your details and she’ll personally alert you to price drops and new listings like these homes. No account, no obligation.",
+    nudgeTextSingular:
+      "Leave your details and she’ll personally alert you to price drops and new listings like this home. No account, no obligation.",
+    nudgeTextPlural:
+      "Leave your details and she’ll personally alert you to price drops and new listings like these homes. No account, no obligation.",
     nudgeCta: "Get price alerts",
     nudgeSub: "She replies personally, usually within the day.",
   },
@@ -418,11 +418,13 @@ export const en = {
   guides: {
     // Seo
     seoTitle: "Guides — buying, selling & owning in Florida — Herrera",
-    seoDescription: "Plain-English guides to Florida real estate: flood zones and insurance, HOA vs CDD fees, and a first-time buyer’s roadmap.",
+    seoDescription:
+      "Plain-English guides to Florida real estate: flood zones and insurance, HOA vs CDD fees, and a first-time buyer’s roadmap.",
     // PageHero
     heroEyebrow: "Guides",
     heroTitle: "Florida real estate, explained",
-    heroLede: "Straight answers to the questions that shape a Florida purchase. No jargon, no pressure.",
+    heroLede:
+      "Straight answers to the questions that shape a Florida purchase. No jargon, no pressure.",
     // Empty state
     empty: "Guides are coming soon.",
     // Card CTA
@@ -572,9 +574,11 @@ export const en = {
       h2: "Listings & data",
       p2: "Property information is provided for convenience and may not reflect the most current status. Listings should be independently verified. Availability, price, and details can change without notice.",
       h3: "Estimates, not advice",
-      p3pre: "Any cost figures shown — including mortgage, property tax, insurance, HOA, CDD, and total monthly cost — are",
+      p3pre:
+        "Any cost figures shown — including mortgage, property tax, insurance, HOA, CDD, and total monthly cost — are",
       p3strong: "estimates",
-      p3post: "for general guidance only. They are not quotes, financial, legal, or tax advice. Always confirm with the relevant provider before relying on them.",
+      p3post:
+        "for general guidance only. They are not quotes, financial, legal, or tax advice. Always confirm with the relevant provider before relying on them.",
       h4: "Contact",
       p4: "Questions about these terms? Reach us via the",
       p4Link: "contact page",
@@ -583,8 +587,7 @@ export const en = {
     // Fair Housing Commitment
     fairHousing: {
       seoTitle: "Fair Housing Commitment — Herrera",
-      seoDesc:
-        "Herrera supports equal housing opportunity and does not discriminate or steer.",
+      seoDesc: "Herrera supports equal housing opportunity and does not discriminate or steer.",
       pageTitle: "Fair Housing Commitment",
       h1: "Equal opportunity",
       p1: "We are committed to the principles of the Fair Housing Act and equal opportunity in housing. We do not discriminate on the basis of race, color, religion, sex, disability, familial status, national origin, or any other class protected by federal, state, or local law.",

@@ -93,6 +93,7 @@ export const es: Messages = {
     contactPhoneLabel: "Teléfono",
     contactEmailLabel: "Correo",
     contactOfficeLabel: "Oficina",
+    contactInstagramLabel: "Instagram",
     contactFormTitle: "Enviar un mensaje",
     contactFormHelp: "Todos los campos son obligatorios excepto el mensaje.",
     contactIWantTo: "Quiero",
@@ -112,12 +113,10 @@ export const es: Messages = {
     contactMsgPlaceholder: "Cuéntame lo que buscas…",
     contactConsentLabel:
       "Acepto la política de privacidad y que se pongan en contacto conmigo sobre mi consulta.",
-    contactMarketingLabel:
-      "Me gustaría recibir noticias y nuevos listados por correo (opcional).",
+    contactMarketingLabel: "Me gustaría recibir noticias y nuevos listados por correo (opcional).",
     contactSubmit: "Enviar mensaje",
     contactSubmitting: "Enviando…",
-    contactSuccess:
-      "Gracias — tu mensaje está en camino. Te responderé en 24 horas.",
+    contactSuccess: "Gracias — tu mensaje está en camino. Te responderé en 24 horas.",
     contactError:
       "Por favor añade un correo o teléfono y acepta el consentimiento, e inténtalo de nuevo.",
     contactAreaPrefix: "Zona de interés:",
@@ -270,7 +269,8 @@ export const es: Messages = {
     inquiryMessagePlaceholder: "Me gustaría obtener más información sobre esta propiedad.",
     inquiryContactConsent:
       "Acepto que Herrera se comunique conmigo sobre esta propiedad utilizando los datos que proporcioné.",
-    inquiryErrorContactRequired: "Por favor agrega un correo o teléfono para que Nilyan pueda contactarte.",
+    inquiryErrorContactRequired:
+      "Por favor agrega un correo o teléfono para que Nilyan pueda contactarte.",
     inquiryErrorConsentRequired: "Por favor acepta ser contactado.",
     inquiryErrorGeneric: "Algo salió mal. Por favor inténtalo de nuevo o llámanos.",
     inquirySubmitting: "Enviando…",
@@ -285,7 +285,8 @@ export const es: Messages = {
 
     // SellCta
     sellCtaTitle: "¿Vendes algo similar?",
-    sellCtaBody: "Descubre cuánto podría valer tu casa en {city} con una valoración gratuita y sin compromiso.",
+    sellCtaBody:
+      "Descubre cuánto podría valer tu casa en {city} con una valoración gratuita y sin compromiso.",
     sellCtaLink: "Valorar mi casa →",
 
     // SimilarListings
@@ -317,8 +318,7 @@ export const es: Messages = {
     phonePlaceholder: "Teléfono",
     contactConsent:
       "Acepto que Herrera se comunique conmigo sobre mis necesidades inmobiliarias utilizando los datos que proporcioné.",
-    contactFinePrint:
-      "Sin compromiso — teléfono o correo es suficiente; no necesitas los dos.",
+    contactFinePrint: "Sin compromiso — teléfono o correo es suficiente; no necesitas los dos.",
     sendBtn: "Enviar a Nilyan",
     sending: "Enviando…",
     nextBtn: "Siguiente →",
@@ -365,6 +365,7 @@ export const es: Messages = {
     ctaTitle: "Hablemos de tu mudanza.",
     ctaText: "Cuéntame lo que buscas y me encargo del resto. Respondo personalmente.",
     ctaSecondary: "Enviar un mensaje",
+    followInstagram: "Sígueme en Instagram",
   },
 
   // ── Contact page ─────────────────────────────────────────────────────────────
@@ -381,7 +382,8 @@ export const es: Messages = {
   favorites: {
     // Seo
     seoTitle: "Favoritos · Nilyan Herrera",
-    seoDescription: "Las propiedades de Florida que guardaste. Sin cuenta — se guardan en este dispositivo.",
+    seoDescription:
+      "Las propiedades de Florida que guardaste. Sin cuenta — se guardan en este dispositivo.",
     // PageHero
     heroEyebrow: "Tu lista personal",
     heroTitle: "Favoritos",
@@ -389,14 +391,17 @@ export const es: Messages = {
     ledeCount: "{count} {noun} guardadas en este dispositivo — vuelve cuando quieras, sin cuenta.",
     ledeCountHome: "propiedad",
     ledeCountHomes: "propiedades",
-    ledeEmpty: "Las propiedades de Florida que guardes estarán aquí, listas cuando las necesites. Sin cuenta — se quedan en este dispositivo.",
+    ledeEmpty:
+      "Las propiedades de Florida que guardes estarán aquí, listas cuando las necesites. Sin cuenta — se quedan en este dispositivo.",
     // Error state
     errorTitle: "No pudimos cargar tus favoritos",
-    errorText: "Tu lista personal está a salvo en este dispositivo. Recarga la página para intentarlo de nuevo.",
+    errorText:
+      "Tu lista personal está a salvo en este dispositivo. Recarga la página para intentarlo de nuevo.",
     errorRefresh: "Recargar",
     // Empty state
     emptyTitle: "Tu lista personal está vacía",
-    emptyText: "Toca el corazón en cualquier propiedad para guardarla aquí. Nilyan puede avisarte cuando bajen de precio o aparezcan nuevos listados que encajen.",
+    emptyText:
+      "Toca el corazón en cualquier propiedad para guardarla aquí. Nilyan puede avisarte cuando bajen de precio o aparezcan nuevos listados que encajen.",
     emptyCta: "Ver propiedades",
     // FavoritesNavButton aria-labels
     navAriaWithCount: "Favoritos ({count})",
@@ -410,8 +415,10 @@ export const es: Messages = {
     nudgeDismiss: "Cerrar",
     nudgeTitleSingular: "¿Quieres que Nilyan vigile esta propiedad por ti?",
     nudgeTitlePlural: "¿Quieres que Nilyan vigile estas propiedades por ti?",
-    nudgeTextSingular: "Deja tus datos y te avisará personalmente si bajan de precio o aparecen nuevos listados similares. Sin cuenta, sin compromiso.",
-    nudgeTextPlural: "Deja tus datos y te avisará personalmente si bajan de precio o aparecen nuevos listados similares. Sin cuenta, sin compromiso.",
+    nudgeTextSingular:
+      "Deja tus datos y te avisará personalmente si bajan de precio o aparecen nuevos listados similares. Sin cuenta, sin compromiso.",
+    nudgeTextPlural:
+      "Deja tus datos y te avisará personalmente si bajan de precio o aparecen nuevos listados similares. Sin cuenta, sin compromiso.",
     nudgeCta: "Recibir alertas de precio",
     nudgeSub: "Responde personalmente, normalmente el mismo día.",
   },
@@ -420,11 +427,13 @@ export const es: Messages = {
   guides: {
     // Seo
     seoTitle: "Guías — comprar, vender y vivir en Florida — Herrera",
-    seoDescription: "Guías en español sobre el mercado inmobiliario de Florida: zonas de inundación, HOA vs CDD y la hoja de ruta para el comprador primerizo.",
+    seoDescription:
+      "Guías en español sobre el mercado inmobiliario de Florida: zonas de inundación, HOA vs CDD y la hoja de ruta para el comprador primerizo.",
     // PageHero
     heroEyebrow: "Guías",
     heroTitle: "El mercado inmobiliario de Florida, explicado",
-    heroLede: "Respuestas directas a las preguntas que definen una compra en Florida. Sin jerga, sin presión.",
+    heroLede:
+      "Respuestas directas a las preguntas que definen una compra en Florida. Sin jerga, sin presión.",
     // Empty state
     empty: "Las guías estarán disponibles pronto.",
     // Card CTA
@@ -465,7 +474,8 @@ export const es: Messages = {
       hookPoint0: "Zona FEMA de inundación y estimado de seguro contra inundaciones",
       hookPoint1: "Seguro de hogar e impuestos sobre la propiedad",
       hookPoint2: "Cuotas de HOA y CDD",
-      hookPoint3: "Costo mensual realista, con todos los conceptos claramente etiquetados como estimados",
+      hookPoint3:
+        "Costo mensual realista, con todos los conceptos claramente etiquetados como estimados",
       hookCtaLabel: "Ver el desglose de costos en cualquier listado",
       closingTitle: "Listo cuando tú lo estés.",
       closingText: "¿Prefieres hablarlo? Nilyan responde personalmente.",
@@ -480,7 +490,8 @@ export const es: Messages = {
       step0body: "La dirección y algunos detalles sobre el inmueble.",
       step1n: "02",
       step1title: "Recibe una valoración real",
-      step1body: "Un precio respaldado por ventas comparables recientes en la zona, no una estimación a ciegas.",
+      step1body:
+        "Un precio respaldado por ventas comparables recientes en la zona, no una estimación a ciegas.",
       step2n: "03",
       step2title: "Publica y vende",
       step2body: "Preparación, marketing y negociación de principio a fin.",
@@ -492,7 +503,8 @@ export const es: Messages = {
       hookPoint1: "Listado y marketing profesional",
       hookPoint2: "Negociación activa hasta el cierre",
       closingTitle: "¿Tienes curiosidad por saber cuánto vale?",
-      closingText: "¿Quieres una lectura sin compromiso de tu propiedad? Nilyan responde personalmente.",
+      closingText:
+        "¿Quieres una lectura sin compromiso de tu propiedad? Nilyan responde personalmente.",
     },
     rent: {
       eyebrow: "Alquilar · Florida · Realtor® con licencia",
@@ -573,9 +585,11 @@ export const es: Messages = {
       h2: "Listados y datos",
       p2: "La información sobre propiedades se proporciona por conveniencia y puede no reflejar el estado más actualizado. Los listados deben verificarse de forma independiente. La disponibilidad, el precio y los detalles pueden cambiar sin previo aviso.",
       h3: "Estimados, no asesoramiento",
-      p3pre: "Cualquier cifra de costo mostrada — incluidas hipoteca, impuestos sobre la propiedad, seguro, HOA, CDD y costo mensual total — son",
+      p3pre:
+        "Cualquier cifra de costo mostrada — incluidas hipoteca, impuestos sobre la propiedad, seguro, HOA, CDD y costo mensual total — son",
       p3strong: "estimados",
-      p3post: "únicamente para orientación general. No constituyen cotizaciones ni asesoramiento financiero, legal ni fiscal. Confírmalo siempre con el proveedor correspondiente antes de tomar decisiones basadas en ellos.",
+      p3post:
+        "únicamente para orientación general. No constituyen cotizaciones ni asesoramiento financiero, legal ni fiscal. Confírmalo siempre con el proveedor correspondiente antes de tomar decisiones basadas en ellos.",
       h4: "Contacto",
       p4: "¿Tienes preguntas sobre estos términos? Contáctanos a través de la",
       p4Link: "página de contacto",
@@ -584,8 +598,7 @@ export const es: Messages = {
     // Compromiso de Vivienda Justa
     fairHousing: {
       seoTitle: "Compromiso de Vivienda Justa — Herrera",
-      seoDesc:
-        "Herrera apoya la igualdad de oportunidades de vivienda y no discrimina ni dirige.",
+      seoDesc: "Herrera apoya la igualdad de oportunidades de vivienda y no discrimina ni dirige.",
       pageTitle: "Compromiso de Vivienda Justa",
       h1: "Igualdad de oportunidades",
       p1: "Estamos comprometidos con los principios de la Ley de Vivienda Justa e igualdad de oportunidades en materia de vivienda. No discriminamos por motivos de raza, color, religión, sexo, discapacidad, estado familiar, origen nacional ni ninguna otra categoría protegida por la ley federal, estatal o local.",
