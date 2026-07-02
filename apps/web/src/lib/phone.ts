@@ -288,11 +288,7 @@ export function normalizePhone(dial: string, national: string): string {
   return `+${dial}${digits}`;
 }
 
-const fold = (s: string) =>
-  s
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase();
+const fold = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
 /** Full list, US pinned first, the rest A→Z by localized name. */
 export function sortedCountries(locale: Locale): Country[] {

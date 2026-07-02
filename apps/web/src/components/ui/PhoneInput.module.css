@@ -1,0 +1,162 @@
+/* ---- The field (country trigger + divider + tel input in one input-looking box) ---- */
+.field {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14.5px;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+.field:focus-within {
+  border-color: var(--color-bronze);
+}
+.surface {
+  background: var(--color-surface);
+}
+.paper {
+  background: var(--color-paper);
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px 0 12px;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  cursor: pointer;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: -2px;
+}
+.dial {
+  font-variant-numeric: tabular-nums;
+}
+.chevron {
+  display: flex;
+  color: var(--color-stone);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.divider {
+  width: 1px;
+  margin: 7px 0;
+  background: var(--color-border-strong);
+}
+
+.tel {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 12px;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.tel::placeholder {
+  color: var(--color-stone);
+}
+
+.flag {
+  width: 21px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+/* ---- The country panel (portaled; mirrors ui/Select's menu) ---- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  z-index: 1000;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--color-ink);
+  animation: phonePanelIn var(--dur-fast) var(--ease-standard);
+}
+@keyframes phonePanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.search {
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  color: inherit;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.search:focus {
+  border-color: var(--color-bronze);
+}
+.search::placeholder {
+  color: var(--color-stone);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 252px;
+  overflow-y: auto;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.option.active {
+  background: var(--color-sand-100);
+}
+.option.selected {
+  color: var(--color-bronze-dark);
+  font-weight: 600;
+}
+.optionName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.optionDial {
+  color: var(--color-stone);
+  font-variant-numeric: tabular-nums;
+}
+.option.selected .optionDial {
+  color: inherit;
+}
+.empty {
+  padding: 10px;
+  color: var(--color-stone);
+}

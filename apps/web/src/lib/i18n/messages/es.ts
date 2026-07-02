@@ -123,6 +123,14 @@ export const es: Messages = {
   },
 
   // ── Realtor data prose ──────────────────────────────────────────────────────
+  // ── Phone input (country dial-code selector) ───────────────────────────────
+  phoneInput: {
+    countryAria: "Prefijo de país",
+    searchAria: "Buscar país",
+    searchPlaceholder: "Busca país o prefijo…",
+    noResults: "Sin resultados",
+  },
+
   realtor: {
     title: "Realtor® con licencia en Florida",
     bioShort:
